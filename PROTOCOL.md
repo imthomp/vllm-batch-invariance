@@ -40,3 +40,4 @@ Cost, three separate jobs per cell, median reported with the range:
 - Pass per cell: plain loses at most 5% throughput against batch-invariant off. For decode on untuned models, stock batch-invariant also loses at least 10 points more than plain.
 - The README says "under 1%" for a cell only if all three repeats are under 1%.
 Generalization claims are made only for the configurations that pass. Failures are reported in the README.
+- Amendment 2026-11-03, after a smoke test on A100 and before any Phase 2 data: the patch loads in the processes that run the model, so the marker rule is at least TP markers (smoke: 1 at TP=1, 2 at TP=2), not TP+1. Configuration (c) uses a 200-shot prefix, because 150 shots gave about 11k tokens instead of the intended 15k.
