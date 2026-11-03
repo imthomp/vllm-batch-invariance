@@ -10,6 +10,8 @@ export HF_HUB_OFFLINE=1 VLLM_NO_USAGE_STATS=1 VLLM_DO_NOT_TRACK=1 VLLM_USE_FLASH
 export VLLM_ALLREDUCE_USE_FLASHINFER=0
 # On FIPS-mode hosts, also set OPENSSL_CONF=/dev/null and uninstall opencv-python-headless.
 S=${SRC:-$(pwd)/src}
+# Optional extra environment (values with commas or semicolons can't pass through sbatch --export).
+[ -n "${ENVFILE:-}" ] && . "$ENVFILE"
 "$PY" -c "import vllm,torch;print('vllm',vllm.__version__,'torch',torch.__version__)"
 nvidia-smi --query-gpu=name,driver_version --format=csv
 case "$MODE" in

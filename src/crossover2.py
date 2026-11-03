@@ -22,6 +22,9 @@ ap.add_argument("--shots", type=int, default=40, help="few-shot examples in the 
 ap.add_argument("--max-len", type=int, default=8192)
 ap.add_argument("--chunk", type=int, default=0, help="max_num_batched_tokens; 0 keeps vLLM's default")
 ap.add_argument("--temp", type=float, default=0.0, help=">0 uses seeded sampling, seed = request index")
+ap.add_argument("--backend", default="", help="attention backend, e.g. TRITON_ATTN or FLEX_ATTENTION")
+ap.add_argument("--eager", action="store_true", help="disable torch.compile and CUDA graphs")
+ap.add_argument("--hf-overrides", default="", help="JSON dict of model config overrides")
 a = ap.parse_args()
 probs = json.load(open(a.data))
 random.Random(0).shuffle(probs)
@@ -35,13 +38,22 @@ kw = dict(dtype="bfloat16", gpu_memory_utilization=0.9, max_model_len=a.max_len,
           enable_prefix_caching=True, tensor_parallel_size=a.tp)
 if a.chunk:
     kw.update(enable_chunked_prefill=True, max_num_batched_tokens=a.chunk)
+if a.backend:
+    kw["attention_config"] = {"backend": a.backend}
+if a.eager:
+    kw["enforce_eager"] = True
+if a.hf_overrides:
+    kw["hf_overrides"] = json.loads(a.hf_overrides)
 llm = LLM(a.model, **kw)
 tok = llm.get_tokenizer()
 tkw = {"enable_thinking": False} if "qwen3" in a.model.lower() else {}
 
 
 def enc(p):
-    msgs = [{"role": "user", "content": f"{pre}Problem: {p['q']}\nAnswer:"}]
+    text = f"{pre}Problem: {p['q']}\nAnswer:"
+    if not tok.chat_template:  # base models: raw prompt
+        return tok(text).input_ids
+    msgs = [{"role": "user", "content": text}]
     return tok(tok.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True, **tkw),
                add_special_tokens=False).input_ids
 
