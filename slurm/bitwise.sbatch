@@ -2,7 +2,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=64G
-#SBATCH --time=2:00:00
+#SBATCH --time=0:40:00
 # Phase 1. Usage: sbatch --export=ALL,PY=<python with torch>,TAG=<name>,OUT=<dir>[,STRESS=1] slurm/bitwise.sbatch
 set -eu
 S=${SRC:-$(pwd)/src}
