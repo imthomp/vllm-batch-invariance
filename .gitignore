@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 problems.json
 *.out
+notes/
+AGENTS.md
+*.local
