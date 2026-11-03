@@ -2,6 +2,16 @@
 
 Does a request get the same output from vLLM no matter which other requests share its batch, or whether its prefix was cached? This repo measures that, measures what vLLM's batch-invariant mode costs to fix it, and tests a cheaper way to get the same guarantee on Hopper GPUs.
 
+## Tested versions
+Batch invariance is under active development in vLLM, and later versions may change both the cost and the routing described here. Results apply only to:
+
+| | Version |
+|---|---|
+| vLLM (main) | `0.33.0rc1.dev454+gb8c04dd3b` (nightly, commit `b8c04dd3b`) |
+| vLLM (release) | `0.32.0` |
+| PyTorch | `2.14.0+cu130` with main; `2.13` with `0.32.0` |
+| GPU | NVIDIA H100 80GB HBM3, driver `580.196.07` |
+
 ## Findings
 
 **1. Without batch-invariant mode, outputs depend on serving state.** The same greedy request, run under cold or warm prefix cache and alone or alongside unrelated requests, produced different tokens on {{cross.main_qwen25_off.mismatch_requests}} of {{cross.main_qwen25_off.requests}} requests for Qwen2.5-7B-Instruct and {{cross.v032_qwen3_off.mismatch_requests}} of {{cross.v032_qwen3_off.requests}} for Qwen3-8B. Top-k logprobs differed on {{cross.main_qwen25_off.topk_diff_requests}} and {{cross.v032_qwen3_off.topk_diff_requests}} requests respectively.
