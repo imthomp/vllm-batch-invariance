@@ -7,6 +7,7 @@ Reads bitwise JSON files (phase 1), crossover JSONL plus logs, and decode/prefil
 """
 import collections
 import glob
+import gzip
 import itertools
 import json
 import os
@@ -40,7 +41,7 @@ for f in sorted(glob.glob(f"{p1}/*_bi.json")):
 
 def cross(f):
     g = collections.defaultdict(list)
-    for line in open(f):
+    for line in (gzip.open(f, "rt") if f.endswith(".gz") else open(f)):
         try:
             r = json.loads(line)
         except json.JSONDecodeError:
@@ -48,8 +49,9 @@ def cross(f):
         g[r["i"]].append(r)
     full = {i: v for i, v in g.items() if len(v) == 8}
     pairs = [(a, b) for v in full.values() for a, b in itertools.combinations(v, 2)]
-    log = f[:-len(".jsonl")] + ".log"
-    text = open(log).read() if os.path.exists(log) else ""
+    stem = f[:-len(".jsonl.gz")] if f.endswith(".gz") else f[:-len(".jsonl")]
+    log = next((p for p in (stem + ".log", stem + ".markers.txt") if os.path.exists(p)), None)
+    text = open(log).read() if log else ""
     warm = [r["hit"] for v in full.values() for r in v if r["cond"].startswith("warm")]
     return {
         "requests": len(full),
@@ -64,8 +66,8 @@ def cross(f):
 
 
 print("\n== Phase 2: determinism (pass = 0 mismatches, markers >= TP, warm hit >= 0.9; control must diverge)")
-for f in sorted(glob.glob(f"{p2}/cross_*.jsonl")):
-    name = os.path.basename(f)[len("cross_"):-len(".jsonl")]
+for f in sorted(glob.glob(f"{p2}/cross_*.jsonl") + glob.glob(f"{p2}/cross_*.jsonl.gz")):
+    name = os.path.basename(f)[len("cross_"):].split(".jsonl")[0]
     c = cross(f)
     for k, v in c.items():
         S[f"phase2.cross.{name}.{k}"] = v

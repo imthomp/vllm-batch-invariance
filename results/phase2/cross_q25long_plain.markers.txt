@@ -1,0 +1,3 @@
+patched linear_batch_invariant pid=3567852
+prompt tokens: median 14453 max 14863
+DONE requests 50 1919s

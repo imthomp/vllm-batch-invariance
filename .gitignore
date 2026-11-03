@@ -5,3 +5,10 @@ problems.json
 notes/
 AGENTS.md
 *.local
+paper/*.aux
+paper/*.log
+paper/*.bbl
+paper/*.blg
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.out

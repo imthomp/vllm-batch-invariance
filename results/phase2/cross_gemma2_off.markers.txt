@@ -1,0 +1,2 @@
+prompt tokens: median 2805 max 3257
+DONE requests 100 2467s
