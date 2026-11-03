@@ -1,7 +1,7 @@
 """Route vLLM Linear layers to torch's linear in batch-invariant mode, in every process, including TP workers.
 
 Active when VBI_PLAIN=1 and this directory is on PYTHONPATH. Each patched process prints
-"patched linear_batch_invariant pid=<pid>".
+"patched linear_batch_invariant pid=<pid>", with "inherited" for forked children.
 """
 import importlib.abc
 import importlib.machinery
@@ -41,5 +41,13 @@ class _Finder(importlib.abc.MetaPathFinder):
         return spec
 
 
+def _after_fork():
+    mod = sys.modules.get(TARGET)
+    if mod is not None and getattr(mod, "linear_batch_invariant", None) is getattr(mod, "_plain_linear", 0):
+        print(f"patched linear_batch_invariant pid={os.getpid()} inherited", flush=True)
+
+
 if os.environ.get("VBI_PLAIN") == "1":
     sys.meta_path.insert(0, _Finder())
+    # A forked child inherits the patched module without re-importing it; report it too.
+    os.register_at_fork(after_in_child=_after_fork)

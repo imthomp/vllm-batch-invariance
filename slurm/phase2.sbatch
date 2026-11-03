@@ -1,11 +1,13 @@
 #!/bin/bash
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=96G
-#SBATCH --time=4:00:00
+#SBATCH --time=2:00:00
 # Phase 2. Usage: sbatch --gres=gpu:<TP> --export=ALL,PY=<python with vllm>,KIND=cross|decode|prefill,MODE=off|on|plain,
 #   MODEL=<hf id>,TAG=<name>,TP=<n>,OUT=<dir>[,DATA=<problems.json>,ARGS="<extra crossover2 args>"] slurm/phase2.sbatch
 set -euo pipefail
 export HF_HUB_OFFLINE=1 VLLM_NO_USAGE_STATS=1 VLLM_DO_NOT_TRACK=1 VLLM_USE_FLASHINFER_SAMPLER=0
+# FlashInfer all-reduce JIT-compiles with nvcc and ninja; batch-invariant mode disables it anyway, so this only affects off.
+export VLLM_ALLREDUCE_USE_FLASHINFER=0
 # On FIPS-mode hosts, also set OPENSSL_CONF=/dev/null and uninstall opencv-python-headless.
 S=${SRC:-$(pwd)/src}
 "$PY" -c "import vllm,torch;print('vllm',vllm.__version__,'torch',torch.__version__)"
