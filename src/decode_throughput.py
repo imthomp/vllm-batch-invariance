@@ -13,8 +13,10 @@ from vllm import LLM, SamplingParams
 ap = argparse.ArgumentParser()
 ap.add_argument("--out", required=True)
 ap.add_argument("--model", default="Qwen/Qwen3-8B")
+ap.add_argument("--tp", type=int, default=1)
+ap.add_argument("--dtype", default="auto")
 a = ap.parse_args()
-llm = LLM(a.model, dtype="auto", gpu_memory_utilization=0.9, max_model_len=4096, seed=0)
+llm = LLM(a.model, dtype=a.dtype, gpu_memory_utilization=0.9, max_model_len=4096, seed=0, tensor_parallel_size=a.tp)
 SHORT, LONG = 64, 512
 
 
