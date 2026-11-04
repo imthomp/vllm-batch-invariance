@@ -8,7 +8,7 @@ from collections import defaultdict
 
 d, mode = sys.argv[1], (sys.argv[2] if len(sys.argv) > 2 else "bi")
 cells = defaultdict(lambda: {"bad": 0, "rows": 0, "bad_m": []})
-for f in sorted(glob.glob(f"{d}/*_{mode}.json")):
+for f in sorted(g for g in glob.glob(f"{d}/*_{mode}.json") if not os.path.basename(g).startswith("shape_map")):
     for r in json.load(open(f))["rows"]:
         c = cells[(r["n"], r["k"], r["dtype"])]
         c["bad"] += r["bad"]

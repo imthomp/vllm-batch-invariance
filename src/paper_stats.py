@@ -49,6 +49,17 @@ P["paper.p2_prefill_plain_max"] = max(S[c + ".plain_loss_median"] for c in pre)
 P["paper.p2_prefill_stock_min"] = min(S[c + ".on_loss_median"] for c in pre)
 P["paper.p2_prefill_stock_max"] = max(S[c + ".on_loss_median"] for c in pre)
 
+# Phase 1c: per-shape map at the dense grid (results/phase1c/shape_map_bi.json, from src/shape_map.py).
+shape_map = json.loads((STATS.parent / "phase1c" / "shape_map_bi.json").read_text())
+fail_n = sorted({int(k.split("x")[0]) for k, v in shape_map.items() if v["bad"]})
+pass_n = sorted({int(k.split("x")[0]) for k, v in shape_map.items() if not v["bad"]} - set(fail_n))
+P["paper.p1c_shapes"] = len({k.split("|")[0] for k in shape_map})
+P["paper.p1c_max_fail_n"] = max(fail_n)
+P["paper.p1c_min_pass_n"] = min(pass_n)
+P["paper.p1c_router_bf16_first_bad_m"] = shape_map["32x2880|bfloat16"]["first_bad_m"]
+P["paper.p1c_router_fp16_first_bad_m"] = shape_map["32x2880|float16"]["first_bad_m"]
+assert max(fail_n) < min(pass_n), "N boundary is not clean"
+
 merge(P)
 print(len(P), "paper stats")
 for k, v in sorted(P.items()):
