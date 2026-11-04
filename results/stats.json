@@ -105,6 +105,7 @@
   "main.qwen3.b8.plain_loss": 0.04617062172646358,
   "main.qwen3.b8.stock_loss": 0.09840377145187884,
   "paper.p1_bi_bad_total": 0,
+  "paper.p1_bi_comparisons": 769920,
   "paper.p1_builds_b200": 2,
   "paper.p1_builds_h100": 7,
   "paper.p1_comparisons_total": 1154880,

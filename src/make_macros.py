@@ -28,7 +28,7 @@ M = {
     "PoneBuildsBlackwell": ("paper.p1_builds_b200", num),
     "PoneRowsPerMode": ("paper.p1_rows_per_mode", num),
     "PoneBadTotal": ("paper.p1_bi_bad_total", num),
-    "PoneComparisons": ("paper.p1_comparisons_total", num),
+    "PoneComparisons": ("paper.p1_bi_comparisons", num),
     "PoneCtlMinH": ("paper.p1_ctl_min_h100", num),
     "PoneCtlMaxH": ("paper.p1_ctl_max_h100", num),
     "PoneCtlB": ("paper.p1_ctl_max_b200", num),

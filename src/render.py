@@ -12,7 +12,7 @@ def fmt(m):
     key, _, kind = m.group(1).partition(":")
     v = S[key]
     if kind == "pct":
-        return f"{v * 100:.1f}%"
+        return f"{v * 100:.1f}%".replace("-", "−")
     if kind == "int":
         return f"{int(v):,}"
     return str(v)

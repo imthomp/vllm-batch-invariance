@@ -19,6 +19,7 @@ P["paper.p1_builds_b200"] = len(b200)
 P["paper.p1_rows_per_mode"] = S[f"phase1.{tags[0]}.bi.rows"]
 assert all(S[f"phase1.{t}.bi.rows"] == P["paper.p1_rows_per_mode"] for t in tags)
 P["paper.p1_bi_bad_total"] = sum(S[f"phase1.{t}.{m}.bad"] for t in tags for m in ("bi", "bi_noenv"))
+P["paper.p1_bi_comparisons"] = sum(S[f"phase1.{t}.{m}.rows"] for t in tags for m in ("bi", "bi_noenv"))
 P["paper.p1_comparisons_total"] = sum(S[f"phase1.{t}.{m}.rows"] for t in tags for m in ("bi", "bi_noenv", "default"))
 for gpu, ts in (("h100", h100), ("b200", b200)):
     ctl = [S[f"phase1.{t}.default.bad"] for t in ts]

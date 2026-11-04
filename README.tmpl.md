@@ -30,12 +30,34 @@ Mismatches count every pair among 8 runs of each request: cold or warm cache, al
 
 **4. Why it works, and the main risk.** A direct test (`src/bitwise.py`) compares a row multiplied alone against the same row inside batches of 1 to 512 rows at {{bitwise.torch_default_flags.shapes}} model-sized shapes, on the same H100 with torch 2.13. Under the cuBLAS flags batch-invariant mode sets: {{bitwise.bi_flags_ws16.bad}} of {{bitwise.bi_flags_ws16.rows:int}} rows differ. Under PyTorch's default flags: {{bitwise.torch_default_flags.bad:int}} of {{bitwise.torch_default_flags.rows:int}} differ, all in {{bitwise.torch_default_flags.bad_shapes}} shape and starting at batch {{bitwise.torch_default_flags.min_bad_m}}. So the result depends on cuBLAS behavior that NVIDIA does not document as batch-invariant, and a future cuBLAS release could change it.
 
+## Robustness and generalization (Phases 1 and 2)
+Rules for both phases were fixed before running; see `PROTOCOL.md`, including every amendment.
+
+**Is cuBLAS batch-invariant?** Each row multiplied alone was compared with the same row inside batches of 1 to 8192 rows, at every Linear shape of six models, in bf16 and fp16. Under batch-invariant mode's flags: {{paper.p1_bi_bad_total}} mismatches out of {{paper.p1_bi_comparisons:int}} comparisons across {{paper.p1_builds_h100}} H100 builds and {{paper.p1_builds_b200}} B200 builds ({{paper.p1_cublas_versions}} cuBLAS versions), including with a second process loading the GPU. The cuBLAS environment variables turned out not to matter; the PyTorch flags alone suffice. With PyTorch defaults, {{paper.p1_ctl_min_h100:int}} to {{paper.p1_ctl_max_h100:int}} rows per run differed on H100 and {{paper.p1_ctl_max_b200:int}} on B200.
+
+**Serving determinism with cuBLAS routing:** {{paper.p2_pass_configs}} of {{paper.p2_configs}} configurations gave identical tokens and top-k logprobs on every run of every request. That covers Qwen2.5-7B at TP=2 and TP=4, long context with chunked prefill, seeded sampling, Qwen2.5-32B at TP=2 and Mistral-7B. Controls with batch-invariant mode off diverged on {{paper.p2_ctl_div_min:pct}} to {{paper.p2_ctl_div_max:pct}} of requests.
+
+**Gemma-2-9B fails, and it is vLLM's batch-invariant mode, not the routing:** stock mode diverged on {{phase2.cross.gemma2_on.mismatch_requests}} of {{phase2.cross.gemma2_on.requests}} requests, cuBLAS routing on {{phase2.cross.gemma2v2_plain.mismatch_requests}}. Diagnostics on {{phase2.cross.g2tri_on.requests}} requests each localize it to FlashAttention combined with compilation or CUDA graphs: Triton attention gives {{phase2.cross.g2tri_on.mismatch_requests}} diverging requests and eager mode {{phase2.cross.g2eager_on.mismatch_requests}}, while removing softcapping still gives {{phase2.cross.g2nosc_on.mismatch_requests}}.
+
+**Cost at batch-32 decode, median of 3 jobs, vs. batch-invariant mode off:**
+
+| Model | Stock | cuBLAS routing |
+|---|---|---|
+| Qwen2.5-7B | {{phase2.decode.q25.32.on_loss_median:pct}} | {{phase2.decode.q25.32.plain_loss_median:pct}} |
+| Gemma-2-9B | {{phase2.decode.gemma2.32.on_loss_median:pct}} | {{phase2.decode.gemma2.32.plain_loss_median:pct}} |
+| Mistral-7B (shapes mostly tuned) | {{phase2.decode.mistral.32.on_loss_median:pct}} | {{phase2.decode.mistral.32.plain_loss_median:pct}} |
+| Qwen2.5-7B, TP=2 | {{phase2.decode.q25tp2.32.on_loss_median:pct}} | {{phase2.decode.q25tp2.32.plain_loss_median:pct}} |
+| Qwen2.5-32B, TP=2 | {{phase2.decode.q32tp2.32.on_loss_median:pct}} | {{phase2.decode.q32tp2.32.plain_loss_median:pct}} |
+
+Prefill: cuBLAS routing loses at most {{paper.p2_prefill_plain_max:pct}}, against {{paper.p2_prefill_stock_min:pct}} to {{paper.p2_prefill_stock_max:pct}} for stock mode. {{paper.p2_cost_pass}} of {{paper.p2_cost_cells}} cells meet the preregistered 5% limit. The exception is Qwen2.5-7B at TP=2. Batch-invariant mode's fixed-order communication settings alone cost {{phase2.decode.q25tp2.32.comm_loss_median:pct}} there, so the excess is communication, not the routing.
+
 ## Scope and limitations
-- One H100 80GB GPU, tensor parallel 1, bf16, greedy decoding, decode-heavy math prompts (GSM8K test and MATH-500).
+- H100 80GB (B200 for the cuBLAS test only), tensor parallel up to 4, bf16, math prompts (GSM8K test and MATH-500).
 - vLLM 0.32.0 (torch 2.13) and a vLLM main nightly, 0.33.0rc1.dev454 (torch 2.14, CUDA 13.0).
 - Throughput: each cell is the median of 3 timed repeats in one job.
-- Not tested: multi-GPU, H200 or Blackwell, prefill-heavy workloads, other cuBLAS versions, sampling.
-- This is a measurement and a prototype patch, not an upstream change.
+- Not tested: H200, multi-node, TP=8, mixture-of-experts or quantized models, production traffic, other engines' deterministic modes.
+- This is a measurement and a prototype patch (`src/plainpatch/`), not an upstream change.
+- `paper/` holds a short technical note built from the same statistics.
 
 ## Prior art
 Batch-dependent nondeterminism and batch-invariant kernels are known (He and Thinking Machines Lab, "Defeating Nondeterminism in LLM Inference", 2025; vLLM's batch-invariance feature). The contribution here is the Hopper routing measurement.
