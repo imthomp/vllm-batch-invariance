@@ -18,7 +18,7 @@ Batch invariance is under active development in vLLM, and later versions may cha
 
 **2. Stock batch-invariant mode fixes this but is expensive on models without tuned kernels.** Decode throughput loss at batch 32 on H100: 62.3% for Qwen2.5-7B-Instruct on vLLM main, and 61.4% for Qwen3-8B on vLLM 0.32, before Qwen3-8B got tuned kernel configs.
 
-**3. On Hopper, plain cuBLAS for Linear layers gives the same determinism at almost no cost.** On SM90/SM100, vLLM's batch-invariant mode already configures cuBLAS (workspace and cuBLASLt flags) as if split-k were the only source of batch variance, yet it still routes every Linear layer through a Triton kernel. Routing Linear layers to `torch.nn.functional.linear` instead, with the rest of batch-invariant mode unchanged (`src/hopper_wrap.py`):
+**3. On Hopper, plain cuBLAS for large Linear layers gives the same determinism at almost no cost.** On SM90/SM100, vLLM's batch-invariant mode routes every Linear layer through a Triton kernel; this was a deliberate change in vLLM PR #35404, after GPT-OSS failed batch invariance with cuBLAS on H100. We find cuBLAS batch-invariant under the mode's settings for the large Linear shapes we tested, though a small mixture-of-experts router shape (N=32, K=2880) was reported not to be (vLLM issue #65569), so routing must be decided per shape. Routing Linear layers to `torch.nn.functional.linear` instead, with the rest of batch-invariant mode unchanged (`src/hopper_wrap.py`):
 
 | Model (vLLM main) | Token mismatches | Requests with differing top-k | Loss at batch 32, stock | Loss at batch 32, plain cuBLAS |
 |---|---|---|---|---|
