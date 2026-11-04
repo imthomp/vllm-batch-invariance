@@ -21,6 +21,8 @@ ap.add_argument("--mode", choices=["bi", "bi_noenv", "default"], required=True)
 ap.add_argument("--out", required=True)
 ap.add_argument("--stress", action="store_true")
 ap.add_argument("--trials", type=int, default=2)
+ap.add_argument("--bias", action="store_true", help="add a bias vector, as in Linear layers with bias")
+ap.add_argument("--dtypes", default="bfloat16,float16", help="comma-separated torch dtypes, e.g. float32")
 a = ap.parse_args()
 if a.mode == "bi":
     os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":16:8"
@@ -71,10 +73,11 @@ print("torch", torch.__version__, "cuda", torch.version.cuda, "cublasLt", CUBLAS
 g = torch.Generator(device=dev).manual_seed(0)
 rows = []
 t0 = time.time()
-for dtype in (torch.bfloat16, torch.float16):
+for dtype in [getattr(torch, d) for d in a.dtypes.split(",")]:
     for model, shapes in SHAPES.items():
         for n, k in shapes:
             w = (torch.randn(n, k, device=dev, dtype=dtype, generator=g) * k ** -0.5).to(dtype)
+            b = torch.randn(n, device=dev, dtype=dtype, generator=g) if a.bias else None
             for trial in range(a.trials):
                 x = torch.randn(MAXM, k, device=dev, dtype=dtype, generator=g)
                 alone = {}
@@ -82,8 +85,8 @@ for dtype in (torch.bfloat16, torch.float16):
                     idx = sorted(set(list(range(min(m, 8))) + list(range(max(0, m - 8), m))))
                     for i in idx:
                         if i not in alone:
-                            alone[i] = F.linear(x[i:i + 1], w)
-                    out = F.linear(x[:m], w)
+                            alone[i] = F.linear(x[i:i + 1], w, b)
+                    out = F.linear(x[:m], w, b)
                     bad = sum(bool((out[i] != alone[i][0]).any()) for i in idx)
                     rows.append({"dtype": str(dtype).split(".")[-1], "model": model, "n": n, "k": k,
                                  "trial": trial, "m": m, "rows": len(idx), "bad": bad})
@@ -97,4 +100,4 @@ tot = sum(r["bad"] for r in rows)
 print("SUMMARY mode", a.mode, "stress", a.stress, "comparisons", sum(r["rows"] for r in rows), "bad", tot,
       "bad cells", sorted({(r["dtype"], r["n"], r["k"], r["m"]) for r in rows if r["bad"]})[:40], flush=True)
 json.dump({"torch": torch.__version__, "cuda": torch.version.cuda, "cublaslt": CUBLASLT, "gpu": torch.cuda.get_device_name(),
-           "mode": a.mode, "stress": a.stress, "rows": rows}, open(a.out, "w"))
+           "mode": a.mode, "stress": a.stress, "bias": a.bias, "dtypes": a.dtypes, "rows": rows}, open(a.out, "w"))

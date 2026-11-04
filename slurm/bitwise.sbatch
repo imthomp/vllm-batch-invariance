@@ -8,5 +8,5 @@ set -eu
 S=${SRC:-$(pwd)/src}
 nvidia-smi --query-gpu=name,driver_version --format=csv
 for mode in bi bi_noenv default; do
-  "$PY" "$S/bitwise2.py" --mode $mode --out "$OUT/${TAG}_$mode.json" ${STRESS:+--stress}
+  "$PY" "$S/bitwise2.py" --mode $mode --out "$OUT/${TAG}_$mode.json" ${STRESS:+--stress} ${EXTRA:-}
 done
