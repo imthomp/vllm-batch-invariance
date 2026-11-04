@@ -37,7 +37,7 @@ Rules for both phases were fixed before running; see `PROTOCOL.md`, including ev
 
 **Serving determinism with cuBLAS routing:** 6 of 7 configurations gave identical tokens and top-k logprobs on every run of every request. That covers Qwen2.5-7B at TP=2 and TP=4, long context with chunked prefill, seeded sampling, Qwen2.5-32B at TP=2 and Mistral-7B. Controls with batch-invariant mode off diverged on 4.0% to 76.0% of requests.
 
-**Gemma-2-9B fails, and it is vLLM's batch-invariant mode, not the routing:** stock mode diverged on 40 of 100 requests, cuBLAS routing on 39. Diagnostics on 30 requests each localize it to FlashAttention combined with compilation or CUDA graphs: Triton attention gives 0 diverging requests and eager mode 0, while removing softcapping still gives 15.
+**Gemma-2-9B fails, and it is vLLM's batch-invariant mode, not the routing:** stock mode diverged on 40 of 100 requests, cuBLAS routing on 39. Diagnostics on 30 requests each localize it: Triton attention gives 0 diverging requests and eager mode 0, while removing softcapping still gives 15. Disabling the sliding window gives 0, and so does turning off CUDA graphs with compilation kept (0), so the failure is in FlashAttention's sliding-window path under CUDA graphs.
 
 **Cost at batch-32 decode, median of 3 jobs, vs. batch-invariant mode off:**
 
