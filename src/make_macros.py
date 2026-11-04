@@ -18,6 +18,11 @@ def num(v):
     return f"{int(v):,}".replace(",", "{,}")
 
 
+def lst(v):
+    v = [str(int(x)) for x in v]
+    return v[0] if len(v) == 1 else ", ".join(v[:-1]) + " and " + v[-1]
+
+
 def frac(v):
     return f"{round(v * 100)}\\%"
 
@@ -70,6 +75,16 @@ M = {
     "ShapeMinPassN": ("paper.p1c_min_pass_n", num),
     "RouterBfFirstBad": ("paper.p1c_router_bf16_first_bad_m", num),
     "RouterFpFirstBad": ("paper.p1c_router_fp16_first_bad_m", num),
+    "MidLo": ("paper.p1d_mid_lo", num),
+    "MidHi": ("paper.p1d_mid_hi", num),
+    "MidMult": ("paper.p1d_mid_pass_multiple", num),
+    "NarrowNs": ("paper.p1d_narrow_ns", lst),
+    "NarrowFailK": ("paper.p1d_narrow_fail_k", lst),
+    "NarrowPassK": ("paper.p1d_narrow_pass_k", lst),
+    "NoenvFailK": ("paper.p1d_noenv_fail_k", lst),
+    "NoenvMinFailN": ("paper.p1d_noenv_min_fail_n", num),
+    "NoenvMaxFailN": ("paper.p1d_noenv_max_fail_n", str),
+    "NoenvMinPassN": ("paper.p1d_noenv_min_pass_n", str),
     "MistralStock": ("phase2.decode.mistral.32.on_loss_median", pct),
     "MistralPlain": ("phase2.decode.mistral.32.plain_loss_median", pct),
     "GemmaOnDiv": ("phase2.cross.gemma2_on.mismatch_requests", num),

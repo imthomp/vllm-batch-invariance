@@ -13,6 +13,9 @@ def fmt(m):
     v = S[key]
     if kind == "pct":
         return f"{v * 100:.1f}%".replace("-", "−")
+    if kind == "list":
+        v = [str(int(x)) for x in v]
+        return v[0] if len(v) == 1 else ", ".join(v[:-1]) + " and " + v[-1]
     if kind == "int":
         return f"{int(v):,}"
     return str(v)

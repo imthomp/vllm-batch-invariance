@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Aggregate statistics for the paper, computed from per-run keys in results/stats.json and merged back as paper.*."""
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -59,6 +60,39 @@ P["paper.p1c_min_pass_n"] = min(pass_n)
 P["paper.p1c_router_bf16_first_bad_m"] = shape_map["32x2880|bfloat16"]["first_bad_m"]
 P["paper.p1c_router_fp16_first_bad_m"] = shape_map["32x2880|float16"]["first_bad_m"]
 assert max(fail_n) < min(pass_n), "N boundary is not clean"
+
+# Phase 1d: finer sweep (results/phase1d, from src/shape_map.py), read together with Phase 1c.
+def cells(mode):
+    t = {}
+    for d in ("phase1c", "phase1d"):
+        for key, v in json.loads((STATS.parent / d / f"shape_map_{mode}.json").read_text()).items():
+            nk = tuple(int(x) for x in key.split("|")[0].split("x"))
+            t[nk] = t.get(nk, False) or bool(v["bad"])  # True if any dtype fails
+    return t
+
+
+bi_c, ne_c = cells("bi"), cells("bi_noenv")
+d1 = json.loads((STATS.parent / "phase1d" / "shape_map_bi.json").read_text())
+mid = sorted({n for n, k in bi_c if P["paper.p1c_max_fail_n"] < n < P["paper.p1c_min_pass_n"]})
+mid_pass = sorted({n for n in mid if not any(f for (n2, k), f in bi_c.items() if n2 == n)})
+g = math.gcd(*mid_pass)
+assert g > 1 and all((n % g == 0) == (n in mid_pass) for n in mid), "mid-range pass set is not 'multiples of g'"
+assert set(range(mid[0], mid[-1] + 1)) == set(mid), "mid-range sweep has gaps"
+P["paper.p1d_mid_lo"], P["paper.p1d_mid_hi"], P["paper.p1d_mid_pass_multiple"] = mid[0], mid[-1], g
+narrow = sorted({n for n, k in bi_c if n <= P["paper.p1c_max_fail_n"] and len({k2 for n2, k2 in bi_c if n2 == n}) > 2})
+nk_fail = sorted({k for (n, k), f in bi_c.items() if n in narrow and f})
+nk_pass = sorted({k for (n, k), f in bi_c.items() if n in narrow and not f})
+assert all(bi_c[(n, k)] == (k in nk_fail) for n in narrow for k in nk_fail + nk_pass if (n, k) in bi_c), "narrow K split not uniform"
+P["paper.p1d_narrow_ns"], P["paper.p1d_narrow_fail_k"], P["paper.p1d_narrow_pass_k"] = narrow, nk_fail, nk_pass
+# Without the workspace variables (flags only).
+ne_fail_k = sorted({k for (n, k), f in ne_c.items() if f and n >= P["paper.p1c_min_pass_n"]})
+ne_max_fail_n = max(n for (n, k), f in ne_c.items() if f)
+ne_min_pass_n = min(n for (n, k) in ne_c if n > ne_max_fail_n)
+assert all(f for (n, k), f in ne_c.items() if n <= ne_max_fail_n and k in ne_fail_k), "flags-only: some width up to the max passes at a failing K"
+assert not any(f for (n, k), f in ne_c.items() if n >= P["paper.p1c_min_pass_n"] and k not in ne_fail_k), "flags-only: a wide shape fails outside the failing K set"
+assert not any(f for (n, k), f in ne_c.items() if n >= ne_min_pass_n), "flags-only: a wide shape fails"
+P["paper.p1d_noenv_fail_k"], P["paper.p1d_noenv_max_fail_n"], P["paper.p1d_noenv_min_pass_n"] = ne_fail_k, ne_max_fail_n, ne_min_pass_n
+P["paper.p1d_noenv_min_fail_n"] = min(n for (n, k), f in ne_c.items() if f and k in ne_fail_k and n >= min(narrow))
 
 merge(P)
 print(len(P), "paper stats")

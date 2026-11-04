@@ -120,6 +120,34 @@
   "paper.p1c_router_bf16_first_bad_m": 23,
   "paper.p1c_router_fp16_first_bad_m": 2,
   "paper.p1c_shapes": 37,
+  "paper.p1d_mid_hi": 127,
+  "paper.p1d_mid_lo": 97,
+  "paper.p1d_mid_pass_multiple": 8,
+  "paper.p1d_narrow_fail_k": [
+    2880,
+    4096,
+    5120
+  ],
+  "paper.p1d_narrow_ns": [
+    64,
+    96
+  ],
+  "paper.p1d_narrow_pass_k": [
+    512,
+    896,
+    1024,
+    1536,
+    2048,
+    8192
+  ],
+  "paper.p1d_noenv_fail_k": [
+    2880,
+    4096,
+    5120
+  ],
+  "paper.p1d_noenv_max_fail_n": 1024,
+  "paper.p1d_noenv_min_fail_n": 64,
+  "paper.p1d_noenv_min_pass_n": 2048,
   "paper.p2_configs": 7,
   "paper.p2_cost_cells": 17,
   "paper.p2_cost_pass": 16,

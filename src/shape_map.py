@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Phase 1c: per-shape batch invariance from bitwise2.py output. Usage: shape_map.py <dir> [mode]"""
 import glob
+import gzip
 import json
 import os
 import sys
@@ -8,8 +9,9 @@ from collections import defaultdict
 
 d, mode = sys.argv[1], (sys.argv[2] if len(sys.argv) > 2 else "bi")
 cells = defaultdict(lambda: {"bad": 0, "rows": 0, "bad_m": []})
-for f in sorted(g for g in glob.glob(f"{d}/*_{mode}.json") if not os.path.basename(g).startswith("shape_map")):
-    for r in json.load(open(f))["rows"]:
+files = glob.glob(f"{d}/*_{mode}.json") + glob.glob(f"{d}/*_{mode}.json.gz")
+for f in sorted(g for g in files if not os.path.basename(g).startswith("shape_map")):
+    for r in json.load(gzip.open(f) if f.endswith(".gz") else open(f))["rows"]:
         c = cells[(r["n"], r["k"], r["dtype"])]
         c["bad"] += r["bad"]
         c["rows"] += r["rows"]

@@ -75,6 +75,8 @@ def cublaslt_version():
 
 
 CUBLASLT = cublaslt_version()
+if os.environ.get("VBI_EXPECT_CUBLASLT"):  # e.g. 130802: abort unless that is the only cuBLASLt loaded
+    assert {v for _, v in CUBLASLT} == {int(os.environ["VBI_EXPECT_CUBLASLT"])}, f"cuBLASLt mismatch: {CUBLASLT}"
 print("torch", torch.__version__, "cuda", torch.version.cuda, "cublasLt", CUBLASLT,
       "gpu", torch.cuda.get_device_name(), "mode", a.mode, "stress", a.stress,
       "CUBLAS_WORKSPACE_CONFIG", os.environ.get("CUBLAS_WORKSPACE_CONFIG"), flush=True)

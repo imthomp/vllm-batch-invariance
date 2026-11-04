@@ -25,6 +25,7 @@ import vllm.model_executor.determinism.batch_invariant_configs as bc
 ap = argparse.ArgumentParser()
 ap.add_argument("--shapes", required=True, help="semicolon-separated NxK")
 ap.add_argument("--out", required=True)
+ap.add_argument("--quick", action="store_true", help="tiny search space and grid, for smoke tests only")
 ap.add_argument("--check", action="store_true", help="bitwise alone-vs-batched check of the tuned table, dense grid")
 a = ap.parse_args()
 
@@ -32,6 +33,8 @@ BUCKETS = (1, 4, 8, 16, 32, 64, 256, 512, 1024, 2048)  # same buckets as the exi
 BLOCK_KS = (64, 128)
 SPACE = list(itertools.product((16, 32, 64, 128), (32, 64, 128, 256), (4, 8), (2, 3, 4, 5)))
 SMEM = 227 * 1024
+if a.quick:
+    BUCKETS, SPACE = (1, 32, 256), [(16, 64, 4, 3), (64, 128, 4, 3), (128, 128, 8, 3)]
 dev = torch.device("cuda")
 dt = torch.bfloat16  # vLLM uses the tuned table for bf16 only
 orig_get = bi._get_matmul_config
@@ -102,6 +105,8 @@ def check(entries):
     install(entries)
     bi._get_matmul_config = orig_get
     ms = list(range(1, 1025)) + list(range(1040, 8193, 16))
+    if a.quick:
+        ms = list(range(1, 40)) + [255, 256, 257, 1024]
     out = {}
     for e in entries:
         n, k = e["n"], e["k"]
