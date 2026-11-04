@@ -23,6 +23,8 @@ ap.add_argument("--stress", action="store_true")
 ap.add_argument("--trials", type=int, default=2)
 ap.add_argument("--bias", action="store_true", help="add a bias vector, as in Linear layers with bias")
 ap.add_argument("--dtypes", default="bfloat16,float16", help="comma-separated torch dtypes, e.g. float32")
+ap.add_argument("--shapes", default="", help="semicolon-separated NxK list replacing the model shapes, e.g. 32x2880;128x2048")
+ap.add_argument("--dense", action="store_true", help="batch sizes 1..1024 then every 16th to 8192; also compare 4 middle rows")
 a = ap.parse_args()
 if a.mode == "bi":
     os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":16:8"
@@ -47,6 +49,10 @@ SHAPES = {
 }
 MS = [1, 2, 3, 4, 7, 8, 9, 15, 16, 17, 31, 32, 33, 63, 64, 65, 127, 128, 129, 255, 256, 257, 511, 512,
       1000, 1024, 2047, 2048, 4096, 8192]
+if a.dense:
+    MS = list(range(1, 1025)) + list(range(1040, 8193, 16))
+if a.shapes:
+    SHAPES = {"custom": [tuple(int(v) for v in sh.split("x")) for sh in a.shapes.split(";")]}
 MAXM = max(MS)
 
 stress = None
@@ -82,7 +88,10 @@ for dtype in [getattr(torch, d) for d in a.dtypes.split(",")]:
                 x = torch.randn(MAXM, k, device=dev, dtype=dtype, generator=g)
                 alone = {}
                 for m in MS:
-                    idx = sorted(set(list(range(min(m, 8))) + list(range(max(0, m - 8), m))))
+                    idx = set(range(min(m, 8))) | set(range(max(0, m - 8), m))
+                    if a.dense:
+                        idx |= {i for i in (m // 5, 2 * m // 5, 3 * m // 5, 4 * m // 5) if i < m}
+                    idx = sorted(idx)
                     for i in idx:
                         if i not in alone:
                             alone[i] = F.linear(x[i:i + 1], w, b)
