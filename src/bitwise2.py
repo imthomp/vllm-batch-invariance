@@ -33,9 +33,10 @@ import torch
 import torch.nn.functional as F
 
 if a.mode != "default":
+    # cuBLASLt first: some builds reject the split-K flag unless cuBLASLt is the backend.
+    torch.backends.cuda.preferred_blas_library(backend="cublaslt")
     torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction = (False, False)
     torch.backends.cuda.matmul.allow_bf16_reduced_precision_reduction = (False, False)
-    torch.backends.cuda.preferred_blas_library(backend="cublaslt")
     torch.backends.cuda.matmul.fp32_precision = "ieee"
 
 # (N, K) of each Linear weight, TP=1 unless noted.
