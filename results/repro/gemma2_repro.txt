@@ -1,0 +1,17 @@
+== BI on, default
+prompt 2: alone and batched outputs differ from token 59
+prompt 7: alone and batched outputs differ from token 112
+prompt 10: alone and batched outputs differ from token 60
+prompt 13: alone and batched outputs differ from token 61
+prompt 17: alone and batched outputs differ from token 16
+RESULT 5/20 prompts differ between alone and batched
+== BI on, TRITON_ATTN
+RESULT 0/20 prompts differ between alone and batched
+== BI on, no CUDA graphs
+RESULT 0/20 prompts differ between alone and batched
+== BI off (control)
+prompt 7: alone and batched outputs differ from token 112
+prompt 11: alone and batched outputs differ from token 113
+prompt 17: alone and batched outputs differ from token 16
+prompt 19: alone and batched outputs differ from token 83
+RESULT 4/20 prompts differ between alone and batched
