@@ -71,3 +71,10 @@ A shape is batch-invariant if `bi` mode shows 0 mismatches over all batch sizes,
 ## Phase 1d: why N = 128? (fixed 2026-11-04, before running)
 `src/bitwise2.py --dense`, modes `bi` and `default`, bf16 and fp16, on H100, B200 and H200 (torch 2.14+cu130). Shapes: every N from 97 to 127 at K = 2880 and 4096; N = 100, 120, 200, 1000 at K = 2880 and 4096; N = 64, 96, 128, 256 at K = 512, 896, 1024, 1536, 2048, 5120, 8192; anchors (32, 2880) and (128, 2880).
 Descriptive. Report the smallest N that passes and the largest N that fails, per GPU and K. If every N of at least 128 passes and every N below 128 fails on all three GPUs and all K, report "N >= 128" as the boundary (consistent with a 128-wide tile). Otherwise report the boundary as GPU- or K-dependent, and the upstream design relies on the per-layer check alone, with N >= 128 only as a fast pre-filter.
+
+## PR v2 validation (fixed 2026-11-04, before running)
+Draft v2 (notes/pr_draft.diff, private): per-shape routing; cuBLAS only for bf16/fp16 Linear weights with N >= 128 that pass a bitwise check at load on SM90/SM100; everything else on Triton. Applied to the same nightly. Pass requires all of:
+(1) the new unit tests pass on H100, including the gpt-oss-20b router shape staying on Triton;
+(2) vLLM's suite with `VLLM_TEST_MODEL=openai/gpt-oss-20b -k "bs1_vs_bsN and not MLA"` (the #35404 test) passes with v2 exactly where it passes with stock mode. Also run the old blanket routing (import hook) as a contrast; it is expected to fail on the router;
+(3) Qwen2.5-7B, 30 requests at TP=1: 0 mismatching requests, a "using cuBLAS" log line for each large shape, and decode cost at batch 32 within 5% of off.
+If gpt-oss-20b does not run under batch-invariant mode on this nightly at all, (2) is reported as not testable, not as a pass.
