@@ -24,6 +24,7 @@ ap.add_argument("--chunk", type=int, default=0, help="max_num_batched_tokens; 0 
 ap.add_argument("--temp", type=float, default=0.0, help=">0 uses seeded sampling, seed = request index")
 ap.add_argument("--backend", default="", help="attention backend, e.g. TRITON_ATTN or FLEX_ATTENTION")
 ap.add_argument("--eager", action="store_true", help="disable torch.compile and CUDA graphs")
+ap.add_argument("--no-cudagraph", action="store_true", help="keep torch.compile, disable CUDA graphs")
 ap.add_argument("--hf-overrides", default="", help="JSON dict of model config overrides, or @file.json")
 a = ap.parse_args()
 probs = json.load(open(a.data))
@@ -42,6 +43,8 @@ if a.backend:
     kw["attention_config"] = {"backend": a.backend}
 if a.eager:
     kw["enforce_eager"] = True
+if a.no_cudagraph:
+    kw["compilation_config"] = {"cudagraph_mode": "NONE"}
 if a.hf_overrides:
     ov = a.hf_overrides
     kw["hf_overrides"] = json.load(open(ov[1:])) if ov.startswith("@") else json.loads(ov)
