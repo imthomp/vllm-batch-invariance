@@ -24,6 +24,7 @@ ap.add_argument("--trials", type=int, default=2)
 ap.add_argument("--bias", action="store_true", help="add a bias vector, as in Linear layers with bias")
 ap.add_argument("--dtypes", default="bfloat16,float16", help="comma-separated torch dtypes, e.g. float32")
 ap.add_argument("--shapes", default="", help="semicolon-separated NxK list replacing the model shapes, e.g. 32x2880;128x2048")
+ap.add_argument("--catch", action="store_true", help="record a RuntimeError per shape instead of stopping")
 ap.add_argument("--dense", action="store_true", help="batch sizes 1..1024 then every 16th to 8192; also compare 4 middle rows")
 a = ap.parse_args()
 if a.mode == "bi":
@@ -79,10 +80,12 @@ print("torch", torch.__version__, "cuda", torch.version.cuda, "cublasLt", CUBLAS
       "CUBLAS_WORKSPACE_CONFIG", os.environ.get("CUBLAS_WORKSPACE_CONFIG"), flush=True)
 g = torch.Generator(device=dev).manual_seed(0)
 rows = []
+errors = []
 t0 = time.time()
 for dtype in [getattr(torch, d) for d in a.dtypes.split(",")]:
     for model, shapes in SHAPES.items():
         for n, k in shapes:
+          try:
             w = (torch.randn(n, k, device=dev, dtype=dtype, generator=g) * k ** -0.5).to(dtype)
             b = torch.randn(n, device=dev, dtype=dtype, generator=g) if a.bias else None
             for trial in range(a.trials):
@@ -102,12 +105,18 @@ for dtype in [getattr(torch, d) for d in a.dtypes.split(",")]:
                                  "trial": trial, "m": m, "rows": len(idx), "bad": bad})
                 del x, alone
             del w
-            torch.cuda.empty_cache()
+          except RuntimeError as e:
+            if not a.catch:
+                raise
+            errors.append({"dtype": str(dtype).split(".")[-1], "n": n, "k": k, "error": str(e)[:300]})
+            print("ERROR", n, k, dtype, str(e)[:120], flush=True)
+          torch.cuda.empty_cache()
         print(model, str(dtype), "bad so far", sum(r["bad"] for r in rows), f"{time.time() - t0:.0f}s", flush=True)
 if stress:
     stress.kill()
 tot = sum(r["bad"] for r in rows)
-print("SUMMARY mode", a.mode, "stress", a.stress, "comparisons", sum(r["rows"] for r in rows), "bad", tot,
+print("SUMMARY mode", a.mode, "stress", a.stress, "comparisons", sum(r["rows"] for r in rows), "bad", tot, "errors", len(errors),
       "bad cells", sorted({(r["dtype"], r["n"], r["k"], r["m"]) for r in rows if r["bad"]})[:40], flush=True)
 json.dump({"torch": torch.__version__, "cuda": torch.version.cuda, "cublaslt": CUBLASLT, "gpu": torch.cuda.get_device_name(),
-           "mode": a.mode, "stress": a.stress, "bias": a.bias, "dtypes": a.dtypes, "rows": rows}, open(a.out, "w"))
+           "mode": a.mode, "stress": a.stress, "bias": a.bias, "dtypes": a.dtypes, "rows": rows, "errors": errors,
+           "cublas_bi_flags": os.environ.get("CUBLAS_BATCH_INVARIANCE_FLAGS")}, open(a.out, "w"))
