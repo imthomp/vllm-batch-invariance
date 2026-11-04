@@ -110,6 +110,16 @@ for kind, tags, cells in (("decode", ("q25", "mistral", "gemma2", "q25tp2", "q32
                     parts.append(f"{mode} {S[key + '_loss_median']:.1%} (max {max(losses):.1%}, n={len(t[mode])})")
             print(f"  {kind:7s} {tag:8s} {str(cell):12s} off n={len(t['off'])}  " + "  ".join(parts))
 
+# Diagnostic: off mode plus batch-invariant mode's communication settings, against plain off, at TP=2.
+comm = sorted(glob.glob(f"{p2}/decode_q25tp2comm_off_r*.json"))
+if comm:
+    base = st.median(st.median(r["step_s"] for r in json.load(open(f))["rows"] if r["n"] == 32)
+                     for f in sorted(glob.glob(f"{p2}/decode_q25tp2_off_r*.json")))
+    vals = [st.median(r["step_s"] for r in json.load(open(f))["rows"] if r["n"] == 32) for f in comm]
+    S["phase2.decode.q25tp2.32.comm_loss_median"] = 1 - base / st.median(vals)
+    S["phase2.decode.q25tp2.32.comm_n"] = len(vals)
+    print(f"\n== TP=2 communication settings alone: {S['phase2.decode.q25tp2.32.comm_loss_median']:.2%} (n={len(vals)})")
+
 if "--merge" in sys.argv:
     merge(S)
     print("\nmerged", len(S), "keys into results/stats.json")

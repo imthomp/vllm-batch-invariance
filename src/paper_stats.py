@@ -33,7 +33,9 @@ for c in DET:
     assert S[f"{k}.done"], c
 P["paper.p2_pass_configs"] = sum(S[f"phase2.cross.{c}_plain.mismatch_pairs"] == 0 for c in DET)
 P["paper.p2_configs"] = len(DET)
-ctl = [k for k in S if k.startswith("phase2.cross.") and k.endswith("_off.mismatch_requests")]
+# Controls for the configurations in the determinism table only (diagnostic controls excluded).
+CTL = ["q25tp2", "q25long", "q25samp", "q32tp2", "mistral", "gemma2"]
+ctl = [f"phase2.cross.{c}_off.mismatch_requests" for c in CTL]
 fr = [S[k] / S[k.replace("mismatch_requests", "requests")] for k in ctl]
 P["paper.p2_ctl_div_min"], P["paper.p2_ctl_div_max"] = min(fr), max(fr)
 

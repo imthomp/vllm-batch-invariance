@@ -1,0 +1,3 @@
+(EngineCore pid=3935964) INFO 11-03 18:31:07 [cuda.py:512] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN', 'FLEX_ATTENTION'].
+prompt tokens: median 2797 max 3249
+DONE requests 30 709s
