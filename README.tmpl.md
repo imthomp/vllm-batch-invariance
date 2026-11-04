@@ -56,6 +56,7 @@ Prefill: cuBLAS routing loses at most {{paper.p2_prefill_plain_max:pct}}, agains
 - vLLM 0.32.0 (torch 2.13) and a vLLM main nightly, 0.33.0rc1.dev454 (torch 2.14, CUDA 13.0).
 - Throughput: each cell is the median of 3 timed repeats in one job.
 - Not tested: H200, multi-node, TP=8, mixture-of-experts or quantized models, production traffic, other engines' deterministic modes.
+- fp32: cuBLAS fp32 matrix multiplication is not batch-invariant in our tests (raw results in `results/phase1b`), so the routing applies to bf16 and fp16 only. Bias terms in bf16/fp16 are fine.
 - This is a measurement and a prototype patch (`src/plainpatch/`), not an upstream change.
 - `paper/` holds a short technical note built from the same statistics.
 
