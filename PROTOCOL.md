@@ -55,3 +55,6 @@ Gemma-2: stock batch-invariant mode, 30 requests per variant, one change each: a
 
 ## Phase 1b: bias and fp32 (fixed 2026-11-03, before running)
 `src/bitwise2.py` with `--bias` (bf16 and fp16) and with `--dtypes float32` (with and without bias), same shapes, batch sizes and modes, on H100 with torch 2.14+cu130. Pass: zero mismatches in `bi` and `bi_noenv` modes; `default` is the control and is reported per configuration. A failure in fp32 restricts the routing change to bf16 and fp16; a failure with bias restricts it to bias-free layers or requires a separate bias add.
+
+## PR validation (fixed 2026-11-03, before running)
+The draft upstream change (self-test plus cuBLAS routing inside `linear_batch_invariant` on SM90/SM100), applied to the same nightly and run with stock `VLLM_BATCH_INVARIANT=1`, no import hook. Pass requires all of: the self-test success line logged once per model process (at least TP lines); 0 mismatching requests on Qwen2.5-7B at TP=1 and TP=2 (30 requests each); decode loss at batch 32 within 5% of off; vLLM's determinism suite passes the same tests as with stock mode; the new unit tests pass.
