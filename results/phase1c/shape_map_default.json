@@ -1,0 +1,446 @@
+{
+ "8x2880|bfloat16": {
+  "bad": 34,
+  "rows": 29202,
+  "bad_batch_sizes": 33,
+  "first_bad_m": 3376
+ },
+ "8x2880|float16": {
+  "bad": 290,
+  "rows": 29202,
+  "bad_batch_sizes": 190,
+  "first_bad_m": 3280
+ },
+ "8x4096|bfloat16": {
+  "bad": 140,
+  "rows": 58404,
+  "bad_batch_sizes": 119,
+  "first_bad_m": 1936
+ },
+ "8x4096|float16": {
+  "bad": 1298,
+  "rows": 58404,
+  "bad_batch_sizes": 384,
+  "first_bad_m": 1936
+ },
+ "16x2880|bfloat16": {
+  "bad": 84,
+  "rows": 29202,
+  "bad_batch_sizes": 78,
+  "first_bad_m": 500
+ },
+ "16x2880|float16": {
+  "bad": 616,
+  "rows": 29202,
+  "bad_batch_sizes": 309,
+  "first_bad_m": 433
+ },
+ "16x4096|bfloat16": {
+  "bad": 141,
+  "rows": 29202,
+  "bad_batch_sizes": 124,
+  "first_bad_m": 505
+ },
+ "16x4096|float16": {
+  "bad": 1124,
+  "rows": 29202,
+  "bad_batch_sizes": 413,
+  "first_bad_m": 241
+ },
+ "32x2880|bfloat16": {
+  "bad": 368,
+  "rows": 58404,
+  "bad_batch_sizes": 246,
+  "first_bad_m": 2672
+ },
+ "32x2880|float16": {
+  "bad": 4404,
+  "rows": 58404,
+  "bad_batch_sizes": 344,
+  "first_bad_m": 2704
+ },
+ "32x4096|bfloat16": {
+  "bad": 292,
+  "rows": 29202,
+  "bad_batch_sizes": 218,
+  "first_bad_m": 246
+ },
+ "32x4096|float16": {
+  "bad": 2866,
+  "rows": 29202,
+  "bad_batch_sizes": 481,
+  "first_bad_m": 241
+ },
+ "48x2880|bfloat16": {
+  "bad": 349,
+  "rows": 29202,
+  "bad_batch_sizes": 248,
+  "first_bad_m": 1072
+ },
+ "48x2880|float16": {
+  "bad": 2929,
+  "rows": 29202,
+  "bad_batch_sizes": 435,
+  "first_bad_m": 1072
+ },
+ "48x4096|bfloat16": {
+  "bad": 993,
+  "rows": 29202,
+  "bad_batch_sizes": 561,
+  "first_bad_m": 247
+ },
+ "48x4096|float16": {
+  "bad": 6173,
+  "rows": 29202,
+  "bad_batch_sizes": 787,
+  "first_bad_m": 241
+ },
+ "64x2880|bfloat16": {
+  "bad": 849,
+  "rows": 29202,
+  "bad_batch_sizes": 432,
+  "first_bad_m": 1072
+ },
+ "64x2880|float16": {
+  "bad": 3721,
+  "rows": 29202,
+  "bad_batch_sizes": 426,
+  "first_bad_m": 1072
+ },
+ "64x4096|bfloat16": {
+  "bad": 865,
+  "rows": 29202,
+  "bad_batch_sizes": 502,
+  "first_bad_m": 242
+ },
+ "64x4096|float16": {
+  "bad": 7586,
+  "rows": 29202,
+  "bad_batch_sizes": 702,
+  "first_bad_m": 241
+ },
+ "96x2880|bfloat16": {
+  "bad": 776,
+  "rows": 29202,
+  "bad_batch_sizes": 442,
+  "first_bad_m": 210
+ },
+ "96x2880|float16": {
+  "bad": 5891,
+  "rows": 29202,
+  "bad_batch_sizes": 555,
+  "first_bad_m": 209
+ },
+ "96x4096|bfloat16": {
+  "bad": 1540,
+  "rows": 29202,
+  "bad_batch_sizes": 722,
+  "first_bad_m": 245
+ },
+ "96x4096|float16": {
+  "bad": 11154,
+  "rows": 29202,
+  "bad_batch_sizes": 863,
+  "first_bad_m": 241
+ },
+ "128x2048|bfloat16": {
+  "bad": 0,
+  "rows": 29202,
+  "bad_batch_sizes": 0,
+  "first_bad_m": null
+ },
+ "128x2048|float16": {
+  "bad": 0,
+  "rows": 29202,
+  "bad_batch_sizes": 0,
+  "first_bad_m": null
+ },
+ "128x2880|bfloat16": {
+  "bad": 7170,
+  "rows": 58404,
+  "bad_batch_sizes": 923,
+  "first_bad_m": 529
+ },
+ "128x2880|float16": {
+  "bad": 26703,
+  "rows": 58404,
+  "bad_batch_sizes": 911,
+  "first_bad_m": 529
+ },
+ "128x4096|bfloat16": {
+  "bad": 3774,
+  "rows": 29202,
+  "bad_batch_sizes": 1064,
+  "first_bad_m": 265
+ },
+ "128x4096|float16": {
+  "bad": 15419,
+  "rows": 29202,
+  "bad_batch_sizes": 1064,
+  "first_bad_m": 265
+ },
+ "192x2880|bfloat16": {
+  "bad": 6227,
+  "rows": 29202,
+  "bad_batch_sizes": 1102,
+  "first_bad_m": 353
+ },
+ "192x2880|float16": {
+  "bad": 18863,
+  "rows": 29202,
+  "bad_batch_sizes": 1099,
+  "first_bad_m": 353
+ },
+ "192x4096|bfloat16": {
+  "bad": 5650,
+  "rows": 29202,
+  "bad_batch_sizes": 1211,
+  "first_bad_m": 176
+ },
+ "192x4096|float16": {
+  "bad": 22261,
+  "rows": 29202,
+  "bad_batch_sizes": 1203,
+  "first_bad_m": 176
+ },
+ "256x2880|bfloat16": {
+  "bad": 5117,
+  "rows": 29202,
+  "bad_batch_sizes": 1182,
+  "first_bad_m": 113
+ },
+ "256x2880|float16": {
+  "bad": 22500,
+  "rows": 29202,
+  "bad_batch_sizes": 1180,
+  "first_bad_m": 113
+ },
+ "256x4096|bfloat16": {
+  "bad": 7112,
+  "rows": 29202,
+  "bad_batch_sizes": 1267,
+  "first_bad_m": 121
+ },
+ "256x4096|float16": {
+  "bad": 25141,
+  "rows": 29202,
+  "bad_batch_sizes": 1278,
+  "first_bad_m": 121
+ },
+ "384x2880|bfloat16": {
+  "bad": 7579,
+  "rows": 29202,
+  "bad_batch_sizes": 1294,
+  "first_bad_m": 65
+ },
+ "384x2880|float16": {
+  "bad": 24296,
+  "rows": 29202,
+  "bad_batch_sizes": 1294,
+  "first_bad_m": 65
+ },
+ "384x4096|bfloat16": {
+  "bad": 16114,
+  "rows": 29202,
+  "bad_batch_sizes": 1334,
+  "first_bad_m": 97
+ },
+ "384x4096|float16": {
+  "bad": 26184,
+  "rows": 29202,
+  "bad_batch_sizes": 1318,
+  "first_bad_m": 104
+ },
+ "512x2880|bfloat16": {
+  "bad": 15026,
+  "rows": 29202,
+  "bad_batch_sizes": 1350,
+  "first_bad_m": 49
+ },
+ "512x2880|float16": {
+  "bad": 26923,
+  "rows": 29202,
+  "bad_batch_sizes": 1350,
+  "first_bad_m": 49
+ },
+ "512x4096|bfloat16": {
+  "bad": 18361,
+  "rows": 29202,
+  "bad_batch_sizes": 1399,
+  "first_bad_m": 33
+ },
+ "512x4096|float16": {
+  "bad": 27931,
+  "rows": 29202,
+  "bad_batch_sizes": 1398,
+  "first_bad_m": 33
+ },
+ "1024x2880|bfloat16": {
+  "bad": 22610,
+  "rows": 29202,
+  "bad_batch_sizes": 1408,
+  "first_bad_m": 65
+ },
+ "1024x2880|float16": {
+  "bad": 28159,
+  "rows": 29202,
+  "bad_batch_sizes": 1408,
+  "first_bad_m": 65
+ },
+ "1024x4096|bfloat16": {
+  "bad": 25082,
+  "rows": 29202,
+  "bad_batch_sizes": 1454,
+  "first_bad_m": 9
+ },
+ "1024x4096|float16": {
+  "bad": 28995,
+  "rows": 29202,
+  "bad_batch_sizes": 1454,
+  "first_bad_m": 9
+ },
+ "2048x2880|bfloat16": {
+  "bad": 26261,
+  "rows": 29202,
+  "bad_batch_sizes": 1439,
+  "first_bad_m": 33
+ },
+ "2048x2880|float16": {
+  "bad": 28765,
+  "rows": 29202,
+  "bad_batch_sizes": 1439,
+  "first_bad_m": 33
+ },
+ "2048x4096|bfloat16": {
+  "bad": 28151,
+  "rows": 29202,
+  "bad_batch_sizes": 1422,
+  "first_bad_m": 41
+ },
+ "2048x4096|float16": {
+  "bad": 28440,
+  "rows": 29202,
+  "bad_batch_sizes": 1422,
+  "first_bad_m": 41
+ },
+ "3584x3584|bfloat16": {
+  "bad": 100,
+  "rows": 29202,
+  "bad_batch_sizes": 8,
+  "first_bad_m": 9
+ },
+ "3584x3584|float16": {
+  "bad": 100,
+  "rows": 29202,
+  "bad_batch_sizes": 8,
+  "first_bad_m": 9
+ },
+ "3584x18944|bfloat16": {
+  "bad": 29166,
+  "rows": 29202,
+  "bad_batch_sizes": 1464,
+  "first_bad_m": 9
+ },
+ "3584x18944|float16": {
+  "bad": 29166,
+  "rows": 29202,
+  "bad_batch_sizes": 1464,
+  "first_bad_m": 9
+ },
+ "4096x4096|bfloat16": {
+  "bad": 29065,
+  "rows": 29202,
+  "bad_batch_sizes": 1456,
+  "first_bad_m": 17
+ },
+ "4096x4096|float16": {
+  "bad": 29074,
+  "rows": 29202,
+  "bad_batch_sizes": 1457,
+  "first_bad_m": 8
+ },
+ "4096x14336|bfloat16": {
+  "bad": 25680,
+  "rows": 29202,
+  "bad_batch_sizes": 1284,
+  "first_bad_m": 121
+ },
+ "4096x14336|float16": {
+  "bad": 25660,
+  "rows": 29202,
+  "bad_batch_sizes": 1283,
+  "first_bad_m": 121
+ },
+ "4608x3584|bfloat16": {
+  "bad": 0,
+  "rows": 29202,
+  "bad_batch_sizes": 0,
+  "first_bad_m": null
+ },
+ "4608x3584|float16": {
+  "bad": 0,
+  "rows": 29202,
+  "bad_batch_sizes": 0,
+  "first_bad_m": null
+ },
+ "6144x4096|bfloat16": {
+  "bad": 0,
+  "rows": 29202,
+  "bad_batch_sizes": 0,
+  "first_bad_m": null
+ },
+ "6144x4096|float16": {
+  "bad": 0,
+  "rows": 29202,
+  "bad_batch_sizes": 0,
+  "first_bad_m": null
+ },
+ "28672x4096|bfloat16": {
+  "bad": 0,
+  "rows": 29202,
+  "bad_batch_sizes": 0,
+  "first_bad_m": null
+ },
+ "28672x4096|float16": {
+  "bad": 0,
+  "rows": 29202,
+  "bad_batch_sizes": 0,
+  "first_bad_m": null
+ },
+ "37888x3584|bfloat16": {
+  "bad": 0,
+  "rows": 29202,
+  "bad_batch_sizes": 0,
+  "first_bad_m": null
+ },
+ "37888x3584|float16": {
+  "bad": 0,
+  "rows": 29202,
+  "bad_batch_sizes": 0,
+  "first_bad_m": null
+ },
+ "128256x4096|bfloat16": {
+  "bad": 0,
+  "rows": 29202,
+  "bad_batch_sizes": 0,
+  "first_bad_m": null
+ },
+ "128256x4096|float16": {
+  "bad": 0,
+  "rows": 29202,
+  "bad_batch_sizes": 0,
+  "first_bad_m": null
+ },
+ "152064x3584|bfloat16": {
+  "bad": 0,
+  "rows": 29202,
+  "bad_batch_sizes": 0,
+  "first_bad_m": null
+ },
+ "152064x3584|float16": {
+  "bad": 0,
+  "rows": 29202,
+  "bad_batch_sizes": 0,
+  "first_bad_m": null
+ }
+}
