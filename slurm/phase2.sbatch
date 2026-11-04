@@ -2,7 +2,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=96G
 #SBATCH --time=2:00:00
-# Phase 2. Usage: sbatch --gres=gpu:<TP> --export=ALL,PY=<python with vllm>,KIND=cross|decode|prefill,MODE=off|on|plain,
+# Phase 2. Usage: sbatch --gres=gpu:<TP> --export=ALL,PY=<python with vllm>,KIND=cross|decode|prefill,MODE=off|on|plain|tuned,
 #   MODEL=<hf id>,TAG=<name>,TP=<n>,OUT=<dir>[,DATA=<problems.json>,ARGS="<extra crossover2 args>"] slurm/phase2.sbatch
 set -euo pipefail
 export HF_HUB_OFFLINE=1 VLLM_NO_USAGE_STATS=1 VLLM_DO_NOT_TRACK=1 VLLM_USE_FLASHINFER_SAMPLER=0
@@ -18,6 +18,7 @@ case "$MODE" in
   off) export VLLM_BATCH_INVARIANT=0 ;;
   on) export VLLM_BATCH_INVARIANT=1 ;;
   plain) export VLLM_BATCH_INVARIANT=1 VBI_PLAIN=1 PYTHONPATH="$S/plainpatch${PYTHONPATH:+:$PYTHONPATH}" ;;
+  tuned) export VLLM_BATCH_INVARIANT=1 PYTHONPATH="$S/tunedhook${PYTHONPATH:+:$PYTHONPATH}"; : "${VBI_TUNED:?set VBI_TUNED to a tune_bi.py output}"; export VBI_TUNED ;;
   *) echo "bad MODE"; exit 2 ;;
 esac
 NAME=${KIND}_${TAG}_${MODE}${REP:+_r$REP}
@@ -28,4 +29,4 @@ case "$KIND" in
   prefill) "$PY" "$S/prefill_throughput.py" --model "$MODEL" --tp "$TP" --out "$OUT/$NAME.json" 2>&1 | tee "$LOG" ;;
   *) echo "bad KIND"; exit 2 ;;
 esac
-echo "MARKERS $(grep -c 'patched linear_batch_invariant' "$LOG" || true)"
+echo "MARKERS $(grep -c 'patched linear_batch_invariant' "$LOG" || true) TUNED $(grep -c 'patched tuned table' "$LOG" || true)"
