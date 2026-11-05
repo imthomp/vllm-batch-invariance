@@ -94,6 +94,21 @@ assert not any(f for (n, k), f in ne_c.items() if n >= ne_min_pass_n), "flags-on
 P["paper.p1d_noenv_fail_k"], P["paper.p1d_noenv_max_fail_n"], P["paper.p1d_noenv_min_pass_n"] = ne_fail_k, ne_max_fail_n, ne_min_pass_n
 P["paper.p1d_noenv_min_fail_n"] = min(n for (n, k), f in ne_c.items() if f and k in ne_fail_k and n >= min(narrow))
 
+# Phase 1d on H200 (results/phase1d_h200): per-shape agreement with H100, both modes.
+def cells_dir(d, mode):
+    t = {}
+    for key, v in json.loads((STATS.parent / d / f"shape_map_{mode}.json").read_text()).items():
+        nk = tuple(int(x) for x in key.split("|")[0].split("x"))
+        t[nk] = t.get(nk, False) or bool(v["bad"])
+    return t
+
+
+for mode in ("bi", "bi_noenv"):
+    h1, h2 = cells_dir("phase1d", mode), cells_dir("phase1d_h200", mode)
+    assert set(h1) == set(h2), "H100 and H200 Phase 1d shape sets differ"
+    P[f"paper.p1d_h200_{mode}_shapes"] = len(h2)
+    P[f"paper.p1d_h200_{mode}_agree"] = sum(h1[k] == h2[k] for k in h2)
+
 merge(P)
 print(len(P), "paper stats")
 for k, v in sorted(P.items()):
