@@ -109,6 +109,40 @@ for mode in ("bi", "bi_noenv"):
     P[f"paper.p1d_h200_{mode}_shapes"] = len(h2)
     P[f"paper.p1d_h200_{mode}_agree"] = sum(h1[k] == h2[k] for k in h2)
 
+# gpt-oss-20b, vLLM bs1_vs_bsN suite (results/prv2/gptoss_hum_*.log.gz). FLEX_ATTENTION (no attention sinks) and
+# the online-FP8 test (model not cached) are excluded per PROTOCOL.md; they fail identically in every arm.
+import gzip as _gz
+import re as _re
+for arm in ("on", "blanket", "v2"):
+    text = _gz.open(STATS.parent / "prv2" / f"gptoss_hum_{arm}.log.gz", "rt").read()
+    res = dict((t, st_) for st_, t in _re.findall(r"^(PASSED|FAILED) test_batch_invariance\.py::(\S+)", text, _re.M))
+    counted = {t: v for t, v in res.items() if "FLEX_ATTENTION" not in t and "online_fp8" not in t}
+    P[f"paper.gptoss_{arm}_tests"] = len(counted)
+    P[f"paper.gptoss_{arm}_pass"] = sum(v == "PASSED" for v in counted.values())
+assert P["paper.gptoss_on_tests"] == P["paper.gptoss_v2_tests"] == P["paper.gptoss_blanket_tests"]
+
+# vLLM #65627 (FlashAttention sliding-window fix), issue reproducer on H100 (results/pr65627/v65627r_*.out).
+rep = _re.findall(r"RESULT (\d+)/(\d+) prompts differ", open(next((STATS.parent / "pr65627").glob("v65627r_*.out"))).read())
+assert len(rep) == 2, "expected base and fix arms"
+(P["paper.fafix_base_div"], P["paper.fafix_n"]), (P["paper.fafix_fix_div"], _n2) = [(int(a), int(b)) for a, b in rep]
+assert P["paper.fafix_n"] == _n2
+
+# Tuning pilot ranges (results/tune; keys from src/score_tune.py).
+_bs = sorted(int(k.split(".")[2][1:]) for k in S if k.startswith("tune.q25.b") and k.endswith(".tuned_loss"))
+if _bs:
+    P["paper.tune_loss_min"] = min(S[f"tune.q25.b{n}.tuned_loss"] for n in _bs)
+    P["paper.tune_loss_max"] = max(S[f"tune.q25.b{n}.tuned_loss"] for n in _bs)
+    P["paper.tune_stock_min"] = min(S[f"tune.q25.b{n}.stock_loss"] for n in _bs)
+    P["paper.tune_stock_max"] = max(S[f"tune.q25.b{n}.stock_loss"] for n in _bs)
+    P["paper.tune_bmax"] = max(_bs)
+    _t = json.loads((STATS.parent / "tune" / "tuned_q25.json").read_text())
+    _small = [e["ms"][m]["default"] / e["ms"][m]["tuned"] for e in _t["entries"] for m in e["ms"] if int(m) <= 32]
+    _large = [e["ms"][m]["tuned"] / e["ms"][m]["cublas"] for e in _t["entries"] if e["n"] != 152064 for m in e["ms"] if int(m) >= 256]
+    _near = [e["ms"][m]["tuned"] / e["ms"][m]["cublas"] for e in _t["entries"] for m in e["ms"] if int(m) <= 32]
+    P["paper.tune_speedup_small_min"], P["paper.tune_speedup_small_max"] = min(_small), max(_small)
+    P["paper.tune_vs_cublas_large_min"], P["paper.tune_vs_cublas_large_max"] = min(_large), max(_large)
+    P["paper.tune_vs_cublas_small_min"], P["paper.tune_vs_cublas_small_max"] = min(_near), max(_near)
+
 merge(P)
 print(len(P), "paper stats")
 for k, v in sorted(P.items()):
