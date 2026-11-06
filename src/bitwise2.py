@@ -24,6 +24,9 @@ ap.add_argument("--trials", type=int, default=2)
 ap.add_argument("--bias", action="store_true", help="add a bias vector, as in Linear layers with bias")
 ap.add_argument("--dtypes", default="bfloat16,float16", help="comma-separated torch dtypes, e.g. float32")
 ap.add_argument("--shapes", default="", help="semicolon-separated NxK list replacing the model shapes, e.g. 32x2880;128x2048")
+ap.add_argument("--torch-flags", default="lt,rp,fp32",
+                help="with --mode bi/bi_noenv, which PyTorch settings to apply: lt = prefer cuBLASLt, rp = no reduced-precision"
+                     " reductions, fp32 = ieee fp32 matmul (default all three, as vLLM sets them)")
 ap.add_argument("--catch", action="store_true", help="record a RuntimeError per shape instead of stopping")
 ap.add_argument("--dense", action="store_true", help="batch sizes 1..1024 then every 16th to 8192; also compare 4 middle rows")
 a = ap.parse_args()
@@ -33,11 +36,14 @@ if a.mode == "bi":
 import torch
 import torch.nn.functional as F
 
-if a.mode != "default":
-    # cuBLASLt first: some builds reject the split-K flag unless cuBLASLt is the backend.
+TF = set(a.torch_flags.split(",")) if a.mode != "default" else set()
+# cuBLASLt first: some builds reject the split-K flag unless cuBLASLt is the backend.
+if "lt" in TF:
     torch.backends.cuda.preferred_blas_library(backend="cublaslt")
+if "rp" in TF:
     torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction = (False, False)
     torch.backends.cuda.matmul.allow_bf16_reduced_precision_reduction = (False, False)
+if "fp32" in TF:
     torch.backends.cuda.matmul.fp32_precision = "ieee"
 
 # (N, K) of each Linear weight, TP=1 unless noted.
@@ -120,5 +126,5 @@ tot = sum(r["bad"] for r in rows)
 print("SUMMARY mode", a.mode, "stress", a.stress, "comparisons", sum(r["rows"] for r in rows), "bad", tot, "errors", len(errors),
       "bad cells", sorted({(r["dtype"], r["n"], r["k"], r["m"]) for r in rows if r["bad"]})[:40], flush=True)
 json.dump({"torch": torch.__version__, "cuda": torch.version.cuda, "cublaslt": CUBLASLT, "gpu": torch.cuda.get_device_name(),
-           "mode": a.mode, "stress": a.stress, "bias": a.bias, "dtypes": a.dtypes, "rows": rows, "errors": errors,
+           "mode": a.mode, "torch_flags": sorted(TF), "stress": a.stress, "bias": a.bias, "dtypes": a.dtypes, "rows": rows, "errors": errors,
            "cublas_bi_flags": os.environ.get("CUBLAS_BATCH_INVARIANCE_FLAGS")}, open(a.out, "w"))

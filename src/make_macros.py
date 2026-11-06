@@ -135,6 +135,10 @@ M = {
     "TuneLargeMax": ("paper.tune_vs_cublas_large_max", times),
     "TuneSmallMin": ("paper.tune_vs_cublas_small_min", times),
     "TuneSmallMax": ("paper.tune_vs_cublas_small_max", times),
+    "BtwoShapes": ("paper.p1d_b200_shapes", num),
+    "BtwoDiffer": ("paper.p1d_b200_differ_from_h100", num),
+    "BtwoFailMin": ("paper.p1d_b200_fail_min_n", num),
+    "BtwoFailMax": ("paper.p1d_b200_fail_max_n", num),
 }
 
 # Results still being produced: render a visible stub until the key exists (filled by src/score_*.py).
@@ -147,6 +151,9 @@ OPTIONAL = {
     "OneEBadB": ("p1e.B.bad", num),
     "OneEBadShapesB": ("p1e.B.bad_shapes", lenf),
     "OneEBadD": ("p1e.D.bad", num),
+    "OneECompD": ("p1e.D.comparisons", num),
+    "OneECompE": ("p1e.E.comparisons", num),
+    "OneEBadShapesC": ("p1e.C.bad_shapes", lenf),
     "OneEBadE": ("p1e.E.bad", num),
     "OneEErrA": ("p1e.A.error_shapes", lenf),
     "ServeUnit": ("serve.unit_passed", num),

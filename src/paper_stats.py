@@ -143,6 +143,17 @@ if _bs:
     P["paper.tune_vs_cublas_large_min"], P["paper.tune_vs_cublas_large_max"] = min(_large), max(_large)
     P["paper.tune_vs_cublas_small_min"], P["paper.tune_vs_cublas_small_max"] = min(_near), max(_near)
 
+# Phase 1d on B200 (results/phase1d_b200, cuBLAS 13.1, bi mode): the failing set is the odd widths.
+b2 = cells_dir("phase1d_b200", "bi")
+h1 = cells_dir("phase1d", "bi")
+assert set(b2) == set(h1)
+b2_fail_n = sorted({n for (n, k), f in b2.items() if f})
+assert all(n % 2 == 1 for n in b2_fail_n) and all(b2[(n, k)] for (n, k) in b2 if n % 2 == 1), "B200 failures are not exactly the odd widths"
+P["paper.p1d_b200_shapes"] = len(b2)
+P["paper.p1d_b200_differ_from_h100"] = sum(b2[k] != h1[k] for k in b2)
+P["paper.p1d_b200_fail_min_n"], P["paper.p1d_b200_fail_max_n"] = min(b2_fail_n), max(b2_fail_n)
+P["paper.p1d_b200_router_pass"] = not b2[(32, 2880)]
+
 merge(P)
 print(len(P), "paper stats")
 for k, v in sorted(P.items()):
