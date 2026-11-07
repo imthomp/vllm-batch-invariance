@@ -191,6 +191,70 @@
   "p1e.E.shapes": 25,
   "p1e.E.void": false,
   "p1e.verdict": "fails",
+  "p1f.align16.bad": 0,
+  "p1f.align16.bad_shapes": [],
+  "p1f.align16.comparisons": 233616,
+  "p1f.align16.errors": 6,
+  "p1f.align16.flags": "4",
+  "p1f.align16.torch_flags": [
+    "fp32",
+    "lt",
+    "rp"
+  ],
+  "p1f.align2.bad": 47163,
+  "p1f.align2.bad_shapes": [
+    "127x4096|bfloat16",
+    "127x4096|float16",
+    "128x2880|bfloat16",
+    "128x2880|float16",
+    "129x2880|bfloat16",
+    "129x2880|float16",
+    "32x2880|bfloat16",
+    "32x2880|float16",
+    "97x2880|bfloat16",
+    "97x2880|float16"
+  ],
+  "p1f.align2.comparisons": 408828,
+  "p1f.align2.errors": 0,
+  "p1f.align2.flags": "1",
+  "p1f.align2.torch_flags": [
+    "fp32",
+    "lt",
+    "rp"
+  ],
+  "p1f.auto.bad": 35094,
+  "p1f.auto.bad_shapes": [
+    "127x4096|bfloat16",
+    "127x4096|float16",
+    "129x2880|bfloat16",
+    "129x2880|float16",
+    "97x2880|bfloat16",
+    "97x2880|float16"
+  ],
+  "p1f.auto.comparisons": 408828,
+  "p1f.auto.errors": 0,
+  "p1f.auto.flags": "8",
+  "p1f.auto.torch_flags": [
+    "fp32",
+    "lt",
+    "rp"
+  ],
+  "p1f.auto_lt.bad": 0,
+  "p1f.auto_lt.bad_shapes": [],
+  "p1f.auto_lt.comparisons": 408828,
+  "p1f.auto_lt.errors": 0,
+  "p1f.auto_lt.flags": "8",
+  "p1f.auto_lt.torch_flags": [
+    "lt"
+  ],
+  "p1f.auto_rp.bad": 0,
+  "p1f.auto_rp.bad_shapes": [],
+  "p1f.auto_rp.comparisons": 0,
+  "p1f.auto_rp.errors": 14,
+  "p1f.auto_rp.flags": "8",
+  "p1f.auto_rp.torch_flags": [
+    "rp"
+  ],
   "paper.fafix_base_div": 5,
   "paper.fafix_fix_div": 0,
   "paper.fafix_n": 20,

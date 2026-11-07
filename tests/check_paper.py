@@ -26,7 +26,8 @@ nums = set(re.findall(r"(?<![\w.\-])\d+(?:\.\d+)*", body))
 ALLOWED = {"8", "7", "4", "1", "32", "8192", "20", "5", "2880", "1024", "13.4", "10", "4096", "0.33.0", "2.14", "13.0", "80", "90", "100", "2", "3",
            # library versions; tuning search space (BLOCK_K 64/128) and vLLM's default 128-row tile (checked in
            # batch_invariant.py); 256 = batch-size cutoff in the definition of the large-batch comparison
-           "13.1", "13.8.2", "64", "128", "256"}
+           "13.1", "13.8.2", "64", "128", "256",
+           "16"}  # cuBLAS alignment-class names (ALIGN_2B, ALIGN_16B)
 bad = sorted(nums - ALLOWED)
 assert not bad, f"unreviewed numeric literals in main.tex: {bad}"
 print("paper ok:", len(used), "macros used")
