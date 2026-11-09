@@ -1,0 +1,86 @@
+name, driver_version
+NVIDIA H100 80GB HBM3, 580.196.07
+W1104 10:31:06.501000 354029 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1104 10:31:06.502000 354029 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1104 10:31:06.503000 354029 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+torch 2.14.0+cu130 gpu NVIDIA H100 80GB HBM3
+FlashInfer kernels are disabled: flashinfer-cubin is not installed and nvcc (CUDA_HOME, CUDA_PATH, PATH or /usr/local/cuda) or ninja (PATH) is missing. Set CUDA_HOME to a CUDA toolkit and put ninja on PATH, or run `vllm download-kernels`.
+  4608x3584 BLOCK_K=64 mean log(t/cublas)=0.284
+  4608x3584 BLOCK_K=128 mean log(t/cublas)=0.186
+    M=1     tuned     23.1us  default     65.8us  cublas     21.8us
+    M=4     tuned     23.0us  default     63.8us  cublas     21.6us
+    M=8     tuned     22.7us  default     63.1us  cublas     21.4us
+    M=16    tuned     22.9us  default     61.6us  cublas     21.5us
+    M=32    tuned     24.2us  default     58.9us  cublas     21.7us
+    M=64    tuned     23.0us  default     49.6us  cublas     21.8us
+    M=256   tuned     34.3us  default     41.4us  cublas     25.2us
+    M=512   tuned     47.9us  default     67.4us  cublas     32.4us
+    M=1024  tuned     74.8us  default     93.5us  cublas     49.7us
+    M=2048  tuned    129.3us  default    151.2us  cublas     91.0us
+tuned 4608x3584 in 271s
+  3584x3584 BLOCK_K=64 mean log(t/cublas)=0.215
+  3584x3584 BLOCK_K=128 mean log(t/cublas)=0.142
+    M=1     tuned     20.9us  default     61.5us  cublas     18.2us
+    M=4     tuned     20.7us  default     59.5us  cublas     18.1us
+    M=8     tuned     20.0us  default     58.7us  cublas     18.3us
+    M=16    tuned     19.7us  default     57.2us  cublas     20.0us
+    M=32    tuned     20.6us  default     53.4us  cublas     18.3us
+    M=64    tuned     20.3us  default     43.8us  cublas     18.5us
+    M=256   tuned     24.7us  default     38.5us  cublas     23.4us
+    M=512   tuned     33.4us  default     39.9us  cublas     26.2us
+    M=1024  tuned     55.4us  default     66.7us  cublas     40.8us
+    M=2048  tuned    103.7us  default    122.5us  cublas     80.6us
+tuned 3584x3584 in 358s
+  37888x3584 BLOCK_K=64 mean log(t/cublas)=0.058
+  37888x3584 BLOCK_K=128 mean log(t/cublas)=0.077
+    M=1     tuned    110.6us  default    301.8us  cublas    106.5us
+    M=4     tuned    109.0us  default    295.5us  cublas    106.8us
+    M=8     tuned    109.3us  default    291.3us  cublas    107.2us
+    M=16    tuned    110.0us  default    284.8us  cublas    107.6us
+    M=32    tuned    113.9us  default    264.7us  cublas    107.2us
+    M=64    tuned    114.8us  default    217.8us  cublas    108.9us
+    M=256   tuned    143.3us  default    180.0us  cublas    119.5us
+    M=512   tuned    220.8us  default    292.3us  cublas    203.1us
+    M=1024  tuned    404.0us  default    556.9us  cublas    399.3us
+    M=2048  tuned    843.0us  default   1125.0us  cublas    769.4us
+tuned 37888x3584 in 459s
+  3584x18944 BLOCK_K=64 mean log(t/cublas)=0.259
+  3584x18944 BLOCK_K=128 mean log(t/cublas)=0.123
+    M=1     tuned     68.9us  default    231.3us  cublas     63.6us
+    M=4     tuned     67.9us  default    222.1us  cublas     63.7us
+    M=8     tuned     66.3us  default    220.4us  cublas     63.9us
+    M=16    tuned     64.2us  default    216.3us  cublas     61.8us
+    M=32    tuned     67.4us  default    206.3us  cublas     62.5us
+    M=64    tuned     65.9us  default    177.3us  cublas     63.1us
+    M=256   tuned     81.2us  default    151.4us  cublas     71.2us
+    M=512   tuned    130.0us  default    157.0us  cublas     99.0us
+    M=1024  tuned    252.8us  default    298.6us  cublas    194.9us
+    M=2048  tuned    511.4us  default    592.8us  cublas    406.1us
+tuned 3584x18944 in 554s
+  152064x3584 BLOCK_K=64 mean log(t/cublas)=-0.014
+  152064x3584 BLOCK_K=128 mean log(t/cublas)=0.056
+    M=1     tuned    359.3us  default    912.4us  cublas    371.5us
+    M=4     tuned    360.8us  default    892.3us  cublas    373.0us
+    M=8     tuned    362.6us  default    875.4us  cublas    374.4us
+    M=16    tuned    365.5us  default    843.4us  cublas    376.4us
+    M=32    tuned    370.3us  default    776.2us  cublas    379.6us
+    M=64    tuned    374.9us  default    629.0us  cublas    386.3us
+    M=256   tuned    468.7us  default    657.2us  cublas    443.3us
+    M=512   tuned    830.7us  default   1193.7us  cublas    834.1us
+    M=1024  tuned   1586.4us  default   2205.6us  cublas   1644.8us
+    M=2048  tuned   3357.7us  default   4317.7us  cublas   3272.1us
+tuned 152064x3584 in 704s
+  check 4608x3584: 0/29202 rows differ
+  check 3584x3584: 0/29202 rows differ
+[W1104 10:42:57.129836717 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 511705088 bytes (free: 400687104, total: 85017493504).
+  check 37888x3584: 0/29202 rows differ
+  check 3584x18944: 0/29202 rows differ
+[W1104 10:43:03.217686994 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1233125376 bytes (free: 253886464, total: 85017493504).
+[W1104 10:43:04.949482116 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1514143744 bytes (free: 648151040, total: 85017493504).
+[W1104 10:43:05.697258026 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1746927616 bytes (free: 1537343488, total: 85017493504).
+[W1104 10:43:06.368008512 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1952448512 bytes (free: 1742864384, total: 85017493504).
+[W1104 10:43:06.022212470 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2136997888 bytes (free: 1401028608, total: 85017493504).
+[W1104 10:43:07.665328168 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2306867200 bytes (free: 1017249792, total: 85017493504).
+[W1104 10:43:08.296509341 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2464153600 bytes (free: 2183266304, total: 85017493504).
+  check 152064x3584: 0/29202 rows differ
+CHECK total bad 0

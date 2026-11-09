@@ -1,0 +1,32 @@
+name, driver_version
+NVIDIA B200, 580.196.07
+== auto flags=8 torch=lt,rp,fp32
+SUMMARY mode bi_noenv stress False comparisons 408828 bad 35094 errors 0 bad cells [('bfloat16', 97, 2880, 897), ('bfloat16', 97, 2880, 898), ('bfloat16', 97, 2880, 899), ('bfloat16', 97, 2880, 900), ('bfloat16', 97, 2880, 901), ('bfloat16', 97, 2880, 902), ('bfloat16', 97, 2880, 903), ('bfloat16', 
+== align2 flags=1 torch=lt,rp,fp32
+SUMMARY mode bi_noenv stress False comparisons 408828 bad 47163 errors 0 bad cells [('bfloat16', 32, 2880, 2000), ('bfloat16', 32, 2880, 2160), ('bfloat16', 32, 2880, 2224), ('bfloat16', 32, 2880, 2256), ('bfloat16', 32, 2880, 2288), ('bfloat16', 32, 2880, 2320), ('bfloat16', 32, 2880, 2336), ('bflo
+== align16 flags=4 torch=lt,rp,fp32
+ERROR 97 2880 torch.bfloat16 CUDA error: CUBLAS_STATUS_INVALID_VALUE when calling `cublasLtMatmulAlgoGetHeuristic( ltHandle, computeDesc.descriptor()
+ERROR 127 4096 torch.bfloat16 CUDA error: CUBLAS_STATUS_INVALID_VALUE when calling `cublasLtMatmulAlgoGetHeuristic( ltHandle, computeDesc.descriptor()
+ERROR 129 2880 torch.bfloat16 CUDA error: CUBLAS_STATUS_INVALID_VALUE when calling `cublasLtMatmulAlgoGetHeuristic( ltHandle, computeDesc.descriptor()
+ERROR 97 2880 torch.float16 CUDA error: CUBLAS_STATUS_INVALID_VALUE when calling `cublasLtMatmulAlgoGetHeuristic( ltHandle, computeDesc.descriptor()
+ERROR 127 4096 torch.float16 CUDA error: CUBLAS_STATUS_INVALID_VALUE when calling `cublasLtMatmulAlgoGetHeuristic( ltHandle, computeDesc.descriptor()
+ERROR 129 2880 torch.float16 CUDA error: CUBLAS_STATUS_INVALID_VALUE when calling `cublasLtMatmulAlgoGetHeuristic( ltHandle, computeDesc.descriptor()
+SUMMARY mode bi_noenv stress False comparisons 233616 bad 0 errors 6 bad cells []
+== auto_lt flags=8 torch=lt
+SUMMARY mode bi_noenv stress False comparisons 408828 bad 0 errors 0 bad cells []
+== auto_rp flags=8 torch=rp
+ERROR 32 2880 torch.bfloat16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+ERROR 97 2880 torch.bfloat16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+ERROR 127 4096 torch.bfloat16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+ERROR 129 2880 torch.bfloat16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+ERROR 128 2880 torch.bfloat16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+ERROR 4608 3584 torch.bfloat16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+ERROR 152064 3584 torch.bfloat16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+ERROR 32 2880 torch.float16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+ERROR 97 2880 torch.float16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+ERROR 127 4096 torch.float16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+ERROR 129 2880 torch.float16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+ERROR 128 2880 torch.float16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+ERROR 4608 3584 torch.float16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+ERROR 152064 3584 torch.float16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+SUMMARY mode bi_noenv stress False comparisons 0 bad 0 errors 14 bad cells []

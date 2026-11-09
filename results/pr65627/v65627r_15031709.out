@@ -1,0 +1,40 @@
+NVIDIA H100 80GB HBM3, 580.196.07
+W1104 06:22:19.935000 203693 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1104 06:22:19.936000 203693 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1104 06:22:19.937000 203693 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+FlashInfer kernels are disabled: flashinfer-cubin is not installed and nvcc (CUDA_HOME, CUDA_PATH, PATH or /usr/local/cuda) or ninja (PATH) is missing. Set CUDA_HOME to a CUDA toolkit and put ninja on PATH, or run `vllm download-kernels`.
+ARM base fix_present False
+== base: issue repro
+[rank0]:W1104 06:24:29.271000 204100 torch/_inductor/triton_bundler.py:247] [0/0]     raise RuntimeError(
+[rank0]:W1104 06:24:29.271000 204100 torch/_inductor/triton_bundler.py:247] [0/0] RuntimeError: ('Cubin file saved by TritonBundler not found at %s', '/tmp/torchinductor_it238/triton/0/SBCDZ3IAJC57KFW6TGWH237SQOECBEGHPIY7IA7BGOS2ZD6MPDKQ/triton_poi_fused_add_cat_index_select_mul_split_split_with_sizes_sub_unsqueeze_view_1.cubin')
+[rank0]:W1104 06:24:29.283000 204100 torch/_inductor/triton_bundler.py:247] [0/0]     raise RuntimeError(
+[rank0]:W1104 06:24:29.283000 204100 torch/_inductor/triton_bundler.py:247] [0/0] RuntimeError: ('Cubin file saved by TritonBundler not found at %s', '/tmp/torchinductor_it238/triton/0/6HCZKJZT4AGX5NGAGXIUHT2R57Y7EIEZQVFHEW554INTC42AFH7Q/triton_poi_fused_add_cat_index_select_mul_split_split_with_sizes_sub_unsqueeze_view_2.cubin')
+[rank0]:W1104 06:24:29.387000 204100 torch/_inductor/triton_bundler.py:247] [0/0]     raise RuntimeError(
+[rank0]:W1104 06:24:29.387000 204100 torch/_inductor/triton_bundler.py:247] [0/0] RuntimeError: ('Cubin file saved by TritonBundler not found at %s', '/tmp/torchinductor_it238/triton/0/Y2ASJRA5JHTVGVXMKCVMYA4X55JPOHL7K6XW2Z4A3GDNSBEAENRQ/triton_poi_fused_gelu_mul_slice_t_1.cubin')
+[rank0]:W1104 06:24:29.387000 204100 torch/_inductor/triton_bundler.py:247] [0/0]     raise RuntimeError(
+[rank0]:W1104 06:24:29.387000 204100 torch/_inductor/triton_bundler.py:247] [0/0] RuntimeError: ('Cubin file saved by TritonBundler not found at %s', '/tmp/torchinductor_it238/triton/0/UNUL7NMDDMZAVXXSA3D52PKLENPVHROJGHNNANEIBNTHTQIHTIZA/triton_poi_fused_add_cat_index_select_mul_split_split_with_sizes_sub_unsqueeze_view_3.cubin')
+[rank0]:W1104 06:24:29.387000 204100 torch/_inductor/triton_bundler.py:247] [0/0]     raise RuntimeError(
+[rank0]:W1104 06:24:29.387000 204100 torch/_inductor/triton_bundler.py:247] [0/0] RuntimeError: ('Cubin file saved by TritonBundler not found at %s', '/tmp/torchinductor_it238/triton/0/KW3CGHJCNV77YP674JBWMOAE2AQSCWSZ4LQ7KHDZMPPNQLPU3HKQ/triton_poi_fused_add_cat_index_select_mul_split_split_with_sizes_sub_unsqueeze_view_4.cubin')
+prompt 2: alone and batched outputs differ from token 59
+prompt 7: alone and batched outputs differ from token 112
+prompt 10: alone and batched outputs differ from token 60
+prompt 13: alone and batched outputs differ from token 61
+prompt 17: alone and batched outputs differ from token 16
+RESULT 5/20 prompts differ between alone and batched
+W1104 06:27:53.180000 208202 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1104 06:27:53.181000 208202 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1104 06:27:53.182000 208202 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+FlashInfer kernels are disabled: flashinfer-cubin is not installed and nvcc (CUDA_HOME, CUDA_PATH, PATH or /usr/local/cuda) or ninja (PATH) is missing. Set CUDA_HOME to a CUDA toolkit and put ninja on PATH, or run `vllm download-kernels`.
+ARM fix fix_present True
+== fix: issue repro
+[rank0]:W1104 06:30:04.452000 208775 torch/_inductor/triton_bundler.py:247] [0/0]     raise RuntimeError(
+[rank0]:W1104 06:30:04.452000 208775 torch/_inductor/triton_bundler.py:247] [0/0] RuntimeError: ('Cubin file saved by TritonBundler not found at %s', '/tmp/torchinductor_it238/triton/0/SBCDZ3IAJC57KFW6TGWH237SQOECBEGHPIY7IA7BGOS2ZD6MPDKQ/triton_poi_fused_add_cat_index_select_mul_split_split_with_sizes_sub_unsqueeze_view_1.cubin')
+[rank0]:W1104 06:30:04.462000 208775 torch/_inductor/triton_bundler.py:247] [0/0]     raise RuntimeError(
+[rank0]:W1104 06:30:04.462000 208775 torch/_inductor/triton_bundler.py:247] [0/0] RuntimeError: ('Cubin file saved by TritonBundler not found at %s', '/tmp/torchinductor_it238/triton/0/6HCZKJZT4AGX5NGAGXIUHT2R57Y7EIEZQVFHEW554INTC42AFH7Q/triton_poi_fused_add_cat_index_select_mul_split_split_with_sizes_sub_unsqueeze_view_2.cubin')
+[rank0]:W1104 06:30:04.559000 208775 torch/_inductor/triton_bundler.py:247] [0/0]     raise RuntimeError(
+[rank0]:W1104 06:30:04.559000 208775 torch/_inductor/triton_bundler.py:247] [0/0] RuntimeError: ('Cubin file saved by TritonBundler not found at %s', '/tmp/torchinductor_it238/triton/0/Y2ASJRA5JHTVGVXMKCVMYA4X55JPOHL7K6XW2Z4A3GDNSBEAENRQ/triton_poi_fused_gelu_mul_slice_t_1.cubin')
+[rank0]:W1104 06:30:04.559000 208775 torch/_inductor/triton_bundler.py:247] [0/0]     raise RuntimeError(
+[rank0]:W1104 06:30:04.559000 208775 torch/_inductor/triton_bundler.py:247] [0/0] RuntimeError: ('Cubin file saved by TritonBundler not found at %s', '/tmp/torchinductor_it238/triton/0/UNUL7NMDDMZAVXXSA3D52PKLENPVHROJGHNNANEIBNTHTQIHTIZA/triton_poi_fused_add_cat_index_select_mul_split_split_with_sizes_sub_unsqueeze_view_3.cubin')
+[rank0]:W1104 06:30:04.559000 208775 torch/_inductor/triton_bundler.py:247] [0/0]     raise RuntimeError(
+[rank0]:W1104 06:30:04.559000 208775 torch/_inductor/triton_bundler.py:247] [0/0] RuntimeError: ('Cubin file saved by TritonBundler not found at %s', '/tmp/torchinductor_it238/triton/0/KW3CGHJCNV77YP674JBWMOAE2AQSCWSZ4LQ7KHDZMPPNQLPU3HKQ/triton_poi_fused_add_cat_index_select_mul_split_split_with_sizes_sub_unsqueeze_view_4.cubin')
+RESULT 0/20 prompts differ between alone and batched

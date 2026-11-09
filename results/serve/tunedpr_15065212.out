@@ -1,0 +1,55 @@
+NVIDIA H100 80GB HBM3, 580.196.07
+== unit tests
+PASSED test_matmul_batch_invariant.py::test_qwen25_7b_hopper_tuned_linear_batch_invariance[4608-3584-True]
+PASSED test_matmul_batch_invariant.py::test_qwen25_7b_hopper_tuned_linear_batch_invariance[3584-3584-False]
+PASSED test_matmul_batch_invariant.py::test_qwen25_7b_hopper_tuned_linear_batch_invariance[37888-3584-False]
+PASSED test_matmul_batch_invariant.py::test_qwen25_7b_hopper_tuned_linear_batch_invariance[3584-18944-False]
+PASSED test_matmul_batch_invariant.py::test_qwen25_7b_hopper_tuned_linear_batch_invariance[152064-3584-False]
+40 passed, 2 skipped in 26.84s
+== serving benchmark
+ARM stock hopper entries 13
+  stock r1 decode: Request throughput (req/s):              6.06      
+  stock r1 decode: Output token throughput (tok/s):         1551.55   
+  stock r1 prefill: Request throughput (req/s):              27.66     
+  stock r1 prefill: Output token throughput (tok/s):         110.65    
+ARM tuned hopper entries 18
+  tuned r1 decode: Request throughput (req/s):              12.36     
+  tuned r1 decode: Output token throughput (tok/s):         3165.29   
+  tuned r1 prefill: Request throughput (req/s):              30.35     
+  tuned r1 prefill: Output token throughput (tok/s):         121.40    
+ARM off hopper entries 13
+  off r1 decode: Request throughput (req/s):              15.19     
+  off r1 decode: Output token throughput (tok/s):         3888.16   
+  off r1 prefill: Request throughput (req/s):              33.94     
+  off r1 prefill: Output token throughput (tok/s):         135.77    
+ARM tuned hopper entries 18
+  tuned r2 decode: Request throughput (req/s):              12.27     
+  tuned r2 decode: Output token throughput (tok/s):         3140.32   
+  tuned r2 prefill: Request throughput (req/s):              29.89     
+  tuned r2 prefill: Output token throughput (tok/s):         119.56    
+ARM stock hopper entries 13
+  stock r2 decode: Request throughput (req/s):              6.08      
+  stock r2 decode: Output token throughput (tok/s):         1556.71   
+  stock r2 prefill: Request throughput (req/s):              27.04     
+  stock r2 prefill: Output token throughput (tok/s):         108.18    
+ARM off hopper entries 13
+  off r2 decode: Request throughput (req/s):              15.39     
+  off r2 decode: Output token throughput (tok/s):         3939.00   
+  off r2 prefill: Request throughput (req/s):              33.31     
+  off r2 prefill: Output token throughput (tok/s):         133.25    
+ARM stock hopper entries 13
+  stock r3 decode: Request throughput (req/s):              6.13      
+  stock r3 decode: Output token throughput (tok/s):         1568.46   
+  stock r3 prefill: Request throughput (req/s):              26.67     
+  stock r3 prefill: Output token throughput (tok/s):         106.66    
+ARM tuned hopper entries 18
+  tuned r3 decode: Request throughput (req/s):              12.21     
+  tuned r3 decode: Output token throughput (tok/s):         3125.67   
+  tuned r3 prefill: Request throughput (req/s):              30.30     
+  tuned r3 prefill: Output token throughput (tok/s):         121.18    
+ARM off hopper entries 13
+  off r3 decode: Request throughput (req/s):              14.95     
+  off r3 decode: Output token throughput (tok/s):         3826.52   
+  off r3 prefill: Request throughput (req/s):              34.39     
+  off r3 prefill: Output token throughput (tok/s):         137.57    
+DONE

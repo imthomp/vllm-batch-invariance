@@ -1,0 +1,29 @@
+NVIDIA H100 80GB HBM3
+== unit tests (v2)
+FAILED test_cublas_linear_batch_invariant.py::test_wide_shapes_use_cublas_and_are_invariant[128-2880-dtype0]
+FAILED test_cublas_linear_batch_invariant.py::test_wide_shapes_use_cublas_and_are_invariant[128-2880-dtype1]
+2 failed, 10 passed in 1.20s
+== gpt-oss-20b suite: on
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[16-16-TRITON_ATTN]
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-FLASH_ATTN]
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-FLEX_ATTENTION]
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-TRITON_ATTN]
+FAILED test_batch_invariance.py::test_online_fp8_moe_logprobs_bitwise_bs1_vs_bsN
+=========== 7 failed, 16 deselected, 9 warnings in 147.47s (0:02:27) ===========
+markers 0 cublas_lines 0
+== gpt-oss-20b suite: blanket
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[16-16-TRITON_ATTN]
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-FLASH_ATTN]
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-FLEX_ATTENTION]
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-TRITON_ATTN]
+FAILED test_batch_invariance.py::test_online_fp8_moe_logprobs_bitwise_bs1_vs_bsN
+=========== 7 failed, 16 deselected, 9 warnings in 78.94s (0:01:18) ============
+markers 7 cublas_lines 0
+== gpt-oss-20b suite: v2
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[16-16-TRITON_ATTN]
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-FLASH_ATTN]
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-FLEX_ATTENTION]
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-TRITON_ATTN]
+FAILED test_batch_invariance.py::test_online_fp8_moe_logprobs_bitwise_bs1_vs_bsN
+=========== 7 failed, 16 deselected, 9 warnings in 86.42s (0:01:26) ============
+markers 0 cublas_lines 12

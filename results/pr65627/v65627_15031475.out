@@ -1,0 +1,29 @@
+NVIDIA H100 80GB HBM3, 580.196.07
+W1104 06:12:36.196000 194519 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1104 06:12:36.197000 194519 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1104 06:12:36.198000 194519 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+FlashInfer kernels are disabled: flashinfer-cubin is not installed and nvcc (CUDA_HOME, CUDA_PATH, PATH or /usr/local/cuda) or ninja (PATH) is missing. Set CUDA_HOME to a CUDA toolkit and put ninja on PATH, or run `vllm download-kernels`.
+ARM base fix_present False
+== base: issue repro
+== base: new test
+1 passed, 4 warnings in 163.01s (0:02:43)
+W1104 06:19:35.762000 201421 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1104 06:19:35.763000 201421 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1104 06:19:35.764000 201421 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+FlashInfer kernels are disabled: flashinfer-cubin is not installed and nvcc (CUDA_HOME, CUDA_PATH, PATH or /usr/local/cuda) or ninja (PATH) is missing. Set CUDA_HOME to a CUDA toolkit and put ninja on PATH, or run `vllm download-kernels`.
+ARM fix fix_present True
+== fix: issue repro
+== fix: new test
+1 passed, 4 warnings in 134.01s (0:02:14)
+== fix: existing batch-invariance tests on gemma-2-2b-it, FLASH_ATTN
+[determinism] total=5, passed=5, failed=0, max_batch_size=128
+[determinism] total=5, passed=5, failed=0, max_batch_size=128
+PASSED test_batch_invariance.py::test_v1_generation_is_deterministic_across_batch_sizes_with_needle[default-FLASH_ATTN]
+PASSED test_batch_invariance.py::test_v1_generation_is_deterministic_across_batch_sizes_with_needle[vllm_c-FLASH_ATTN]
+PASSED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[16-16-FLASH_ATTN]
+PASSED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-FLASH_ATTN]
+PASSED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_ragged_chunked_prefill[FLASH_ATTN]
+PASSED test_batch_invariance.py::test_simple_generation[FLASH_ATTN]
+PASSED test_batch_invariance.py::test_logprobs_without_batch_invariance_should_fail[FLASH_ATTN]
+PASSED test_batch_invariance.py::test_decode_logprobs_match_prefill_logprobs[FLASH_ATTN]
+8 passed, 16 deselected, 4 warnings in 965.49s (0:16:05)

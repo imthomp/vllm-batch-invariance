@@ -1,0 +1,76 @@
+name, driver_version
+NVIDIA B200, 580.196.07
+== A
+[W1106 05:25:23.877699112 Context.cpp:629] Warning: torch.backends.cuda.preferred_blas_library is an experimental feature. If you see any error or unexpected behavior when this flag is set please file an issue on GitHub. (function operator())
+torch 2.14.0+cu130 cuda 13.0 cublasLt [('libcublasLt.so.13', 130101)] gpu NVIDIA B200 mode bi stress False CUBLAS_WORKSPACE_CONFIG :16:8
+/home/it238/projects/vllm-batch-invariance/src/bitwise2.py:103: UserWarning: bgemm_internal_cublaslt error: CUBLAS_STATUS_NOT_SUPPORTED when calling cublasLtMatmul with transpose_mat1 t transpose_mat2 n m 97 n 1 k 2880 lda 2880 ldb 2880 ldc 97 abType 14 cType 14 computeType 68 scaleType 0. Will attempt to recover by calling cublas instead. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/cuda/CUDABlas.cpp:447.)
+  alone[i] = F.linear(x[i:i + 1], w, b)
+ERROR 97 2880 torch.bfloat16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+/home/it238/projects/vllm-batch-invariance/src/bitwise2.py:103: UserWarning: bgemm_internal_cublaslt error: CUBLAS_STATUS_NOT_SUPPORTED when calling cublasLtMatmul with transpose_mat1 t transpose_mat2 n m 127 n 1 k 2880 lda 2880 ldb 2880 ldc 127 abType 14 cType 14 computeType 68 scaleType 0. Will attempt to recover by calling cublas instead. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/cuda/CUDABlas.cpp:447.)
+  alone[i] = F.linear(x[i:i + 1], w, b)
+ERROR 127 2880 torch.bfloat16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+/home/it238/projects/vllm-batch-invariance/src/bitwise2.py:103: UserWarning: bgemm_internal_cublaslt error: CUBLAS_STATUS_NOT_SUPPORTED when calling cublasLtMatmul with transpose_mat1 t transpose_mat2 n m 129 n 1 k 2880 lda 2880 ldb 2880 ldc 129 abType 14 cType 14 computeType 68 scaleType 0. Will attempt to recover by calling cublas instead. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/cuda/CUDABlas.cpp:447.)
+  alone[i] = F.linear(x[i:i + 1], w, b)
+ERROR 129 2880 torch.bfloat16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+/home/it238/projects/vllm-batch-invariance/src/bitwise2.py:103: UserWarning: bgemm_internal_cublaslt error: CUBLAS_STATUS_NOT_SUPPORTED when calling cublasLtMatmul with transpose_mat1 t transpose_mat2 n m 127 n 1 k 4096 lda 4096 ldb 4096 ldc 127 abType 14 cType 14 computeType 68 scaleType 0. Will attempt to recover by calling cublas instead. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/cuda/CUDABlas.cpp:447.)
+  alone[i] = F.linear(x[i:i + 1], w, b)
+ERROR 127 4096 torch.bfloat16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+/home/it238/projects/vllm-batch-invariance/src/bitwise2.py:103: UserWarning: bgemm_internal_cublaslt error: CUBLAS_STATUS_NOT_SUPPORTED when calling cublasLtMatmul with transpose_mat1 t transpose_mat2 n m 129 n 1 k 4096 lda 4096 ldb 4096 ldc 129 abType 14 cType 14 computeType 68 scaleType 0. Will attempt to recover by calling cublas instead. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/cuda/CUDABlas.cpp:447.)
+  alone[i] = F.linear(x[i:i + 1], w, b)
+ERROR 129 4096 torch.bfloat16 torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend
+[W1106 05:25:48.444579768 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1572864000 bytes (free: 1052573696, total: 191503007744).
+[W1106 05:25:49.251656199 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2063597568 bytes (free: 2046623744, total: 191503007744).
+[W1106 05:25:50.007139174 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2457862144 bytes (free: 1740439552, total: 191503007744).
+custom torch.bfloat16 bad so far 0 26s
+[W1106 05:26:19.774818138 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1572864000 bytes (free: 1046282240, total: 191503007744).
+[W1106 05:26:20.605913233 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2063597568 bytes (free: 2042429440, total: 191503007744).
+[W1106 05:26:21.384441750 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2457862144 bytes (free: 1736245248, total: 191503007744).
+custom torch.float16 bad so far 14561 58s
+SUMMARY mode bi stress False comparisons 1314090 bad 14561 errors 5 bad cells [('float16', 97, 2880, 5776), ('float16', 97, 2880, 5792), ('float16', 97, 2880, 5808), ('float16', 97, 2880, 5824), ('float16', 97, 2880, 5840), ('float16', 97, 2880, 5856), ('float16', 97, 2880, 5872), ('float16', 97, 2880, 5888), ('float16', 97, 2880, 5904), ('float16', 97, 2880, 5920), ('float16', 97, 2880, 5936), ('float16', 97, 2880, 5952), ('float16', 97, 2880, 5968), ('float16', 97, 2880, 5984), ('float16', 97, 2880, 6000), ('float16', 97, 2880, 6016), ('float16', 97, 2880, 6032), ('float16', 97, 2880, 6048), ('float16', 97, 2880, 6064), ('float16', 97, 2880, 6080), ('float16', 97, 2880, 6096), ('float16', 97, 2880, 6112), ('float16', 97, 2880, 6128), ('float16', 97, 2880, 6144), ('float16', 97, 2880, 6160), ('float16', 97, 2880, 6176), ('float16', 97, 2880, 6192), ('float16', 97, 2880, 6208), ('float16', 97, 2880, 6224), ('float16', 97, 2880, 6240), ('float16', 97, 2880, 6256), ('float16', 97, 2880, 6272), ('float16', 97, 2880, 6288), ('float16', 97, 2880, 6304), ('float16', 97, 2880, 6320), ('float16', 97, 2880, 6336), ('float16', 97, 2880, 6352), ('float16', 97, 2880, 6368), ('float16', 97, 2880, 6384), ('float16', 97, 2880, 6400)]
+== B
+[W1106 05:26:28.781893854 Context.cpp:629] Warning: torch.backends.cuda.preferred_blas_library is an experimental feature. If you see any error or unexpected behavior when this flag is set please file an issue on GitHub. (function operator())
+torch 2.14.0+cu130 cuda 13.0 cublasLt [('libcublasLt.so.13', 130802)] gpu NVIDIA B200 mode bi_noenv stress False CUBLAS_WORKSPACE_CONFIG None
+[W1106 05:27:01.018315705 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1572864000 bytes (free: 954007552, total: 191503007744).
+[W1106 05:27:01.835372499 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2063597568 bytes (free: 1948057600, total: 191503007744).
+[W1106 05:27:02.614587899 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2457862144 bytes (free: 1641873408, total: 191503007744).
+custom torch.bfloat16 bad so far 125 33s
+[W1106 05:27:34.572429533 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1572864000 bytes (free: 947716096, total: 191503007744).
+[W1106 05:27:35.409042442 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2063597568 bytes (free: 1943863296, total: 191503007744).
+[W1106 05:27:36.198552964 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2457862144 bytes (free: 1637679104, total: 191503007744).
+custom torch.float16 bad so far 6787 66s
+SUMMARY mode bi_noenv stress False comparisons 1460100 bad 6787 errors 0 bad cells [('bfloat16', 97, 2880, 6), ('bfloat16', 97, 2880, 7), ('bfloat16', 97, 2880, 8), ('bfloat16', 97, 2880, 9), ('bfloat16', 97, 2880, 10), ('bfloat16', 97, 2880, 11), ('bfloat16', 97, 2880, 12), ('bfloat16', 97, 2880, 13), ('bfloat16', 97, 2880, 14), ('bfloat16', 97, 2880, 15), ('bfloat16', 97, 2880, 16), ('bfloat16', 127, 2880, 6), ('bfloat16', 127, 2880, 7), ('bfloat16', 127, 2880, 8), ('bfloat16', 127, 2880, 9), ('bfloat16', 127, 2880, 10), ('bfloat16', 127, 2880, 11), ('bfloat16', 127, 2880, 12), ('bfloat16', 127, 2880, 13), ('bfloat16', 127, 2880, 14), ('bfloat16', 127, 2880, 15), ('bfloat16', 127, 2880, 16), ('bfloat16', 127, 4096, 6), ('bfloat16', 127, 4096, 7), ('bfloat16', 127, 4096, 8), ('bfloat16', 127, 4096, 9), ('bfloat16', 127, 4096, 10), ('bfloat16', 127, 4096, 11), ('bfloat16', 127, 4096, 12), ('bfloat16', 127, 4096, 13), ('bfloat16', 127, 4096, 14), ('bfloat16', 127, 4096, 15), ('bfloat16', 127, 4096, 16), ('bfloat16', 129, 2880, 6), ('bfloat16', 129, 2880, 7), ('bfloat16', 129, 2880, 8), ('bfloat16', 129, 2880, 9), ('bfloat16', 129, 2880, 10), ('bfloat16', 129, 2880, 11), ('bfloat16', 129, 2880, 12)]
+== C
+[W1106 05:27:44.892923832 Context.cpp:629] Warning: torch.backends.cuda.preferred_blas_library is an experimental feature. If you see any error or unexpected behavior when this flag is set please file an issue on GitHub. (function operator())
+torch 2.14.0+cu130 cuda 13.0 cublasLt [('libcublasLt.so.13', 130802)] gpu NVIDIA B200 mode bi_noenv stress False CUBLAS_WORKSPACE_CONFIG None
+[W1106 05:28:13.434189465 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1572864000 bytes (free: 954007552, total: 191503007744).
+[W1106 05:28:14.247743210 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2063597568 bytes (free: 1948057600, total: 191503007744).
+[W1106 05:28:15.009282914 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2457862144 bytes (free: 1641873408, total: 191503007744).
+custom torch.bfloat16 bad so far 9666 30s
+[W1106 05:28:43.701401935 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1572864000 bytes (free: 949813248, total: 191503007744).
+[W1106 05:28:44.541189051 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2063597568 bytes (free: 1943863296, total: 191503007744).
+[W1106 05:28:45.333505775 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2457862144 bytes (free: 1637679104, total: 191503007744).
+custom torch.float16 bad so far 65200 61s
+SUMMARY mode bi_noenv stress False comparisons 1460100 bad 65200 errors 0 bad cells [('bfloat16', 97, 2880, 897), ('bfloat16', 97, 2880, 898), ('bfloat16', 97, 2880, 899), ('bfloat16', 97, 2880, 900), ('bfloat16', 97, 2880, 901), ('bfloat16', 97, 2880, 902), ('bfloat16', 97, 2880, 903), ('bfloat16', 97, 2880, 904), ('bfloat16', 97, 2880, 905), ('bfloat16', 97, 2880, 906), ('bfloat16', 97, 2880, 907), ('bfloat16', 97, 2880, 908), ('bfloat16', 97, 2880, 909), ('bfloat16', 97, 2880, 910), ('bfloat16', 97, 2880, 911), ('bfloat16', 97, 2880, 912), ('bfloat16', 97, 2880, 913), ('bfloat16', 97, 2880, 914), ('bfloat16', 97, 2880, 915), ('bfloat16', 97, 2880, 916), ('bfloat16', 97, 2880, 917), ('bfloat16', 97, 2880, 918), ('bfloat16', 97, 2880, 919), ('bfloat16', 97, 2880, 920), ('bfloat16', 97, 2880, 921), ('bfloat16', 97, 2880, 922), ('bfloat16', 97, 2880, 923), ('bfloat16', 97, 2880, 924), ('bfloat16', 97, 2880, 925), ('bfloat16', 97, 2880, 926), ('bfloat16', 97, 2880, 927), ('bfloat16', 97, 2880, 928), ('bfloat16', 97, 2880, 929), ('bfloat16', 97, 2880, 930), ('bfloat16', 97, 2880, 931), ('bfloat16', 97, 2880, 932), ('bfloat16', 97, 2880, 933), ('bfloat16', 97, 2880, 934), ('bfloat16', 97, 2880, 935), ('bfloat16', 97, 2880, 936)]
+== D
+torch 2.14.0+cu130 cuda 13.0 cublasLt [('libcublasLt.so.13', 130802)] gpu NVIDIA B200 mode default stress False CUBLAS_WORKSPACE_CONFIG None
+[W1106 05:29:22.823261498 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1572864000 bytes (free: 954007552, total: 191503007744).
+[W1106 05:29:23.631543396 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2063597568 bytes (free: 1948057600, total: 191503007744).
+[W1106 05:29:24.397784924 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2457862144 bytes (free: 1641873408, total: 191503007744).
+custom torch.bfloat16 bad so far 0 31s
+[W1106 05:29:54.140267144 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1572864000 bytes (free: 947716096, total: 191503007744).
+[W1106 05:29:55.968317793 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2063597568 bytes (free: 1941766144, total: 191503007744).
+[W1106 05:29:55.751153906 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2457862144 bytes (free: 1635581952, total: 191503007744).
+custom torch.float16 bad so far 0 63s
+SUMMARY mode default stress False comparisons 1460100 bad 0 errors 0 bad cells []
+== E
+[W1106 05:30:03.496483448 Context.cpp:629] Warning: torch.backends.cuda.preferred_blas_library is an experimental feature. If you see any error or unexpected behavior when this flag is set please file an issue on GitHub. (function operator())
+torch 2.14.0+cu130 cuda 13.0 cublasLt [('libcublasLt.so.13', 130802)] gpu NVIDIA B200 mode bi_noenv stress False CUBLAS_WORKSPACE_CONFIG None
+[W1106 05:32:02.783943791 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 908066816 bytes (free: 178061312, total: 191503007744).
+[W1106 05:33:28.052240419 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2491416576 bytes (free: 394067968, total: 191503007744).
+[W1106 05:33:51.322868229 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 3114270720 bytes (free: 2317156352, total: 191503007744).
+[W1106 05:34:14.290547320 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 3630170112 bytes (free: 1958543360, total: 191503007744).
+[W1106 05:34:37.925320061 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 4078960640 bytes (free: 2560425984, total: 191503007744).
+[W1106 05:34:59.239189019 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 4477419520 bytes (free: 3732733952, total: 191503007744).
+[W1106 05:35:21.674845338 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 4848615424 bytes (free: 1295843328, total: 191503007744).
+custom torch.float32 bad so far 0 327s
+SUMMARY mode bi_noenv stress False comparisons 730050 bad 0 errors 0 bad cells []

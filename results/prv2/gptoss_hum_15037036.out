@@ -1,0 +1,25 @@
+NVIDIA H100 80GB HBM3
+== gpt-oss-20b suite: on
+PASSED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-FLASH_ATTN]
+PASSED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-TRITON_ATTN]
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[16-16-FLEX_ATTENTION]
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-FLEX_ATTENTION]
+FAILED test_batch_invariance.py::test_online_fp8_moe_logprobs_bitwise_bs1_vs_bsN
+====== 3 failed, 4 passed, 16 deselected, 9 warnings in 485.19s (0:08:05) ======
+backend       4 Using 'HUMMING' Mxfp4 MoE backend  markers 0 cublas_lines 0
+== gpt-oss-20b suite: blanket
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[16-16-TRITON_ATTN]
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-FLASH_ATTN]
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-FLEX_ATTENTION]
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-TRITON_ATTN]
+FAILED test_batch_invariance.py::test_online_fp8_moe_logprobs_bitwise_bs1_vs_bsN
+=========== 7 failed, 16 deselected, 9 warnings in 244.91s (0:04:04) ===========
+backend       3 Using 'HUMMING' Mxfp4 MoE backend  markers 7 cublas_lines 0
+== gpt-oss-20b suite: v2
+PASSED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-FLASH_ATTN]
+PASSED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-TRITON_ATTN]
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[16-16-FLEX_ATTENTION]
+FAILED test_batch_invariance.py::test_logprobs_bitwise_batch_invariance_bs1_vs_bsN[8-16-FLEX_ATTENTION]
+FAILED test_batch_invariance.py::test_online_fp8_moe_logprobs_bitwise_bs1_vs_bsN
+====== 3 failed, 4 passed, 16 deselected, 9 warnings in 307.33s (0:05:07) ======
+backend       4 Using 'HUMMING' Mxfp4 MoE backend  markers 0 cublas_lines 12

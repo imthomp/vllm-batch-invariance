@@ -1,0 +1,11 @@
+name, driver_version
+NVIDIA B200, 580.196.07
+[W1104 06:34:00.179926057 Context.cpp:629] Warning: torch.backends.cuda.preferred_blas_library is an experimental feature. If you see any error or unexpected behavior when this flag is set please file an issue on GitHub. (function operator())
+torch 2.14.0+cu130 cuda 13.0 cublasLt [('libcublasLt.so.13', 130101)] gpu NVIDIA B200 mode bi stress False CUBLAS_WORKSPACE_CONFIG :16:8
+/home/it238/projects/vllm-batch-invariance/src/bitwise2.py:98: UserWarning: bgemm_internal_cublaslt error: CUBLAS_STATUS_NOT_SUPPORTED when calling cublasLtMatmul with transpose_mat1 t transpose_mat2 n m 97 n 1 k 2880 lda 2880 ldb 2880 ldc 97 abType 14 cType 14 computeType 68 scaleType 0. Will attempt to recover by calling cublas instead. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/cuda/CUDABlas.cpp:447.)
+  alone[i] = F.linear(x[i:i + 1], w, b)
+Traceback (most recent call last):
+  File "/home/it238/projects/vllm-batch-invariance/src/bitwise2.py", line 98, in <module>
+    alone[i] = F.linear(x[i:i + 1], w, b)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction(..., allow_splitk=False) requires the cuBLASLt backend

@@ -1,0 +1,13 @@
+NVIDIA H100 80GB HBM3, 580.196.07
+1032:    targets = [_random_prompt(1024, 2048) for _ in range(4)]
+ARM base fix_present False
+        a different KV tile.
+                f"Prompt {i}: tokens differ alone vs batched: {tok1} vs {tokN}"
+E           AssertionError: Prompt 0: logprobs are not bitwise equal alone vs batched; max abs diff 2.132e-02
+test_batch_invariance.py:1063: AssertionError
+FAILED test_batch_invariance.py::test_sliding_window_logprobs_bitwise_alone_vs_mixed_batch[FLASH_ATTN]
+================== 1 failed, 4 warnings in 204.03s (0:03:24) ===================
+ARM fix fix_present True
+(EngineCore pid=42406) INFO 11-04 18:43:40 [gpu_worker.py:1013] CUDA graph pool memory: 0.01 GiB (actual), 0.03 GiB (estimated), difference: 0.02 GiB (366.7%).
+PASSED
+================== 1 passed, 4 warnings in 131.94s (0:02:11) ===================

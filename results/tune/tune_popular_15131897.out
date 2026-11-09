@@ -1,0 +1,150 @@
+name, driver_version
+NVIDIA H100 80GB HBM3, 580.196.07
+W1107 16:10:10.831000 2877887 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1107 16:10:10.832000 2877887 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1107 16:10:10.832000 2877887 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+torch 2.14.0+cu130 gpu NVIDIA H100 80GB HBM3
+FlashInfer kernels are disabled: flashinfer-cubin is not installed and nvcc (CUDA_HOME, CUDA_PATH, PATH or /usr/local/cuda) or ninja (PATH) is missing. Set CUDA_HOME to a CUDA toolkit and put ninja on PATH, or run `vllm download-kernels`.
+  256x6144 BLOCK_K=64 mean log(t/cublas)=0.690
+  256x6144 BLOCK_K=128 mean log(t/cublas)=0.422
+    M=1     tuned     20.2us  default     51.2us  cublas     11.0us
+    M=4     tuned     18.7us  default     48.5us  cublas     11.0us
+    M=8     tuned     18.6us  default     48.4us  cublas     11.0us
+    M=16    tuned     18.6us  default     48.3us  cublas     11.2us
+    M=32    tuned     18.8us  default     48.2us  cublas     11.3us
+    M=64    tuned     18.8us  default     48.4us  cublas     11.4us
+    M=256   tuned     18.8us  default     48.8us  cublas     13.6us
+    M=512   tuned     20.0us  default     49.4us  cublas     13.9us
+    M=1024  tuned     21.8us  default     51.0us  cublas     17.4us
+    M=2048  tuned     28.2us  default     56.1us  cublas     24.7us
+tuned 256x6144 in 108s
+  160x6144 BLOCK_K=64 mean log(t/cublas)=0.712
+  160x6144 BLOCK_K=128 mean log(t/cublas)=0.449
+    M=1     tuned     19.9us  default     50.0us  cublas     10.2us
+    M=4     tuned     18.4us  default     47.4us  cublas     10.4us
+    M=8     tuned     18.5us  default     47.6us  cublas     10.5us
+    M=16    tuned     18.5us  default     47.8us  cublas     10.7us
+    M=32    tuned     18.4us  default     47.8us  cublas     10.7us
+    M=64    tuned     18.5us  default     47.9us  cublas     11.0us
+    M=256   tuned     18.7us  default     47.7us  cublas     11.7us
+    M=512   tuned     19.8us  default     48.8us  cublas     14.1us
+    M=1024  tuned     21.2us  default     52.7us  cublas     17.5us
+    M=2048  tuned     30.0us  default     62.4us  cublas     27.8us
+tuned 160x6144 in 193s
+  19360x6144 BLOCK_K=64 mean log(t/cublas)=0.057
+  19360x6144 BLOCK_K=128 mean log(t/cublas)=0.086
+    M=1     tuned     99.5us  default    255.6us  cublas     97.5us
+    M=4     tuned     99.6us  default    248.6us  cublas     97.6us
+    M=8     tuned     99.6us  default    243.7us  cublas     97.7us
+    M=16    tuned     99.8us  default    235.1us  cublas     97.8us
+    M=32    tuned    101.1us  default    223.7us  cublas     98.9us
+    M=64    tuned    100.1us  default    197.8us  cublas     98.5us
+    M=256   tuned    138.0us  default    175.4us  cublas    109.8us
+    M=512   tuned    206.6us  default    263.4us  cublas    168.1us
+    M=1024  tuned    342.4us  default    508.0us  cublas    331.3us
+    M=2048  tuned    669.9us  default    967.0us  cublas    680.1us
+tuned 19360x6144 in 292s
+  38720x6144 BLOCK_K=64 mean log(t/cublas)=0.035
+  38720x6144 BLOCK_K=128 mean log(t/cublas)=0.057
+    M=1     tuned    184.0us  default    390.8us  cublas    183.6us
+    M=4     tuned    182.5us  default    382.7us  cublas    183.8us
+    M=8     tuned    183.1us  default    377.8us  cublas    183.5us
+    M=16    tuned    184.2us  default    367.6us  cublas    184.7us
+    M=32    tuned    189.4us  default    351.7us  cublas    184.1us
+    M=64    tuned    191.6us  default    311.2us  cublas    185.8us
+    M=256   tuned    233.8us  default    293.9us  cublas    207.4us
+    M=512   tuned    354.9us  default    519.1us  cublas    353.5us
+    M=1024  tuned    711.3us  default    945.8us  cublas    694.9us
+    M=2048  tuned   1460.0us  default   1904.2us  cublas   1246.8us
+tuned 38720x6144 in 406s
+  384x5120 BLOCK_K=64 mean log(t/cublas)=0.548
+  384x5120 BLOCK_K=128 mean log(t/cublas)=0.310
+    M=1     tuned     18.1us  default     44.7us  cublas     11.6us
+    M=4     tuned     16.5us  default     42.0us  cublas     11.5us
+    M=8     tuned     16.8us  default     42.0us  cublas     11.5us
+    M=16    tuned     16.8us  default     42.0us  cublas     11.7us
+    M=32    tuned     16.7us  default     41.8us  cublas     11.8us
+    M=64    tuned     16.6us  default     41.8us  cublas     12.0us
+    M=256   tuned     18.2us  default     42.5us  cublas     13.3us
+    M=512   tuned     18.4us  default     42.8us  cublas     14.6us
+    M=1024  tuned     21.1us  default     44.2us  cublas     18.3us
+    M=2048  tuned     28.2us  default     48.5us  cublas     23.0us
+tuned 384x5120 in 490s
+  32x5120 BLOCK_K=64 mean log(t/cublas)=0.643
+  32x5120 BLOCK_K=128 mean log(t/cublas)=0.397
+    M=1     tuned     17.4us  default     41.3us  cublas      9.8us
+    M=4     tuned     16.2us  default     38.9us  cublas      9.9us
+    M=8     tuned     16.4us  default     39.0us  cublas     10.0us
+    M=16    tuned     16.2us  default     38.8us  cublas     10.2us
+    M=32    tuned     16.4us  default     39.0us  cublas     10.5us
+    M=64    tuned     16.4us  default     38.9us  cublas     10.6us
+    M=256   tuned     16.6us  default     39.4us  cublas     11.3us
+    M=512   tuned     16.8us  default     40.1us  cublas     12.0us
+    M=1024  tuned     17.2us  default     42.4us  cublas     13.5us
+    M=2048  tuned     20.1us  default     51.1us  cublas     18.4us
+tuned 32x5120 in 574s
+  128x512 BLOCK_K=64 mean log(t/cublas)=0.062
+  128x512 BLOCK_K=128 mean log(t/cublas)=-0.006
+    M=1     tuned      7.0us  default      9.9us  cublas      6.7us
+    M=4     tuned      6.9us  default      9.7us  cublas      6.9us
+    M=8     tuned      6.7us  default      9.8us  cublas      6.7us
+    M=16    tuned      6.9us  default      9.8us  cublas      6.9us
+    M=32    tuned      6.7us  default      9.8us  cublas      6.9us
+    M=64    tuned      6.9us  default      9.8us  cublas      7.0us
+    M=256   tuned      6.9us  default     10.2us  cublas      7.1us
+    M=512   tuned      7.2us  default     10.3us  cublas      7.3us
+    M=1024  tuned      7.6us  default     10.4us  cublas      7.5us
+    M=2048  tuned      8.1us  default     10.8us  cublas      8.3us
+tuned 128x512 in 661s
+  1024x5120 BLOCK_K=64 mean log(t/cublas)=0.436
+  1024x5120 BLOCK_K=128 mean log(t/cublas)=0.209
+    M=1     tuned     18.8us  default     48.2us  cublas     13.2us
+    M=4     tuned     17.4us  default     46.1us  cublas     13.3us
+    M=8     tuned     17.4us  default     46.0us  cublas     13.3us
+    M=16    tuned     17.3us  default     45.3us  cublas     13.4us
+    M=32    tuned     17.3us  default     44.5us  cublas     13.6us
+    M=64    tuned     17.5us  default     43.8us  cublas     14.3us
+    M=256   tuned     18.7us  default     44.4us  cublas     16.7us
+    M=512   tuned     21.2us  default     45.2us  cublas     19.1us
+    M=1024  tuned     27.6us  default     47.5us  cublas     25.1us
+    M=2048  tuned     42.6us  default     51.4us  cublas     35.3us
+tuned 1024x5120 in 745s
+  16160x5120 BLOCK_K=64 mean log(t/cublas)=0.010
+  16160x5120 BLOCK_K=128 mean log(t/cublas)=0.062
+    M=1     tuned     71.6us  default    179.7us  cublas     75.2us
+    M=4     tuned     71.2us  default    174.4us  cublas     75.1us
+    M=8     tuned     71.2us  default    172.4us  cublas     75.0us
+    M=16    tuned     71.2us  default    168.4us  cublas     74.1us
+    M=32    tuned     72.0us  default    158.7us  cublas     74.8us
+    M=64    tuned     72.3us  default    132.6us  cublas     74.6us
+    M=256   tuned     81.9us  default    109.4us  cublas     77.8us
+    M=512   tuned    127.0us  default    181.5us  cublas    118.3us
+    M=1024  tuned    258.0us  default    344.9us  cublas    219.9us
+    M=2048  tuned    490.4us  default    690.4us  cublas    452.4us
+tuned 16160x5120 in 841s
+  32320x5120 BLOCK_K=64 mean log(t/cublas)=-0.015
+  32320x5120 BLOCK_K=128 mean log(t/cublas)=0.044
+    M=1     tuned    126.2us  default    294.4us  cublas    131.9us
+    M=4     tuned    126.1us  default    288.2us  cublas    131.8us
+    M=8     tuned    126.3us  default    284.8us  cublas    132.0us
+    M=16    tuned    126.7us  default    277.2us  cublas    132.8us
+    M=32    tuned    128.3us  default    258.7us  cublas    132.4us
+    M=64    tuned    129.1us  default    221.1us  cublas    134.7us
+    M=256   tuned    146.8us  default    203.3us  cublas    144.0us
+    M=512   tuned    250.7us  default    356.9us  cublas    239.5us
+    M=1024  tuned    490.9us  default    676.0us  cublas    465.6us
+    M=2048  tuned    966.2us  default   1326.6us  cublas    977.7us
+tuned 32320x5120 in 945s
+  check 256x6144: 0/29202 rows differ
+  check 160x6144: 0/29202 rows differ
+  check 19360x6144: 0/29202 rows differ
+[W1107 16:26:07.107367268 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 570425344 bytes (free: 300023808, total: 85017493504).
+  check 38720x6144: 0/29202 rows differ
+  check 384x5120: 0/29202 rows differ
+  check 32x5120: 0/29202 rows differ
+  check 128x512: 0/29202 rows differ
+  check 1024x5120: 0/29202 rows differ
+  check 16160x5120: 0/29202 rows differ
+[W1107 16:26:17.882606945 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 490733568 bytes (free: 421658624, total: 85017493504).
+  check 32320x5120: 0/29202 rows differ
+CHECK total bad 0
