@@ -125,6 +125,8 @@ cuBLAS batch-invariance mode (SM100) & not measured & documented & needs vLLM fl
 \end{table}
 For practitioners who need reproducible outputs today (Table~\ref{tab:rec}): use vLLM's batch-invariant mode, check whether the model's Linear shapes are in the tuned table for the GPU, and if not, tune them; the tuning script and the resulting entries are in our repository. Do not route to cuBLAS on Hopper. On Blackwell, cuBLAS's batch-invariance mode is the promising route once vLLM ships a cuBLAS release that includes it, provided vLLM does not also apply its PyTorch reduced-precision setting when the mode is on; its throughput cost is still to be measured.
 
+For maintainers of batch-invariant serving, three lessons from this study: test invariance per shape, including narrow layers such as routers and indexers, since wide projections passing says little about them; treat any invariance property of a vendor library as an assumption to be re-checked on each GPU generation and library release unless the vendor documents it; and when a library offers its own invariance mode, check how it interacts with the framework's other numerical settings, which can silently undo it.
+
 \section{Limitations}
 We tested one engine, single-node tensor parallelism up to four GPUs, dense models up to 32B parameters, and bf16; we did not test multi-node serving, quantized models, or production traffic. The tuning result covers one model at tensor parallelism one, and its decode measurements are single jobs. cuBLAS behavior was measured on the library versions listed and may change. We compare only against vLLM's own batch-invariant mode, not against other engines' deterministic modes or LLM-42 \citep{gond2026llm42}.
 
