@@ -144,3 +144,4 @@ Also queued: two more repeats of the tuning pilot's decode measurement (off, sto
 
 ## PR #65931, end to end from the branch's code (fixed 2026-11-10, before running)
 The earlier gpt-oss runs added the entries with an import hook on a nightly. To remove that caveat: "main" is vLLM's CI wheel at the PR's merge-base (0.33.0rc1.dev850+g2d9d3093e, cu130); "this PR" is the same wheel's `vllm` package with the PR's diff applied by `git diff <merge-base> pr65931-narrow -- vllm/` (the diff touches one Python file). Same serving benchmark as before (gpt-oss-20b and gpt-oss-120b, three alternating rounds, decode- and prefill-heavy), plus the unit tests from the narrowed branch on H100. Reported as raw logs; no threshold.
+- Addition 2026-11-10 (before running): the same branch-build comparison is also run on H200 (`m13h`, same `hopper` table), gpt-oss-20b and gpt-oss-120b, reported as additional raw logs; the H100 runs remain the primary comparison.
