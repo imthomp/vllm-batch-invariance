@@ -1,0 +1,4 @@
+platform linux -- Python 3.12.11, pytest-9.2.0, pluggy-1.7.0 -- /nobackup/autodelete/usr/it238/research_lab/third_party/vllm_base65931/bin/python
+rootdir: /nobackup/autodelete/usr/it238/research_lab/third_party/vllm_pr65931_narrow/tests/v1/determinism
+======================= 5 passed, 37 deselected in 6.32s =======================
+vllm 0.33.0rc1.dev850+g2d9d3093e
