@@ -21,6 +21,7 @@ assert used <= defined, f"undefined macros: {sorted(used - defined)}"
 body = re.sub(r"(?<!\\)%.*", "", tex)
 body = re.sub(r"\\(cite[pt]?|label|ref|url|input|texttt|bibliography\w*|usepackage|documentclass)\{[^}]*\}", "", body)
 body = re.sub(r"\[[^\]]*\]\{geometry\}|\[[^\]]*\]\{article\}", "", body)
+body = re.sub(r"\\includegraphics\[[^\]]*\]\{[^}]*\}", "", body)  # figure layout, not data
 nums = set(re.findall(r"(?<![\w.\-])\d+(?:\.\d+)*", body))
 # Reviewed structural numbers: hardware and software versions, model sizes, protocol design constants.
 ALLOWED = {"8", "7", "4", "1", "32", "8192", "20", "5", "2880", "1024", "13.4", "10", "4096", "0.33.0", "2.14", "13.0", "80", "90", "100", "2", "3",
