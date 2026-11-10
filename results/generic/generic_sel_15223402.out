@@ -1,0 +1,89 @@
+name, driver_version
+NVIDIA H100 80GB HBM3, 580.196.07
+W1110 12:57:56.851000 1250910 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1110 12:57:56.852000 1250910 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1110 12:57:56.852000 1250910 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+torch 2.14.0+cu130 gpu NVIDIA H100 80GB HBM3
+FlashInfer kernels are disabled: flashinfer-cubin is not installed and nvcc (CUDA_HOME, CUDA_PATH, PATH or /usr/local/cuda) or ninja (PATH) is missing. Set CUDA_HOME to a CUDA toolkit and put ninja on PATH, or run `vllm download-kernels`.
+grid 12288x2048 done, 80s
+grid 2048x6144 done, 134s
+grid 4096x2048 done, 187s
+grid 151936x2048 done, 275s
+grid 2048x2048 done, 328s
+grid 24576x4096 done, 392s
+grid 4096x12288 done, 450s
+grid 6144x4096 done, 505s
+grid 4096x4096 done, 559s
+grid 151936x4096 done, 687s
+grid 28672x4096 done, 752s
+grid 4096x14336 done, 811s
+grid 128256x4096 done, 927s
+grid 5120x2880 done, 981s
+grid 2880x4096 done, 1034s
+grid 201088x2880 done, 1158s
+grid 32x2880 done, 1211s
+grid 128x2880 done, 1263s
+grid 256x6144 done, 1315s
+grid 160x6144 done, 1367s
+grid 19360x6144 done, 1433s
+grid 38720x6144 done, 1513s
+grid 384x5120 done, 1566s
+grid 32x5120 done, 1618s
+grid 128x512 done, 1671s
+grid 1024x5120 done, 1724s
+grid 16160x5120 done, 1785s
+grid 32320x5120 done, 1856s
+  BLOCK_K=64 M<=1     (16, 64, 4, 5)  geomean speedup over default 1.38x
+  BLOCK_K=64 M<=4     (16, 64, 4, 5)  geomean speedup over default 1.35x
+  BLOCK_K=64 M<=8     (16, 64, 4, 5)  geomean speedup over default 1.35x
+  BLOCK_K=64 M<=16    (16, 64, 4, 5)  geomean speedup over default 1.34x
+  BLOCK_K=64 M<=32    (32, 64, 8, 5)  geomean speedup over default 1.22x
+  BLOCK_K=64 M<=64    (64, 64, 4, 5)  geomean speedup over default 1.23x
+  BLOCK_K=64 M<=256   (128, 128, 4, 5)  geomean speedup over default 1.09x
+  BLOCK_K=64 M<=512   (128, 128, 4, 5)  geomean speedup over default 1.14x
+  BLOCK_K=64 M<=1024  (128, 128, 4, 4)  geomean speedup over default 1.15x
+  BLOCK_K=64 M<=2048  (128, 128, 4, 5)  geomean speedup over default 1.12x
+BLOCK_K=64: overall geomean speedup 1.233x
+  BLOCK_K=128 M<=1     (16, 64, 4, 5)  geomean speedup over default 1.58x
+  BLOCK_K=128 M<=4     (16, 64, 4, 5)  geomean speedup over default 1.53x
+  BLOCK_K=128 M<=8     (16, 32, 4, 5)  geomean speedup over default 1.55x
+  BLOCK_K=128 M<=16    (16, 32, 4, 5)  geomean speedup over default 1.55x
+  BLOCK_K=128 M<=32    (32, 32, 4, 5)  geomean speedup over default 1.43x
+  BLOCK_K=128 M<=64    (64, 32, 4, 5)  geomean speedup over default 1.42x
+  BLOCK_K=128 M<=256   (64, 128, 4, 4)  geomean speedup over default 1.24x
+  BLOCK_K=128 M<=512   (64, 128, 4, 4)  geomean speedup over default 1.20x
+  BLOCK_K=128 M<=1024  (128, 128, 4, 3)  geomean speedup over default 1.12x
+  BLOCK_K=128 M<=2048  (128, 128, 4, 3)  geomean speedup over default 1.10x
+BLOCK_K=128: overall geomean speedup 1.359x
+SELECTED {'block_k': 128, 'm_buckets': [[1, 16, 64, 4, 5], [4, 16, 64, 4, 5], [8, 16, 32, 4, 5], [16, 16, 32, 4, 5], [32, 32, 32, 4, 5], [64, 64, 32, 4, 5], [256, 64, 128, 4, 4], [512, 64, 128, 4, 4], [1024, 128, 128, 4, 3], [2048, 128, 128, 4, 3]]}
+  test 4608x3584: 0/29202 rows differ; speedup over default M1:2.70x M4:2.70x M8:2.14x M16:2.14x M32:1.87x M64:1.66x M256:1.09x M512:1.40x M1024:1.17x M2048:1.16x
+  test 3584x3584: 0/29202 rows differ; speedup over default M1:2.90x M4:2.82x M8:2.88x M16:2.86x M32:2.61x M64:2.22x M256:1.54x M512:1.13x M1024:1.21x M2048:1.16x
+[W1110 13:29:00.816591609 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 478150656 bytes (free: 119668736, total: 85017493504).
+  test 37888x3584: 0/29202 rows differ; speedup over default M1:2.74x M4:2.73x M8:2.56x M16:2.58x M32:2.31x M64:1.92x M256:1.23x M512:1.13x M1024:1.10x M2048:1.09x
+  test 3584x18944: 0/29202 rows differ; speedup over default M1:3.23x M4:3.17x M8:3.24x M16:3.28x M32:3.03x M64:2.70x M256:1.85x M512:1.06x M1024:1.19x M2048:1.17x
+[W1110 13:29:09.695254240 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1218445312 bytes (free: 308412416, total: 85017493504).
+[W1110 13:29:10.490568711 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1503657984 bytes (free: 52559872, total: 85017493504).
+[W1110 13:29:11.240081651 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1742733312 bytes (free: 316801024, total: 85017493504).
+[W1110 13:29:11.972165809 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1952448512 bytes (free: 42074112, total: 85017493504).
+[W1110 13:29:12.669273604 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2136997888 bytes (free: 1438777344, total: 85017493504).
+[W1110 13:29:13.354920880 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2306867200 bytes (free: 1054998528, total: 85017493504).
+[W1110 13:29:13.028518158 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2464153600 bytes (free: 2218917888, total: 85017493504).
+  test 152064x3584: 0/29202 rows differ; speedup over default M1:2.43x M4:2.38x M8:2.18x M16:2.13x M32:1.88x M64:1.50x M256:1.20x M512:1.11x M1024:1.05x M2048:1.04x
+  test 8192x3584: 0/29202 rows differ; speedup over default M1:2.67x M4:2.61x M8:2.37x M16:2.33x M32:2.10x M64:1.81x M256:1.15x M512:1.15x M1024:1.18x M2048:1.18x
+  test 3584x4096: 0/29202 rows differ; speedup over default M1:2.94x M4:2.86x M8:2.98x M16:2.97x M32:2.63x M64:2.26x M256:1.59x M512:1.15x M1024:1.21x M2048:1.16x
+  test 28672x3584: 0/29202 rows differ; speedup over default M1:2.68x M4:2.67x M8:2.49x M16:2.54x M32:2.30x M64:1.88x M256:1.24x M512:1.13x M1024:1.16x M2048:1.07x
+  test 3584x14336: 0/29202 rows differ; speedup over default M1:3.13x M4:3.01x M8:3.11x M16:3.11x M32:2.86x M64:2.52x M256:1.82x M512:1.05x M1024:1.17x M2048:1.16x
+[W1110 13:29:31.940909676 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1786773504 bytes (free: 1000472576, total: 85017493504).
+[W1110 13:29:32.946063009 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2195718144 bytes (free: 1377959936, total: 85017493504).
+[W1110 13:29:33.654824799 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2457862144 bytes (free: 1440874496, total: 85017493504).
+[W1110 13:29:34.390587016 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2696937472 bytes (free: 763494400, total: 85017493504).
+[W1110 13:29:34.065996869 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2908749824 bytes (free: 2256666624, total: 85017493504).
+[W1110 13:29:35.724724275 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 3105882112 bytes (free: 2608988160, total: 85017493504).
+[W1110 13:29:36.377589032 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 3294625792 bytes (free: 872546304, total: 85017493504).
+[W1110 13:29:36.007179500 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 3466592256 bytes (free: 3187802112, total: 85017493504).
+[W1110 13:29:37.628380774 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 3630170112 bytes (free: 2934046720, total: 85017493504).
+[W1110 13:29:38.250500060 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 3785359360 bytes (free: 3185704960, total: 85017493504).
+[W1110 13:29:38.850716315 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 3932160000 bytes (free: 3913416704, total: 85017493504).
+[W1110 13:29:39.495712866 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 4081057792 bytes (free: 1025638400, total: 85017493504).
+  test 256000x3584: 0/29202 rows differ; speedup over default M1:2.39x M4:2.35x M8:2.15x M16:2.06x M32:1.82x M64:1.45x M256:1.17x M512:1.08x M1024:1.02x M2048:1.07x
+CHECK total bad 0
