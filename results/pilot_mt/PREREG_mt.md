@@ -1,0 +1,6 @@
+## MT pilot: does serving state change MT evaluation conclusions? (candidate ACL/COLM paper)
+Systems: Qwen2.5-7B-Instruct, Llama-3.1-8B-Instruct, Mistral-7B-Instruct-v0.3, Gemma-2-9B-it. Data: WMT23 en-de (all 557 segments) and zh-en (first 400 segments), references refA. Greedy decoding, vLLM main nightly, batch-invariant mode off, prefix caching on (default). Five serving runs per system that change only serving state: original order as one batch; shuffled as one batch; shuffled in chunks of 64; of 16; of 4.
+Measures: share of segments whose output differs between runs; per-system range across runs of chrF (sacrebleu) and COMET (wmt22-comet-da); for each of 6 system pairs x 2 directions x 2 metrics (24 comparisons): whether the sign of the difference changes across runs, and whether the paired-bootstrap decision (1,000 resamples, p < 0.05) changes across runs.
+GO for a full study if any of the 24 comparisons changes sign or significance decision across runs, or any system's COMET range across runs is at least 0.5 points. NO-GO otherwise: serving noise is then reported as a short section, not a paper.
+
+Both pilots are descriptive scoping studies. Their only purpose is a go/no-go on a larger study. Nothing here is a paper claim.

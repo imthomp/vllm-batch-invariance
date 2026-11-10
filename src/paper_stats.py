@@ -154,6 +154,27 @@ P["paper.p1d_b200_differ_from_h100"] = sum(b2[k] != h1[k] for k in b2)
 P["paper.p1d_b200_fail_min_n"], P["paper.p1d_b200_fail_max_n"] = min(b2_fail_n), max(b2_fail_n)
 P["paper.p1d_b200_router_pass"] = not b2[(32, 2880)]
 
+# MT pilot (results/pilot_mt/mt_summary.json, from src/mt_analyze.py; rule in results/pilot_mt/PREREG_mt.md).
+_mt = json.loads((STATS.parent / "pilot_mt" / "mt_summary.json").read_text())
+_ch = [v["mean"] for v in _mt["change"].values()]
+P["paper.mt_systems"] = len(_mt["systems"])
+P["paper.mt_runs"] = len(_mt["runs"])
+P["paper.mt_change_min"], P["paper.mt_change_max"] = min(_ch), max(_ch)
+P["paper.mt_comparisons"] = len(_mt["comparisons"])
+P["paper.mt_flips"] = sum(c["sign_flip"] or c["sig_flip"] for c in _mt["comparisons"])
+P["paper.mt_comet_range_max"] = max(v["range"] for k, v in _mt["range"].items() if k.startswith("comet|"))
+P["paper.mt_go"] = _mt["go"]
+
+# Popular-model tuning (results/tune: GLM-5.3, DeepSeek-V4.1, gpt-oss-20b/120b shapes; PR #65931).
+_pe, _pb, _pr = [], 0, 0
+for _f in ("tuned_popular.json", "tuned_gptoss20b.json", "tuned_gptoss120b_router.json"):
+    _t = json.loads((STATS.parent / "tune" / _f).read_text())
+    _pe += _t["entries"]; _pb += sum(v["bad"] for v in _t["check"].values()); _pr += sum(v["rows"] for v in _t["check"].values())
+_sp = [e["ms"][m]["default"] / e["ms"][m]["tuned"] for e in _pe for m in e["ms"]]
+P["paper.pop_shapes"], P["paper.pop_bad"], P["paper.pop_rows"] = len(_pe), _pb, _pr
+P["paper.pop_speed_min"], P["paper.pop_speed_max"] = min(_sp), max(_sp)
+assert _pb == 0 and min(_sp) > 1
+
 merge(P)
 print(len(P), "paper stats")
 for k, v in sorted(P.items()):
