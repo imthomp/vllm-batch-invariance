@@ -1,0 +1,217 @@
+W1110 13:31:32.395000 1271923 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1110 13:31:32.396000 1271923 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1110 13:31:32.397000 1271923 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+VLLM_BATCH_INVARIANT 1 model /nobackup/autodelete/usr/it238/glm53/weights
+(MainProcess pid=1271923) INFO 11-10 13:32:22 [startup.py:96] non-default args: {'trust_remote_code': True, 'load_format': 'dummy', 'max_model_len': 2048, 'gpu_memory_utilization': 0.85, 'disable_log_stats': True, 'hf_overrides': <function shrink at 0x7f47d5b00180>, 'model': '/nobackup/autodelete/usr/it238/glm53/weights'}
+shrunk per-layer list mlp_layer_types
+shrunk per-layer list layer_types
+shrunk per-layer list indexer_types
+(MainProcess pid=1271923) INFO 11-10 13:32:23 [model.py:756] Resolved architecture: GlmMoeDsaForCausalLM
+(MainProcess pid=1271923) INFO 11-10 13:32:23 [model.py:2194] Using max model len 2048
+(MainProcess pid=1271923) WARNING 11-10 13:32:23 [flashinfer.py:107] FlashInfer kernels are disabled: flashinfer-cubin is not installed and nvcc (CUDA_HOME, CUDA_PATH, PATH or /usr/local/cuda) or ninja (PATH) is missing. Set CUDA_HOME to a CUDA toolkit and put ninja on PATH, or run `vllm download-kernels`.
+(MainProcess pid=1271923) INFO 11-10 13:32:28 [scheduler.py:310] Chunked prefill is enabled with max_num_batched_tokens=16384.
+(MainProcess pid=1271923) INFO 11-10 13:32:28 [vllm.py:833] Auto-enabling VLLM_USE_BREAKABLE_CUDAGRAPH=1. Set VLLM_USE_BREAKABLE_CUDAGRAPH=0 to opt out.
+(MainProcess pid=1271923) INFO 11-10 13:32:28 [kernel.py:510] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'], gelu_and_mul_sparse=['triton', 'native'])
+(MainProcess pid=1271923) INFO 11-10 13:32:28 [compilation.py:317] Enabled custom fusions: norm_quant, act_quant
+[transformers] The following generation flags are not valid and may be ignored: ['top_p']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+(MainProcess pid=1271923) INFO 11-10 13:32:31 [numa_utils.py:575] Automatic NUMA binding unavailable on this host; starting unbound. Enable debug logging for the skip reason.
+(EngineCore pid=1272212) INFO 11-10 13:32:31 [core.py:149] Initializing a V1 LLM engine (v0.33.0rc1.dev454+gb8c04dd3b) with config: model='/nobackup/autodelete/usr/it238/glm53/weights', speculative_config=None, tokenizer='/nobackup/autodelete/usr/it238/glm53/weights', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=2048, download_dir=None, load_format=dummy, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=a2a, disable_custom_all_reduce=False, quantization=fp8, quantization_config=None, enforce_eager=False, aux_output_config=AuxOutputConfig(enable_return_routed_experts=False, max_bytes=None), kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, per_request_spec_decode_metrics='none', kv_cache_metrics=False, kv_cache_metrics_sample=0.01, custom_histogram_buckets=None, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=0, served_model_name=/nobackup/autodelete/usr/it238/glm53/weights, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.NONE: 0>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['+quant_fp8', 'all', '+quant_fp8'], 'ir_enable_torch_wrap': False, 'splitting_ops': [], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'cudagraph_decoder_replay': True, 'decoder_replay_cudagraph_capture_sizes': [], 'decoder_replay_trim_threshold': 768, 'compile_sizes': [], 'compile_ranges_endpoints': [16384], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160, 168, 176, 184, 192, 200, 208, 216, 224, 232, 240, 248, 256, 272, 288, 304, 320, 336, 352, 368, 384, 400, 416, 432, 448, 464, 480, 496, 512], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': True, 'fuse_act_quant': True, 'fuse_attn_quant': False, 'fuse_allreduce_rms': False, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 512, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'], gelu_and_mul_sparse=['triton', 'native']), enable_flashinfer_autotune=True, enable_rocm_segmented_attn_autotune=False, enable_cutedsl_warmup=True, enable_jit_warmup=True, monokernel=False, moe_backend='auto', sparse_indexer_topk_backend='auto', linear_backend='auto', linear_backend_per_quant=None, rdna_hybrid_w4a16_prefill_dequant='disable')
+[W1110 13:32:32.016351789 Context.cpp:629] Warning: torch.backends.cuda.preferred_blas_library is an experimental feature. If you see any error or unexpected behavior when this flag is set please file an issue on GitHub. (function operator())
+(EngineCore pid=1272212) INFO 11-10 13:32:32 [parallel_state.py:1935] world_size=1 rank=0 local_rank=0 distributed_init_method=file:///tmp/vllm_dist_6939e074656048048aa96d1a4ce84af1 backend=nccl
+(EngineCore pid=1272212) INFO 11-10 13:32:33 [parallel_state.py:2391] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, ETP rank 0, EP rank 0, EPLB rank N/A
+(EngineCore pid=1272212) INFO 11-10 13:32:33 [gpu_worker.py:520] Using V2 Model Runner
+(EngineCore pid=1272212) INFO 11-10 13:32:38 [model_runner.py:399] Loading model from scratch...
+(EngineCore pid=1272212) WARNING 11-10 13:32:38 [deep_gemm.py:145] DeepGEMM kernels are disabled: DeepGEMM JIT-compiles its kernels with nvcc, which is missing (CUDA_HOME, CUDA_PATH, PATH or /usr/local/cuda). Set CUDA_HOME to a CUDA toolkit to enable them.
+(EngineCore pid=1272212) INFO 11-10 13:32:38 [__init__.py:778] Selected CutlassFp8BlockScaledMMKernel for Fp8LinearMethod
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647] EngineCore failed to start.
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647] Traceback (most recent call last):
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 1618, in run_engine_core
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     engine_core = EngineCoreProc(*args, engine_index=dp_rank, **kwargs)
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     return func(*args, **kwargs)
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]            ^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 1289, in __init__
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     super().__init__(
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 160, in __init__
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     self.model_executor = executor_class(vllm_config)
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     return func(*args, **kwargs)
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]            ^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/executor/abstract.py", line 120, in __init__
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     self._init_executor()
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/executor/uniproc_executor.py", line 74, in _init_executor
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     self.driver_worker.load_model()
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/worker/gpu_worker.py", line 615, in load_model
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     self.model_runner.load_model(load_dummy_weights=load_dummy_weights)
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/worker/gpu/model_runner.py", line 403, in load_model
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     self.model = model or model_loader.load_model(
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]                           ^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     return func(*args, **kwargs)
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]            ^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/model_executor/model_loader/base_loader.py", line 89, in load_model
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     model = self.create_model(
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]             ^^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/model_executor/model_loader/base_loader.py", line 54, in create_model
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     model = initialize_model(
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]             ^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     return func(*args, **kwargs)
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]            ^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/model_executor/model_loader/utils.py", line 102, in initialize_model
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     model = model_class(vllm_config=vllm_config, prefix=prefix)
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/models/deepseek_v32/nvidia/model.py", line 451, in __init__
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     super().__init__(vllm_config=vllm_config, prefix=prefix)
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/model_executor/models/deepseek_v2.py", line 1914, in __init__
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     self.model = self.model_cls(
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]                  ^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/models/deepseek_v32/nvidia/model.py", line 218, in __init__
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     self.start_layer, self.end_layer, self.layers = make_layers(
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]                                                     ^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/model_executor/models/utils.py", line 1003, in make_layers
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     + get_offloader().wrap_modules(
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/model_executor/offloader/base.py", line 120, in wrap_modules
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     return list(modules_generator)
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]            ^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/model_executor/models/utils.py", line 1004, in <genexpr>
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     layer_fn(prefix=f"{prefix}.{idx}") for idx in range(start_layer, end_layer)
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/models/deepseek_v32/nvidia/model.py", line 220, in <lambda>
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     lambda prefix: DeepseekV32DecoderLayer(
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]                    ^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/models/deepseek_v32/nvidia/model.py", line 85, in __init__
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     self.self_attn = DeepseekV32Attention(
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]                      ^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/models/deepseek_v32/attention.py", line 195, in __init__
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     super().__init__(
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/model_executor/layers/attention/mla_attention.py", line 514, in __init__
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     self.attn_backend = get_attn_backend(
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]                         ^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/attention/selector.py", line 196, in get_attn_backend
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     return _cached_get_attn_backend(
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/attention/selector.py", line 218, in _cached_get_attn_backend
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     attention_cls = current_platform.get_attn_backend_cls(
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]   File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/platforms/cuda.py", line 476, in get_attn_backend_cls
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647]     raise ValueError(
+(EngineCore pid=1272212) ERROR 11-10 13:32:39 [core.py:1647] ValueError: No valid attention backend found for cuda with AttentionSelectorConfig(head_size=576, dtype=torch.bfloat16, kv_cache_dtype=auto, block_size=None, use_mla=True, has_sink=False, use_sparse=True, use_mm_prefix=False, use_per_head_quant_scales=False, attn_type=AttentionType.DECODER, has_sliding_window=False, use_non_causal=False, use_batch_invariant=True, use_kv_connector=False, use_adaptive_verification=False, use_pcp=False, use_dcp=False, use_rswa=False). Reasons: {FLASH_ATTN_MLA: [sparse not supported], FLASHMLA: [sparse not supported, batch invariance not supported], FLASHINFER_MLA: [sparse not supported, compute capability not supported, batch invariance not supported], TRITON_MLA: [sparse not supported], FLASH_ATTN_MLA_SPARSE: [batch invariance not supported], FLASHMLA_SPARSE: [batch invariance not supported], FLASHINFER_MLA_SPARSE_SM90: [batch invariance not supported, FLASHINFER_MLA_SPARSE_SM90 requires FlashInfer with SM90 MLA support (ckv_scale_arr in BatchMLAPagedAttentionWrapper.run, FlashInfer >= 0.6.18)]}.
+Process EngineCore:
+Traceback (most recent call last):
+  File "/home/it238/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/home/it238/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 1651, in run_engine_core
+    raise e
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 1618, in run_engine_core
+    engine_core = EngineCoreProc(*args, engine_index=dp_rank, **kwargs)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 1289, in __init__
+    super().__init__(
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/engine/core.py", line 160, in __init__
+    self.model_executor = executor_class(vllm_config)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/executor/abstract.py", line 120, in __init__
+    self._init_executor()
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/executor/uniproc_executor.py", line 74, in _init_executor
+    self.driver_worker.load_model()
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/worker/gpu_worker.py", line 615, in load_model
+    self.model_runner.load_model(load_dummy_weights=load_dummy_weights)
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/worker/gpu/model_runner.py", line 403, in load_model
+    self.model = model or model_loader.load_model(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/model_executor/model_loader/base_loader.py", line 89, in load_model
+    model = self.create_model(
+            ^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/model_executor/model_loader/base_loader.py", line 54, in create_model
+    model = initialize_model(
+            ^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/model_executor/model_loader/utils.py", line 102, in initialize_model
+    model = model_class(vllm_config=vllm_config, prefix=prefix)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/models/deepseek_v32/nvidia/model.py", line 451, in __init__
+    super().__init__(vllm_config=vllm_config, prefix=prefix)
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/model_executor/models/deepseek_v2.py", line 1914, in __init__
+    self.model = self.model_cls(
+                 ^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/models/deepseek_v32/nvidia/model.py", line 218, in __init__
+    self.start_layer, self.end_layer, self.layers = make_layers(
+                                                    ^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/model_executor/models/utils.py", line 1003, in make_layers
+    + get_offloader().wrap_modules(
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/model_executor/offloader/base.py", line 120, in wrap_modules
+    return list(modules_generator)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/model_executor/models/utils.py", line 1004, in <genexpr>
+    layer_fn(prefix=f"{prefix}.{idx}") for idx in range(start_layer, end_layer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/models/deepseek_v32/nvidia/model.py", line 220, in <lambda>
+    lambda prefix: DeepseekV32DecoderLayer(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/models/deepseek_v32/nvidia/model.py", line 85, in __init__
+    self.self_attn = DeepseekV32Attention(
+                     ^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/models/deepseek_v32/attention.py", line 195, in __init__
+    super().__init__(
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/model_executor/layers/attention/mla_attention.py", line 514, in __init__
+    self.attn_backend = get_attn_backend(
+                        ^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/attention/selector.py", line 196, in get_attn_backend
+    return _cached_get_attn_backend(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/attention/selector.py", line 218, in _cached_get_attn_backend
+    attention_cls = current_platform.get_attn_backend_cls(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/platforms/cuda.py", line 476, in get_attn_backend_cls
+    raise ValueError(
+ValueError: No valid attention backend found for cuda with AttentionSelectorConfig(head_size=576, dtype=torch.bfloat16, kv_cache_dtype=auto, block_size=None, use_mla=True, has_sink=False, use_sparse=True, use_mm_prefix=False, use_per_head_quant_scales=False, attn_type=AttentionType.DECODER, has_sliding_window=False, use_non_causal=False, use_batch_invariant=True, use_kv_connector=False, use_adaptive_verification=False, use_pcp=False, use_dcp=False, use_rswa=False). Reasons: {FLASH_ATTN_MLA: [sparse not supported], FLASHMLA: [sparse not supported, batch invariance not supported], FLASHINFER_MLA: [sparse not supported, compute capability not supported, batch invariance not supported], TRITON_MLA: [sparse not supported], FLASH_ATTN_MLA_SPARSE: [batch invariance not supported], FLASHMLA_SPARSE: [batch invariance not supported], FLASHINFER_MLA_SPARSE_SM90: [batch invariance not supported, FLASHINFER_MLA_SPARSE_SM90 requires FlashInfer with SM90 MLA support (ckv_scale_arr in BatchMLAPagedAttentionWrapper.run, FlashInfer >= 0.6.18)]}.
+(MainProcess pid=1271923) INFO 11-10 13:32:39 [utils.py:628] [shutdown] Process manager: send sigterm to process EngineCore
+Traceback (most recent call last):
+  File "/home/it238/projects/vllm-batch-invariance/src/bi_smoke.py", line 30, in <module>
+    llm = LLM(a.model, load_format="dummy", hf_overrides=shrink, tensor_parallel_size=a.tp, max_model_len=2048,
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/entrypoints/llm.py", line 341, in __init__
+    self.llm_engine = LLMEngine.from_engine_args(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/engine/llm_engine.py", line 191, in from_engine_args
+    return cls(
+           ^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/engine/llm_engine.py", line 116, in __init__
+    self.engine_core = EngineCoreClient.make_client(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/engine/core_client.py", line 130, in make_client
+    return SyncMPClient(
+           ^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/engine/core_client.py", line 978, in __init__
+    super().__init__(
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/engine/core_client.py", line 711, in __init__
+    with launch_core_engines(
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/it238/.local/share/uv/python/cpython-3.12.11-linux-x86_64-gnu/lib/python3.12/contextlib.py", line 144, in __exit__
+    next(self.gen)
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/engine/utils.py", line 1393, in launch_core_engines
+    wait_for_engine_startup(
+  File "/nobackup/autodelete/usr/it238/research_lab/third_party/vllm_main/lib/python3.12/site-packages/vllm/v1/engine/utils.py", line 1473, in wait_for_engine_startup
+    raise RuntimeError(
+RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}
