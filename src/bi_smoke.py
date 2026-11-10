@@ -16,7 +16,13 @@ a = ap.parse_args()
 def shrink(cfg):
     for c in (cfg, getattr(cfg, "text_config", None)):
         if c is not None and hasattr(c, "num_hidden_layers"):
+            n = c.num_hidden_layers
             c.num_hidden_layers = a.layers
+            # per-layer lists (e.g. GLM-5.3's indexer_types) must shrink with the layer count
+            for k, v in list(vars(c).items()):
+                if isinstance(v, (list, tuple)) and len(v) == n:
+                    setattr(c, k, type(v)(v[: a.layers]))
+                    print("shrunk per-layer list", k, flush=True)
     return cfg
 
 

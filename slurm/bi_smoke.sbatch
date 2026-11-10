@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=128G
+#SBATCH --mem=400G
 #SBATCH --time=1:00:00
 # Batch-invariant-mode compatibility check (src/bi_smoke.py) for large models before booking a full node.
 # Usage: sbatch --export=ALL,PY=...,MODELS="<path>:<path>",LIBPATH=... slurm/bi_smoke.sbatch
@@ -12,5 +12,7 @@ nvidia-smi --query-gpu=name --format=csv,noheader
 IFS=: read -ra MS <<< "$MODELS"
 for m in "${MS[@]}"; do
   echo "== $m"
-  timeout 1500 "$PY" "$S/bi_smoke.py" "$m" 2>&1 | grep -E "SMOKE OK|MoE backend|Error|error:|not support|Traceback|batch.invariant|BATCH_INVARIANT" | grep -v "^\s*$" | tail -15
+  L="${LOGDIR:-.}/smoke_$(basename "$m").log"
+  timeout 1500 "$PY" "$S/bi_smoke.py" "$m" > "$L" 2>&1; echo "exit $?"
+  grep -E "SMOKE OK|MoE backend|shrunk|Error|error:|not support|out of memory|Killed" "$L" | grep -v "^\s*$" | tail -20
 done
