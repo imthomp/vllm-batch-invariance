@@ -17,5 +17,5 @@ if [ -n "${TUNED_FILES:-}" ]; then
   python3 -c "import json,sys; fs=sys.argv[2].split(':'); e=[x for f in fs for x in json.load(open(f))['entries']]; json.dump({'entries': e, 'sources': fs}, open(sys.argv[1],'w'))" "$VBI_TUNED" "$TUNED_FILES"
   echo "merged $(python3 -c "import json;print(len(json.load(open('$VBI_TUNED'))['entries']))") tuned entries"
 fi
-OVERLAY=$S/tunedhook bash "$S/serve_bench.sh"
+OVERLAY=${OVERLAY:-$S/tunedhook} bash "$S/serve_bench.sh"
 grep -h "patched tuned table" "$OUT"/server_tuned_r*.log | head -3

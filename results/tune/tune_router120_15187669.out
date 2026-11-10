@@ -1,0 +1,22 @@
+name, driver_version
+NVIDIA H100 80GB HBM3, 580.196.07
+W1109 09:30:25.124000 135889 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1109 09:30:25.124000 135889 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1109 09:30:25.125000 135889 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+torch 2.14.0+cu130 gpu NVIDIA H100 80GB HBM3
+FlashInfer kernels are disabled: flashinfer-cubin is not installed and nvcc (CUDA_HOME, CUDA_PATH, PATH or /usr/local/cuda) or ninja (PATH) is missing. Set CUDA_HOME to a CUDA toolkit and put ninja on PATH, or run `vllm download-kernels`.
+  128x2880 BLOCK_K=64 mean log(t/cublas)=0.332
+  128x2880 BLOCK_K=128 mean log(t/cublas)=0.159
+    M=1     tuned     12.9us  default     27.3us  cublas      9.9us
+    M=4     tuned     12.2us  default     26.0us  cublas     10.1us
+    M=8     tuned     12.2us  default     25.9us  cublas     10.1us
+    M=16    tuned     12.2us  default     25.9us  cublas     10.2us
+    M=32    tuned     12.1us  default     25.9us  cublas     10.4us
+    M=64    tuned     12.1us  default     26.1us  cublas     10.5us
+    M=256   tuned     12.5us  default     25.7us  cublas     11.0us
+    M=512   tuned     12.7us  default     26.4us  cublas     11.6us
+    M=1024  tuned     13.6us  default     27.3us  cublas     11.9us
+    M=2048  tuned     15.2us  default     28.7us  cublas     13.4us
+tuned 128x2880 in 107s
+  check 128x2880: 0/29202 rows differ
+CHECK total bad 0
