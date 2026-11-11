@@ -3,7 +3,7 @@
 # Usage: PY=<python with vllm> OVERLAY=<patched vllm copy> OUT=<dir> [MODEL=...] [ROUNDS=3] [NPROMPTS=2000] [SERVE_ARGS=...] [READY_TRIES=180] bash src/serve_bench.sh
 # Exits on the first server that fails to start.
 set -u
-MODEL=${MODEL:-Qwen/Qwen2.5-7B-Instruct}; ROUNDS=${ROUNDS:-3}; PORT=${PORT:-8123}
+MODEL=${MODEL:-Qwen/Qwen2.5-7B-Instruct}; ROUNDS=${ROUNDS:-3}; PORT=${PORT:-$((20000 + ${SLURM_JOB_ID:-0} % 20000))}  # unique per job: two jobs on one node must not share a port
 VLLM="$(dirname "$PY")/vllm"
 mkdir -p "$OUT"
 run_arm() {  # $1 arm (off|stock|tuned), $2 round
@@ -16,8 +16,10 @@ run_arm() {  # $1 arm (off|stock|tuned), $2 round
   env "${env[@]}" "$VLLM" serve "$MODEL" --port $PORT --dtype bfloat16 --max-model-len 4096 --gpu-memory-utilization 0.9 \
       --no-enable-prefix-caching --seed 0 ${SERVE_ARGS:-} > "$OUT/server_${arm}_r$r.log" 2>&1 &
   local pid=$!
-  for i in $(seq 1 ${READY_TRIES:-180}); do curl -sf localhost:$PORT/health >/dev/null && break; sleep 5; done
-  if ! curl -sf localhost:$PORT/health >/dev/null; then echo "SERVER FAILED $arm r$r"; tail -30 "$OUT/server_${arm}_r$r.log"; kill $pid; exit 1; fi
+  # ready = this server answers and serves this model (guards against another job's server on the same port)
+  ready() { curl -sf localhost:$PORT/v1/models 2>/dev/null | grep -q "\"id\":\"$MODEL\""; }
+  for i in $(seq 1 ${READY_TRIES:-180}); do ready && kill -0 $pid 2>/dev/null && break; sleep 5; done
+  if ! { ready && kill -0 $pid 2>/dev/null; }; then echo "SERVER FAILED $arm r$r"; tail -30 "$OUT/server_${arm}_r$r.log"; kill $pid; exit 1; fi
   env "${env[@]}" "$PY" -c "import vllm.model_executor.determinism.batch_invariant_configs as c; print('ARM $arm hopper entries', len(c._BATCH_INVARIANT_MATMUL_TUNED_CONFIGS['hopper']))" 2>/dev/null | tail -1
   for w in decode:512:256 prefill:1024:4; do
     IFS=: read name il ol <<< "$w"
