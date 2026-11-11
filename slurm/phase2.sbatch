@@ -2,7 +2,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=96G
 #SBATCH --time=2:00:00
-# Phase 2. Usage: sbatch --gres=gpu:<TP> --export=ALL,PY=<python with vllm>,KIND=cross|decode|prefill,MODE=off|on|plain|tuned|generic,
+# Phase 2. Usage: sbatch --gres=gpu:<TP> --export=ALL,PY=<python with vllm>,KIND=cross|decode|prefill,MODE=off|on|onbreak|plain|tuned|generic,
 #   MODEL=<hf id>,TAG=<name>,TP=<n>,OUT=<dir>[,DATA=<problems.json>,ARGS="<extra crossover2 args>"] slurm/phase2.sbatch
 set -euo pipefail
 export HF_HUB_OFFLINE=1 VLLM_NO_USAGE_STATS=1 VLLM_DO_NOT_TRACK=1 VLLM_USE_FLASHINFER_SAMPLER=0
@@ -18,7 +18,8 @@ case "$MODE" in
   off) export VLLM_BATCH_INVARIANT=0 ;;
   on) export VLLM_BATCH_INVARIANT=1 ;;
   plain) export VLLM_BATCH_INVARIANT=1 VBI_PLAIN=1 PYTHONPATH="$S/plainpatch${PYTHONPATH:+:$PYTHONPATH}" ;;
-  generic) export VLLM_BATCH_INVARIANT=1 PYTHONPATH="$S/defaulthook${PYTHONPATH:+:$PYTHONPATH}"; : "${VBI_GENERIC:?set VBI_GENERIC to a tune_generic.py output}"; export VBI_GENERIC ;;
+  onbreak) export VLLM_BATCH_INVARIANT=1 VLLM_USE_BREAKABLE_CUDAGRAPH=1 ;;
+  generic) export VLLM_BATCH_INVARIANT=1 VLLM_USE_BREAKABLE_CUDAGRAPH=1 PYTHONPATH="$S/defaulthook${PYTHONPATH:+:$PYTHONPATH}"; : "${VBI_GENERIC:?set VBI_GENERIC to a tune_generic.py output}"; export VBI_GENERIC ;;
   tuned) export VLLM_BATCH_INVARIANT=1 PYTHONPATH="$S/tunedhook${PYTHONPATH:+:$PYTHONPATH}"; : "${VBI_TUNED:?set VBI_TUNED to a tune_bi.py output}"; export VBI_TUNED ;;
   *) echo "bad MODE"; exit 2 ;;
 esac
