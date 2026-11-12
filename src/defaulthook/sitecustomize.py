@@ -26,6 +26,18 @@ def _patch(mod):
         return {"BLOCK_SIZE_M": r[1], "BLOCK_SIZE_N": r[2], "BLOCK_SIZE_K": bk, "GROUP_SIZE_M": 8,
                 "num_warps": r[3], "num_stages": r[4]}
 
+    if os.environ.get("VBI_GENERIC_TRACE"):
+        # diagnostic: count which configuration each call gets, printed at process exit
+        import atexit, collections
+        counts = collections.Counter()
+        inner = _get_matmul_config
+
+        def _get_matmul_config(M, N, K, dtype, default):
+            cfg = inner(M, N, K, dtype, default)
+            counts[(N, K, "generic" if cfg.get("BLOCK_SIZE_K") == bk and cfg is not default else "other")] += 1
+            return cfg
+
+        atexit.register(lambda: print(f"generic trace pid={os.getpid()} {dict(counts)}", flush=True))
     mod._get_matmul_config = _get_matmul_config
     print(f"patched generic default pid={os.getpid()} block_k={bk}", flush=True)
 
