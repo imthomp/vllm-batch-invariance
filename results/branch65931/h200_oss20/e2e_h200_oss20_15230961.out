@@ -1,0 +1,47 @@
+NVIDIA H200, 580.196.07
+ARM stock hopper entries 13
+  stock r1 decode: Request throughput (req/s):              10.95     
+  stock r1 decode: Output token throughput (tok/s):         2803.74   
+  stock r1 prefill: Request throughput (req/s):              37.13     
+  stock r1 prefill: Output token throughput (tok/s):         148.52    
+ARM tuned hopper entries 18
+  tuned r1 decode: Request throughput (req/s):              11.94     
+  tuned r1 decode: Output token throughput (tok/s):         3057.04   
+  tuned r1 prefill: Request throughput (req/s):              36.09     
+  tuned r1 prefill: Output token throughput (tok/s):         144.34    
+ARM off hopper entries 13
+  off r1 decode: Request throughput (req/s):              13.68     
+  off r1 decode: Output token throughput (tok/s):         3500.80   
+  off r1 prefill: Request throughput (req/s):              30.07     
+  off r1 prefill: Output token throughput (tok/s):         120.30    
+ARM tuned hopper entries 18
+  tuned r2 decode: Request throughput (req/s):              11.76     
+  tuned r2 decode: Output token throughput (tok/s):         3009.51   
+  tuned r2 prefill: Request throughput (req/s):              36.90     
+  tuned r2 prefill: Output token throughput (tok/s):         147.61    
+ARM stock hopper entries 13
+  stock r2 decode: Request throughput (req/s):              10.83     
+  stock r2 decode: Output token throughput (tok/s):         2771.59   
+  stock r2 prefill: Request throughput (req/s):              35.02     
+  stock r2 prefill: Output token throughput (tok/s):         140.06    
+ARM off hopper entries 13
+  off r2 decode: Request throughput (req/s):              15.80     
+  off r2 decode: Output token throughput (tok/s):         4044.58   
+  off r2 prefill: Request throughput (req/s):              33.80     
+  off r2 prefill: Output token throughput (tok/s):         135.22    
+ARM stock hopper entries 13
+  stock r3 decode: Request throughput (req/s):              11.03     
+  stock r3 decode: Output token throughput (tok/s):         2822.76   
+  stock r3 prefill: Request throughput (req/s):              36.30     
+  stock r3 prefill: Output token throughput (tok/s):         145.20    
+ARM tuned hopper entries 18
+  tuned r3 decode: Request throughput (req/s):              12.14     
+  tuned r3 decode: Output token throughput (tok/s):         3107.52   
+  tuned r3 prefill: Request throughput (req/s):              37.69     
+  tuned r3 prefill: Output token throughput (tok/s):         150.76    
+ARM off hopper entries 13
+  off r3 decode: Request throughput (req/s):              15.45     
+  off r3 decode: Output token throughput (tok/s):         3955.47   
+  off r3 prefill: Request throughput (req/s):              34.96     
+  off r3 prefill: Output token throughput (tok/s):         139.84    
+DONE
