@@ -1,0 +1,94 @@
+name, driver_version, memory.total [MiB]
+NVIDIA H100 80GB HBM3, 580.196.07, 81559 MiB
+BASE df8c0296af83ac9807a473fbb01e614a643964c0 (/home/it238/vllm-generic-base)
+PR   beae62efc9506dd3df5cfe8c80c68f30ca45245f (/home/it238/vllm-generic-default)
+runtime 2.14.0+cu130 /nobackup/autodelete/usr/it238/research_lab/vllm-pr-check/.venv/lib/python3.12/site-packages/vllm/__init__.py 0.34.0rc1.dev352+ge2421d2ac
+/home/it238/vllm-generic-default/vllm/__init__.py:7: RuntimeWarning: Failed to read commit hash:
+No module named 'vllm._version'
+  from .version import __version__, __version_tuple__  # isort:skip
+W1113 13:44:45.849000 487037 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1113 13:44:45.849000 487037 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1113 13:44:45.850000 487037 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+PASS PR generic fallback {'BLOCK_SIZE_M': 16, 'BLOCK_SIZE_N': 64, 'BLOCK_SIZE_K': 128, 'GROUP_SIZE_M': 8, 'num_warps': 4, 'num_stages': 5}
+SERVER READY arm=base round=1 model=Qwen/Qwen2.5-7B-Instruct source=/home/it238/vllm-generic-base bi=1
+Request throughput (req/s):              5.59      
+Output token throughput (tok/s):         1431.95   
+Request throughput (req/s):              27.39     
+Output token throughput (tok/s):         109.57    
+Request throughput (req/s):              0.85      
+Output token throughput (tok/s):         54.65     
+Request throughput (req/s):              5.10      
+Output token throughput (tok/s):         652.50    
+SERVER READY arm=pr round=1 model=Qwen/Qwen2.5-7B-Instruct source=/home/it238/vllm-generic-default bi=1
+Request throughput (req/s):              10.82     
+Output token throughput (tok/s):         2769.83   
+Request throughput (req/s):              28.60     
+Output token throughput (tok/s):         114.38    
+Request throughput (req/s):              2.16      
+Output token throughput (tok/s):         138.46    
+Request throughput (req/s):              6.40      
+Output token throughput (tok/s):         818.91    
+SERVER READY arm=off round=1 model=Qwen/Qwen2.5-7B-Instruct source=/home/it238/vllm-generic-base bi=0
+Request throughput (req/s):              13.07     
+Output token throughput (tok/s):         3346.43   
+Request throughput (req/s):              35.68     
+Output token throughput (tok/s):         142.74    
+Request throughput (req/s):              2.39      
+Output token throughput (tok/s):         152.79    
+Request throughput (req/s):              7.25      
+Output token throughput (tok/s):         927.45    
+SERVER READY arm=pr round=2 model=Qwen/Qwen2.5-7B-Instruct source=/home/it238/vllm-generic-default bi=1
+Request throughput (req/s):              10.86     
+Output token throughput (tok/s):         2778.91   
+Request throughput (req/s):              27.61     
+Output token throughput (tok/s):         110.43    
+Request throughput (req/s):              2.08      
+Output token throughput (tok/s):         133.04    
+Request throughput (req/s):              6.45      
+Output token throughput (tok/s):         825.53    
+SERVER READY arm=off round=2 model=Qwen/Qwen2.5-7B-Instruct source=/home/it238/vllm-generic-base bi=0
+Request throughput (req/s):              12.92     
+Output token throughput (tok/s):         3308.49   
+Request throughput (req/s):              35.43     
+Output token throughput (tok/s):         141.71    
+Request throughput (req/s):              2.43      
+Output token throughput (tok/s):         155.82    
+Request throughput (req/s):              7.59      
+Output token throughput (tok/s):         971.68    
+SERVER READY arm=base round=2 model=Qwen/Qwen2.5-7B-Instruct source=/home/it238/vllm-generic-base bi=1
+Request throughput (req/s):              5.60      
+Output token throughput (tok/s):         1432.71   
+Request throughput (req/s):              26.44     
+Output token throughput (tok/s):         105.75    
+Request throughput (req/s):              0.85      
+Output token throughput (tok/s):         54.61     
+Request throughput (req/s):              5.07      
+Output token throughput (tok/s):         648.42    
+SERVER READY arm=off round=3 model=Qwen/Qwen2.5-7B-Instruct source=/home/it238/vllm-generic-base bi=0
+Request throughput (req/s):              13.06     
+Output token throughput (tok/s):         3344.24   
+Request throughput (req/s):              33.41     
+Output token throughput (tok/s):         133.64    
+Request throughput (req/s):              2.38      
+Output token throughput (tok/s):         152.50    
+Request throughput (req/s):              7.89      
+Output token throughput (tok/s):         1009.80   
+SERVER READY arm=base round=3 model=Qwen/Qwen2.5-7B-Instruct source=/home/it238/vllm-generic-base bi=1
+Request throughput (req/s):              5.82      
+Output token throughput (tok/s):         1488.65   
+Request throughput (req/s):              26.47     
+Output token throughput (tok/s):         105.88    
+Request throughput (req/s):              0.85      
+Output token throughput (tok/s):         54.61     
+Request throughput (req/s):              5.12      
+Output token throughput (tok/s):         655.19    
+SERVER READY arm=pr round=3 model=Qwen/Qwen2.5-7B-Instruct source=/home/it238/vllm-generic-default bi=1
+Request throughput (req/s):              10.80     
+Output token throughput (tok/s):         2765.91   
+Request throughput (req/s):              27.48     
+Output token throughput (tok/s):         109.94    
+Request throughput (req/s):              2.18      
+Output token throughput (tok/s):         139.24    
+Request throughput (req/s):              6.45      
+Output token throughput (tok/s):         825.54    
+DONE tag=h100_q25 results=/home/it238/projects/vllm-batch-invariance/results/validation/core_pr_serving/h100_q25

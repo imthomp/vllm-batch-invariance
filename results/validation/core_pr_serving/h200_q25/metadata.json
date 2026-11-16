@@ -1,0 +1,10 @@
+{
+  "tag": "h200_q25",
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "tp": 1,
+  "base_sha": "df8c0296af83ac9807a473fbb01e614a643964c0",
+  "pr_sha": "beae62efc9506dd3df5cfe8c80c68f30ca45245f",
+  "gpu": "NVIDIA H200",
+  "job_id": "15331421",
+  "python": "/nobackup/autodelete/usr/it238/research_lab/vllm-pr-check/.venv/bin/python"
+}

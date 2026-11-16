@@ -175,6 +175,54 @@ P["paper.pop_shapes"], P["paper.pop_bad"], P["paper.pop_rows"] = len(_pe), _pb, 
 P["paper.pop_speed_min"], P["paper.pop_speed_max"] = min(_sp), max(_sp)
 assert _pb == 0 and min(_sp) > 1
 
+# Better default rerun (results/generic2): all paper values come from the scored, three-repeat JSON records.
+_g = json.loads((STATS.parent / "generic2" / "generic.json").read_text())
+assert len(_g["test"]) == S["generic2.test_shapes"]
+assert sum(v["rows"] for v in _g["check"].values()) == S["generic2.check_rows"]
+assert sum(v["bad"] for v in _g["check"].values()) == S["generic2.check_bad"]
+P["paper.generic_train_shapes"] = len(_g["train"])
+P["paper.generic_test_shapes"] = len(_g["test"])
+P["paper.generic_check_rows"] = sum(v["rows"] for v in _g["check"].values())
+P["paper.generic_check_bad"] = sum(v["bad"] for v in _g["check"].values())
+P["paper.generic_cross_requests"] = S["generic2.cross_requests"]
+P["paper.generic_cross_mismatch"] = S["generic2.cross_mismatch"]
+_bs = sorted(int(k.split(".")[2][1:]) for k in S if k.startswith("generic2.q25gen2.b") and k.endswith(".generic_loss"))
+assert _bs == [1, 2, 4, 8, 16, 32, 64, 128]
+for _b in _bs:
+    for _arm in ("on", "onbreak", "generic", "tuned"):
+        assert S[f"generic2.q25gen2.b{_b}.{_arm}_loss"] is not None
+P["paper.generic_stock_min"] = min(S[f"generic2.q25gen2.b{b}.on_loss"] for b in _bs)
+P["paper.generic_stock_max"] = max(S[f"generic2.q25gen2.b{b}.on_loss"] for b in _bs)
+P["paper.generic_tuned_min"] = min(S[f"generic2.q25gen2.b{b}.tuned_loss"] for b in _bs)
+P["paper.generic_tuned_max"] = max(S[f"generic2.q25gen2.b{b}.tuned_loss"] for b in _bs)
+P["paper.generic_recovered_b32"] = S["generic2.q25.b32.recovered"]
+P["paper.generic_b32"] = S["generic2.q25gen2.b32.generic_loss"]
+P["paper.generic_tuned_b32"] = S["generic2.q25gen2.b32.tuned_loss"]
+P["paper.generic_stock_b32"] = S["generic2.q25gen2.b32.on_loss"]
+P["paper.generic_onbreak_b32"] = S["generic2.q25gen2.b32.onbreak_loss"]
+P["paper.generic_b128"] = S["generic2.q25gen2.b128.generic_loss"]
+P["paper.generic_tuned_b128"] = S["generic2.q25gen2.b128.tuned_loss"]
+P["paper.generic_gemma_stock_b32"] = S["generic2.g2gen2.b32.on_loss"]
+P["paper.generic_gemma_b32"] = S["generic2.g2gen2.b32.generic_loss"]
+P["paper.generic_gemma_onbreak_b32"] = S["generic2.g2gen2.b32.onbreak_loss"]
+# The new three-repeat series supersedes the one-job tuning-pilot ranges in the manuscript.
+P["paper.tune_loss_min"] = P["paper.generic_tuned_min"]
+P["paper.tune_loss_max"] = P["paper.generic_tuned_max"]
+P["paper.tune_stock_min"] = P["paper.generic_stock_min"]
+P["paper.tune_stock_max"] = P["paper.generic_stock_max"]
+
+# Branch-build gpt-oss-20b recheck with breakable CUDA graphs, scored from results/branch65931/oss20_break.
+_break = "branch_oss20_break"
+assert S[f"{_break}.decode.stock_n"] == S[f"{_break}.decode.tuned_n"] == 2
+assert S[f"{_break}.prefill.stock_n"] == S[f"{_break}.prefill.tuned_n"] == 2
+P["paper.gptoss_break_decode_gain"] = S[f"{_break}.decode.gain_over_stock"]
+P["paper.gptoss_break_decode_wins"] = S[f"{_break}.decode.tuned_wins"]
+P["paper.gptoss_break_rounds"] = S[f"{_break}.decode.rounds"]
+P["paper.gptoss_break_prefill_gain"] = S[f"{_break}.prefill.gain_over_stock"]
+P["paper.gptoss_break_prefill_wins"] = S[f"{_break}.prefill.tuned_wins"]
+P["paper.gptoss_no_break_decode_gain"] = S["branch_oss20_v2.decode.gain_over_stock"]
+P["paper.gptoss_no_break_prefill_gain"] = S["branch_oss20_v2.prefill.gain_over_stock"]
+
 merge(P)
 print(len(P), "paper stats")
 for k, v in sorted(P.items()):

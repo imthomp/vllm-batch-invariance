@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Paper checks: macros and tables are current, every macro used is defined, no hand-typed result numbers in main.tex."""
+import json
 import re
 import subprocess
 import sys
@@ -7,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 P = ROOT / "paper"
-before = {f: (P / f).read_text() for f in ("macros.tex", "tab_det.tex", "tab_cost.tex", "tab_bitwise.tex")}
+before = {f: (P / f).read_text() for f in ("macros.tex", "tab_det.tex", "tab_cost.tex", "tab_bitwise.tex", "tab_tune.tex")}
 subprocess.run([sys.executable, str(ROOT / "src/make_macros.py")], check=True, capture_output=True)
 for f, text in before.items():
     assert (P / f).read_text() == text, f"{f} was stale or hand-edited; rerun src/make_macros.py"
@@ -31,4 +32,30 @@ ALLOWED = {"8", "7", "4", "1", "32", "8192", "20", "5", "2880", "1024", "13.4", 
            "16"}  # cuBLAS alignment-class names (ALIGN_2B, ALIGN_16B)
 bad = sorted(nums - ALLOWED)
 assert not bad, f"unreviewed numeric literals in main.tex: {bad}"
+
+# Every table row is tied to a recorded experimental dataset. Generated table row builders additionally
+# validate every cell's source records; this checks the hand-written recommendation table's row mapping.
+def require_source(path, predicate=lambda d: bool(d)):
+    f = ROOT / path
+    assert f.is_file(), f"table row has no source dataset: {path}"
+    if f.suffix == ".json":
+        data = json.loads(f.read_text())
+        assert predicate(data), f"table row source has no matching record: {path}"
+
+
+rec = re.search(r"\\begin\{table\}.*?\\label\{tab:rec\}.*?\\end\{table\}", tex, re.S)
+assert rec, "recommendation table missing"
+row_labels = {line.split("&", 1)[0].strip() for line in rec.group(0).splitlines() if "&" in line and not line.lstrip().startswith("Route")}
+expected = {
+    "Stock, default config": "results/generic2/decode_q25gen2_on_r1.json",
+    "Generic + breakable graphs": "results/generic2/decode_q25gen2_generic_r1.json",
+    "Per-model tuned": "results/generic2/decode_q25gen2_tuned_r1.json",
+    "cuBLAS routing": "results/throughput/main_q25_plain.json",
+}
+assert row_labels == set(expected), f"recommendation table rows do not match source mapping: {row_labels ^ set(expected)}"
+for label, path in expected.items():
+    require_source(path, lambda d: any(r.get("n") == 32 for r in d.get("rows", [])))
+
+assert (P / "tab_det.tex").is_file() and (P / "tab_cost.tex").is_file()
+assert (P / "tab_bitwise.tex").is_file() and (P / "tab_tune.tex").is_file()
 print("paper ok:", len(used), "macros used")
