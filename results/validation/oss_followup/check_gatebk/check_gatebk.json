@@ -1,0 +1,48 @@
+{
+ "gpu": "NVIDIA H100 80GB HBM3",
+ "torch": "2.14.0+cu130",
+ "entries": [
+  {
+   "n": 5120,
+   "k": 2880,
+   "table": "_MatmulShapeConfig(block_k=128, m_buckets=((1, _MatmulMConfig(block_m=16, block_n=64, num_warps=4, num_stages=5)), (4, _MatmulMConfig(block_m=16, block_n=64, num_warps=4, num_stages=5)), (8, _MatmulMConfig(block_m=16, block_n=64, num_warps=4, num_stages=5)), (16, _MatmulMConfig(block_m=16, block_n=64, num_warps=4, num_stages=5)), (32, _MatmulMConfig(block_m=32, block_n=64, num_warps=8, num_stages=5)), (64, _MatmulMConfig(block_m=64, block_n=64, num_warps=4, num_stages=5)), (256, _MatmulMConfig(block_m=128, block_n=128, num_warps=4, num_stages=3)), (512, _MatmulMConfig(block_m=64, block_n=128, num_warps=4, num_stages=4)), (1024, _MatmulMConfig(block_m=64, block_n=128, num_warps=4, num_stages=4)), (2048, _MatmulMConfig(block_m=128, block_n=128, num_warps=4, num_stages=3))))"
+  },
+  {
+   "n": 2880,
+   "k": 4096,
+   "table": "_MatmulShapeConfig(block_k=128, m_buckets=((1, _MatmulMConfig(block_m=16, block_n=64, num_warps=4, num_stages=5)), (4, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (8, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (16, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (32, _MatmulMConfig(block_m=32, block_n=32, num_warps=4, num_stages=5)), (64, _MatmulMConfig(block_m=64, block_n=32, num_warps=4, num_stages=5)), (256, _MatmulMConfig(block_m=64, block_n=128, num_warps=4, num_stages=4)), (512, _MatmulMConfig(block_m=128, block_n=128, num_warps=4, num_stages=3)), (1024, _MatmulMConfig(block_m=128, block_n=64, num_warps=4, num_stages=4)), (2048, _MatmulMConfig(block_m=128, block_n=128, num_warps=4, num_stages=3))))"
+  },
+  {
+   "n": 32,
+   "k": 2880,
+   "table": "_MatmulShapeConfig(block_k=128, m_buckets=((1, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (4, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (8, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (16, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (32, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (64, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (256, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (512, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (1024, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (2048, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (4096, _MatmulMConfig(block_m=64, block_n=32, num_warps=4, num_stages=5)), (8192, _MatmulMConfig(block_m=64, block_n=32, num_warps=4, num_stages=5)), (16384, _MatmulMConfig(block_m=64, block_n=32, num_warps=4, num_stages=5))))"
+  },
+  {
+   "n": 128,
+   "k": 2880,
+   "table": "_MatmulShapeConfig(block_k=128, m_buckets=((1, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=4)), (4, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (8, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (16, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (32, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (64, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (256, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (512, _MatmulMConfig(block_m=16, block_n=32, num_warps=4, num_stages=5)), (1024, _MatmulMConfig(block_m=64, block_n=32, num_warps=4, num_stages=5)), (2048, _MatmulMConfig(block_m=64, block_n=32, num_warps=4, num_stages=5)), (4096, _MatmulMConfig(block_m=64, block_n=64, num_warps=4, num_stages=5)), (8192, _MatmulMConfig(block_m=64, block_n=128, num_warps=4, num_stages=4)), (16384, _MatmulMConfig(block_m=64, block_n=128, num_warps=4, num_stages=4))))"
+  }
+ ],
+ "check": {
+  "5120x2880": {
+   "bad": 0,
+   "rows": 31762,
+   "bad_m": []
+  },
+  "2880x4096": {
+   "bad": 0,
+   "rows": 31762,
+   "bad_m": []
+  },
+  "32x2880": {
+   "bad": 0,
+   "rows": 31762,
+   "bad_m": []
+  },
+  "128x2880": {
+   "bad": 0,
+   "rows": 31762,
+   "bad_m": []
+  }
+ }
+}
