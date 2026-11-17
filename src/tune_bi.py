@@ -8,6 +8,9 @@ reduction order, so any table of this form stays batch-invariant; --check verifi
 Search: for each BLOCK_K candidate, the fastest config per bucket (timed at the bucket's largest batch size);
 the BLOCK_K kept is the one with the lowest mean log time ratio to cuBLAS over all buckets.
 Usage: tune_bi.py --shapes "4608x3584;..." --out tuned.json [--check]
+Extending an existing entry above its tuned range: --buckets 4096,8192,16384 --block-k 128 --reuse 64,32,4,5 fixes
+BLOCK_K at the entry's value (required for batch invariance) and also times the entry's current largest-bucket config
+("reuse"), which vLLM applies to every M above the tuned range. --check-max-m extends the bitwise grid.
 """
 import argparse
 import itertools
@@ -27,10 +30,17 @@ ap.add_argument("--shapes", required=True, help="semicolon-separated NxK")
 ap.add_argument("--out", required=True)
 ap.add_argument("--quick", action="store_true", help="tiny search space and grid, for smoke tests only")
 ap.add_argument("--check", action="store_true", help="bitwise alone-vs-batched check of the tuned table, dense grid")
+ap.add_argument("--buckets", help="comma-separated M buckets (default: the existing Hopper buckets)")
+ap.add_argument("--block-k", type=int, help="fix BLOCK_K (when extending an existing entry)")
+ap.add_argument("--reuse", help="BLOCK_M,BLOCK_N,num_warps,num_stages of the entry's current largest bucket, timed as a baseline")
+ap.add_argument("--check-max-m", type=int, default=8192)
 a = ap.parse_args()
 
 BUCKETS = (1, 4, 8, 16, 32, 64, 256, 512, 1024, 2048)  # same buckets as the existing Hopper entries
-BLOCK_KS = (64, 128)
+if a.buckets:
+    BUCKETS = tuple(int(v) for v in a.buckets.split(","))
+BLOCK_KS = (a.block_k,) if a.block_k else (64, 128)
+REUSE = [int(v) for v in a.reuse.split(",")] if a.reuse else None
 SPACE = list(itertools.product((16, 32, 64, 128), (32, 64, 128, 256), (4, 8), (2, 3, 4, 5)))
 SMEM = 227 * 1024
 if a.quick:
@@ -58,6 +68,12 @@ def tune_shape(n, k):
         xm = x[:m]
         res["cublas"][m] = bench(lambda: F.linear(xm, w))
         res["default"][m] = bench(lambda: bi.linear_batch_invariant(xm, w))
+    if REUSE:
+        bm, bn, nw, ns = REUSE
+        run_with({"BLOCK_SIZE_M": bm, "BLOCK_SIZE_N": bn, "BLOCK_SIZE_K": BLOCK_KS[0], "GROUP_SIZE_M": 8,
+                  "num_warps": nw, "num_stages": ns})
+        res["reuse"] = {m: bench(lambda: bi.linear_batch_invariant(x[:m], w)) for m in BUCKETS}
+        bi._get_matmul_config = orig_get
     for bk in BLOCK_KS:
         per = {}
         for m in BUCKETS:
@@ -85,10 +101,14 @@ def tune_shape(n, k):
     entry = {"n": n, "k": k, "block_k": bk, "m_buckets": [[m] + per[m][1] for m in BUCKETS],
              "ms": {m: {"tuned": per[m][0], "default": res["default"][m], "cublas": res["cublas"][m]} for m in BUCKETS},
              "score_by_block_k": {b: res["by_bk"][b]["score"] for b in BLOCK_KS}}
+    if REUSE:
+        entry["reuse_config"] = REUSE
+        for m in BUCKETS:
+            entry["ms"][m]["reuse"] = res["reuse"][m]
     for m in BUCKETS:
         r = entry["ms"][m]
-        print(f"    M={m:<5} tuned {r['tuned']*1e3:8.1f}us  default {r['default']*1e3:8.1f}us  cublas {r['cublas']*1e3:8.1f}us",
-              flush=True)
+        print(f"    M={m:<5} tuned {r['tuned']*1e3:8.1f}us  default {r['default']*1e3:8.1f}us  cublas {r['cublas']*1e3:8.1f}us"
+              + (f"  reuse {r['reuse']*1e3:8.1f}us" if REUSE else ""), flush=True)
     return entry
 
 
@@ -104,7 +124,7 @@ def check(entries):
     """Rows alone vs in a batch, batch sizes 1..1024 then every 16th to 8192, first/last 8 and 4 middle rows."""
     install(entries)
     bi._get_matmul_config = orig_get
-    ms = list(range(1, 1025)) + list(range(1040, 8193, 16))
+    ms = list(range(1, 1025)) + list(range(1040, 8193, 16)) + list(range(8256, a.check_max_m + 1, 64))
     if a.quick:
         ms = list(range(1, 40)) + [255, 256, 257, 1024]
     out = {}
