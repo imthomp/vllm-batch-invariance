@@ -1,0 +1,6 @@
+{"tag": "h100_gemma_prefill_diag", "model": "google/gemma-2-9b-it", "job_id": "15466084",
+ "gpu": "NVIDIA H100 80GB HBM3", "venv": "/nobackup/autodelete/usr/it238/research_lab/vllm-pr-check/.venv", "arms": {
+  "prnobrk": {"src": "/home/it238/vllm-generic-default", "sha": "beae62efc9506dd3df5cfe8c80c68f30ca45245f", "bi": 1, "breakable_env": "0"},
+  "base": {"src": "/home/it238/vllm-generic-base", "sha": "df8c0296af83ac9807a473fbb01e614a643964c0", "bi": 1, "breakable_env": "unset"},
+  "pr": {"src": "/home/it238/vllm-generic-default", "sha": "beae62efc9506dd3df5cfe8c80c68f30ca45245f", "bi": 1, "breakable_env": "unset"},
+  "basebrk": {"src": "/home/it238/vllm-generic-base", "sha": "df8c0296af83ac9807a473fbb01e614a643964c0", "bi": 1, "breakable_env": "1"}}}

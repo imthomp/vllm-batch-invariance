@@ -34,6 +34,8 @@ ap.add_argument("--buckets", help="comma-separated M buckets (default: the exist
 ap.add_argument("--block-k", type=int, help="fix BLOCK_K (when extending an existing entry)")
 ap.add_argument("--reuse", help="BLOCK_M,BLOCK_N,num_warps,num_stages of the entry's current largest bucket, timed as a baseline")
 ap.add_argument("--check-max-m", type=int, default=8192)
+ap.add_argument("--check-only", action="store_true",
+                help="no tuning: bitwise check of the table vLLM already has (e.g. a source tree on PYTHONPATH), nothing installed")
 a = ap.parse_args()
 
 BUCKETS = (1, 4, 8, 16, 32, 64, 256, 512, 1024, 2048)  # same buckets as the existing Hopper entries
@@ -122,7 +124,8 @@ def install(entries):
 
 def check(entries):
     """Rows alone vs in a batch, batch sizes 1..1024 then every 16th to 8192, first/last 8 and 4 middle rows."""
-    install(entries)
+    if not a.check_only:
+        install(entries)
     bi._get_matmul_config = orig_get
     ms = list(range(1, 1025)) + list(range(1040, 8193, 16)) + list(range(8256, a.check_max_m + 1, 64))
     if a.quick:
@@ -157,6 +160,15 @@ shapes = [tuple(int(v) for v in s.split("x")) for s in a.shapes.split(";")]
 print("torch", torch.__version__, "gpu", torch.cuda.get_device_name(), flush=True)
 t0 = time.time()
 entries = []
+if a.check_only:
+    bc.resolve_tuned_matmul_configs()
+    entries = [{"n": n, "k": k, "table": repr(bc._TUNED_MATMUL_CONFIGS_FOR_DEVICE.get((n, k)))} for n, k in shapes]
+    for e in entries:
+        print(f"  table {e['n']}x{e['k']}: {e['table']}", flush=True)
+    res = {"gpu": torch.cuda.get_device_name(), "torch": torch.__version__, "entries": entries, "check": check(entries)}
+    print("CHECK total bad", sum(v["bad"] for v in res["check"].values()), flush=True)
+    json.dump(res, open(a.out, "w"), indent=1)
+    raise SystemExit(0)
 for n, k in shapes:
     entries.append(tune_shape(n, k))
     print(f"tuned {n}x{k} in {time.time() - t0:.0f}s", flush=True)
