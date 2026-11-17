@@ -807,6 +807,14 @@
   "p1f.auto_rp.torch_flags": [
     "rp"
   ],
+  "paper.core_gemma_prefill32_loss": 0.08098227327203322,
+  "paper.core_gemma_prefill32_wins": 0,
+  "paper.core_mistral_decode32": 0.009327580243249534,
+  "paper.core_q25_decode1": 1.533547526674898,
+  "paper.core_q25_decode32": 0.9343116899739488,
+  "paper.core_rounds": 3,
+  "paper.core_untuned_decode32_max": 0.9343116899739488,
+  "paper.core_untuned_decode32_min": 0.4053989540747569,
   "paper.fafix_base_div": 5,
   "paper.fafix_fix_div": 0,
   "paper.fafix_n": 20,

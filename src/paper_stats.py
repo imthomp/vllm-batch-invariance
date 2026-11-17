@@ -223,6 +223,21 @@ P["paper.gptoss_break_prefill_wins"] = S[f"{_break}.prefill.tuned_wins"]
 P["paper.gptoss_no_break_decode_gain"] = S["branch_oss20_v2.decode.gain_over_stock"]
 P["paper.gptoss_no_break_prefill_gain"] = S["branch_oss20_v2.prefill.gain_over_stock"]
 
+# Core PR #67376 vs its merge-base (results/validation/core_pr_serving; src/score_core_pr_serve.py), medians of three paired rounds.
+_c = "core_pr_serve"
+_untuned = ("h100_q25", "h200_q25", "h100_qwen32", "h100_gemma")  # models whose shapes have no tuned entries
+for _t in _untuned + ("h100_mistral",):
+    for _w in ("decode32", "prefill32", "decode1", "longdecode32"):
+        assert S[f"{_c}.{_t}.{_w}.rounds"] == 3, (_t, _w)
+P["paper.core_q25_decode32"] = S[f"{_c}.h100_q25.decode32.pr_vs_base_median"]
+P["paper.core_q25_decode1"] = S[f"{_c}.h100_q25.decode1.pr_vs_base_median"]
+P["paper.core_untuned_decode32_min"] = min(S[f"{_c}.{t}.decode32.pr_vs_base_median"] for t in _untuned)
+P["paper.core_untuned_decode32_max"] = max(S[f"{_c}.{t}.decode32.pr_vs_base_median"] for t in _untuned)
+P["paper.core_gemma_prefill32_loss"] = -S[f"{_c}.h100_gemma.prefill32.pr_vs_base_median"]
+P["paper.core_gemma_prefill32_wins"] = S[f"{_c}.h100_gemma.prefill32.pr_wins"]
+P["paper.core_mistral_decode32"] = S[f"{_c}.h100_mistral.decode32.pr_vs_base_median"]
+P["paper.core_rounds"] = S[f"{_c}.h100_q25.decode32.rounds"]
+
 merge(P)
 print(len(P), "paper stats")
 for k, v in sorted(P.items()):
