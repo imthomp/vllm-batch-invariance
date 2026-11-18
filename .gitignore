@@ -13,3 +13,4 @@ paper/*.fls
 paper/*.fdb_latexmk
 paper/*.out
 results/.stats.lock
+paper/acl.pdf
