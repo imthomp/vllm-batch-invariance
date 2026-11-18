@@ -27,7 +27,7 @@ for run in C2_r1 C3_r1 C4_r1 C2_r2 C3_r2 C4_r2 C1_r1 C1_r2; do
   rm -f "$f" "${f%.jsonl}.meta.json"
   VLLM_BATCH_INVARIANT=$BI PYTHONPATH=$SRC "$VENV/bin/python" "$ROOT/src/evalvar_gen.py" --model "$MODEL" \
     --cond "${run%_r*}" --out "$f" --limit "$LIMIT" > "$OUT/$run.log" 2>&1 || { echo "FAILED $run"; tail -40 "$OUT/$run.log"; exit 1; }
-  grep -c "auto-enabling VLLM_USE_BREAKABLE_CUDAGRAPH" "$OUT/$run.log" | sed "s/^/$run breakable_marker=/"
+  echo "$run breakable_marker=$(grep -c "auto-enabling VLLM_USE_BREAKABLE_CUDAGRAPH" "$OUT/$run.log" || true)"
   tail -1 "$OUT/$run.log" | cut -c1-300
 done
 echo "DONE $SHORT bi$BI"
