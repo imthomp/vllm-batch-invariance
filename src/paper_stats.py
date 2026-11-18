@@ -258,6 +258,22 @@ for _w in ("decode1", "decode32", "longdecode32", "prefill32"):
     P[f"paper.ossgate_{_w}_wins_min"] = min(S[f"{t}.{_w}.gate_vs_cfg_wins"] for t in _o)
 P["paper.ossgate_prefill32_absmax"] = max(abs(S[f"{t}.prefill32.gate_vs_cfg_median"]) for t in _o)
 
+# Eval-variance experiment (PROTOCOL.md "Do serving conditions change NLP evaluation conclusions?"; src/evalvar_score.py).
+# Derived only once the scorer has merged its keys; macros render as visible PENDING stubs until then.
+_EVM = ("qwen25_7b", "llama31_8b", "gemma2_9b", "mistral_7b", "olmo2_7b", "phi4_mini")
+if "evalvar.comparisons" in S:
+    assert S["evalvar.comparisons"] == 30, S["evalvar.comparisons"]
+    _mb = [(m, b) for m in _EVM for b in ("gsm8k", "math500")]
+    _fb = [S[f"evalvar.{m}.{b}.flip_between_mean"] for m, b in _mb]
+    P["paper.ev_flip_between_min"], P["paper.ev_flip_between_max"] = min(_fb), max(_fb)
+    P["paper.ev_flip_within_max"] = max(S[f"evalvar.{m}.{b}.flip_within_max"] for m, b in _mb)
+    P["paper.ev_spread_max"] = max(S[f"evalvar.{m}.{b}.acc_spread_all"] for m, b in _mb)
+    P["paper.ev_repeat_spread_max"] = max(S[f"evalvar.{m}.{b}.acc_spread_repeat_max"] for m, b in _mb)
+    P["paper.ev_bi_differ_total"] = sum(S[f"evalvar.{m}.bi_on_requests_differing"] for m in _EVM)
+    for _c in ("C1", "C2"):
+        _t = [S[f"evalvar.{m}.{_c}.time_on_vs_off"] for m in _EVM]
+        P[f"paper.ev_time_{_c}_min"], P[f"paper.ev_time_{_c}_max"] = min(_t), max(_t)
+
 merge(P)
 print(len(P), "paper stats")
 for k, v in sorted(P.items()):
