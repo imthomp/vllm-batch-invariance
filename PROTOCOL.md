@@ -192,3 +192,27 @@ Same runtime, model settings (`--dtype bfloat16`, max model length 8192, prefix 
 Same runtime and serving settings as the gpt-oss follow-up. Model gpt-oss-120b (local weights), TP=1. Arms `gate` (exp-oss-gate) and `gatebk` (exp-oss-gatebk: + router buckets 4096/8192/16384), both BI on with breakable graphs auto-enabled (marker required in both). Workloads prefill32 and decode32 only. Five rounds, alternating order (r1 gate,gatebk; r2 gatebk,gate; ...). Rule: the buckets are proposed upstream only if gatebk/gate prefill32 has a median gain of at least +2% with at least 4 of 5 wins, and decode32 median is no worse than -1%. Otherwise they are not proposed, and the kernel-level result is reported as not translating end to end.
 
 Outcome (2026-11-17, job 15490033, H100, results/validation/oss_followup/h100_oss120_bk, VALID: marker present in all 10 server logs): gatebk/gate prefill32 median -0.3% (2/5 wins, range -0.7% to +0.9%); decode32 +0.3% (3/5, -0.8% to +1.1%). The prefill criterion is not met, so the router buckets are not proposed upstream. The 19-31% kernel-level gain does not translate end to end on gpt-oss-20b or gpt-oss-120b.
+
+## Do serving conditions change NLP evaluation conclusions? (fixed 2026-11-18, before any full run)
+Question. With batch-invariant mode off, do ordinary serving conditions (batch composition, concurrency, chunked prefill) change (1) a model's benchmark accuracy and (2) the conclusions drawn when comparing models? With the mode on, are outputs identical across the same conditions, and at what generation-time cost? Prior: research_lab Stage 1b found per-request correctness flips on 2.8-7.0% of finished pairs between serving conditions; aggregate and comparison effects were not measured.
+
+Design.
+- Prompts: data/problems.json = GSM8K test (1,319) + MATH-500 (500), from src/fetch_data.py. Zero-shot chat, one user turn: question + "Put your final answer within \boxed{}." Greedy (temperature 0, seed 0), max 1,024 new tokens, max_model_len 4,096, bf16, prefix caching on.
+- Models (six, 7-9B and one 4B, instruction-tuned, all in the hf_lmeval cache): Qwen2.5-7B-Instruct, Llama-3.1-8B-Instruct, Gemma-2-9B-it, Mistral-7B-Instruct-v0.3, OLMo-2-1124-7B-Instruct, Phi-4-mini-instruct. The user delegated the choice on 2026-11-18; these are the draft's six.
+- Conditions (offline LLM.chat, every prompt submitted in one call): C1 serial (max_num_seqs=1); C2 full batch (max_num_seqs=256); C3 mixed load (each benchmark prompt followed by an unrelated HotpotQA filler prompt, first paragraph + question, full batch; filler outputs discarded); C4 small chunks (C2 with chunked prefill, max_num_batched_tokens=512). Each condition twice, in separate processes.
+- Modes: VLLM_BATCH_INVARIANT=0 and =1 (VLLM_USE_BREAKABLE_CUDAGRAPH unset), 8 runs each, 16 per model.
+- Software: runtime venv vllm-pr-check (vllm 0.34.0rc1.dev352), source tree /home/it238/vllm-generic-default at beae62efc9 = PR #67376 (generic Hopper fallback) on df8c0296; this tree already contains the #65627 sliding-window fix (checked in flash_attn.py). Humming LD_LIBRARY_PATH workaround in every run.
+- GPU: H100 (cs2), chosen by byurc. Each model's 16 runs on one GPU type; a run that lands on another type (e.g. after a requeue) is void and rerun.
+- Code: src/evalvar_gen.py (generation), slurm/evalvar.sbatch (one job per model x mode), src/evalvar_score.py (scorer, committed before any full run). Smoke runs (--limit) go to a separate directory and are refused by the scorer.
+
+Grading. Correct iff finish == "stop", the last \boxed{...} is present, and its normalized string equals the normalized gold (strip \left/\right/spacing commands, \text{}, \$, \%, $, spaces, trailing period and commas; dfrac/tfrac -> frac; numeric strings compared as floats). Same normalizer for every arm. Truncated responses are wrong; the maximum truncation rate per model x benchmark is reported.
+
+Measures (descriptive).
+- Per model x benchmark, mode off: accuracy in each of the 8 runs; spread (max - min) over all 8; maximum gap between the two repeats of a condition; per-request correctness flip rate between runs of different conditions and between repeats.
+- Comparisons: for each of the 15 model pairs x 2 benchmarks = 30, and each off run, the verdict (sign of the accuracy difference, exact McNemar p < 0.05). A comparison is condition-sensitive if its verdict differs between conditions (first repeats) while each condition's two repeats agree. Also reported: comparisons whose verdict differs between any two runs, and between repeats; the number of distinct model rankings per benchmark across the 8 off runs.
+- Mode on: per model, the number of requests whose token ids differ across its 8 runs; generation time on vs off per condition (mean of the two repeats); accuracy in C2 r1.
+
+Decision rules.
+- "Serving conditions change evaluation conclusions" is claimed only if at least one comparison is condition-sensitive (as defined above). Otherwise the paper reports that per-request flips did not change conclusions on these benchmarks, as in the WMT pilot, and frames batch invariance as cheap insurance for record-level reproducibility.
+- The mode-on arm passes if 0 requests differ across the 8 runs for every model; any failure is reported per model and its cause investigated before any claim about that model.
+- No run is excluded for its outcome. Failed, interrupted or wrong-GPU runs are void, labeled with the reason, and rerun in full.
