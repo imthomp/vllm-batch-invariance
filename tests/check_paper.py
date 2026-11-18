@@ -13,7 +13,7 @@ subprocess.run([sys.executable, str(ROOT / "src/make_macros.py")], check=True, c
 for f, text in before.items():
     assert (P / f).read_text() == text, f"{f} was stale or hand-edited; rerun src/make_macros.py"
 
-tex = (P / "main.tex").read_text()
+tex = "\n".join((P / f).read_text() for f in ("main.tex", "acl.tex", "body.tex"))  # both front ends + shared content
 defined = set(re.findall(r"\\newcommand\{\\(\w+)\}", before["macros.tex"]))
 used = {m for m in re.findall(r"\\([A-Z]\w+)\{\}", tex)}
 assert used <= defined, f"undefined macros: {sorted(used - defined)}"
@@ -43,7 +43,7 @@ def require_source(path, predicate=lambda d: bool(d)):
         assert predicate(data), f"table row source has no matching record: {path}"
 
 
-rec = re.search(r"\\begin\{table\}.*?\\label\{tab:rec\}.*?\\end\{table\}", tex, re.S)
+rec = re.search(r"\\begin\{table\*?\}(?:(?!\\end\{table).)*?\\label\{tab:rec\}.*?\\end\{table\*?\}", tex, re.S)
 assert rec, "recommendation table missing"
 row_labels = {line.split("&", 1)[0].strip() for line in rec.group(0).splitlines() if "&" in line and not line.lstrip().startswith("Route")}
 expected = {
@@ -59,3 +59,10 @@ for label, path in expected.items():
 assert (P / "tab_det.tex").is_file() and (P / "tab_cost.tex").is_file()
 assert (P / "tab_bitwise.tex").is_file() and (P / "tab_tune.tex").is_file()
 print("paper ok:", len(used), "macros used")
+
+# ARR anonymity: the review front end and the shared content must not name the authors or link their repositories.
+# Self-authored PRs/issues are cited in the third person through refs.bib, which ARR allows.
+_anon_src = (P / "acl.tex").read_text() + re.sub(r"\\else.*?\\fi", "", (P / "body.tex").read_text(), flags=re.S)
+for pat in (r"Isaac", r"Thompson", r"Brigham", r"\bBYU\b", r"imthomp", r"vllm-batch-invariance", r"github\.com/(?!vllm-project)"):
+    assert not re.search(pat, _anon_src), f"anonymity: {pat!r} appears in the ARR version"
+print("anonymity ok")

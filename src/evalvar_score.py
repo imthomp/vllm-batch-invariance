@@ -8,6 +8,8 @@ same normalizer for every arm. Truncated (finish == "length") responses are wron
 Usage: evalvar_score.py --root <dir> [--merge] [--partial]   (--partial scores whatever exists and never merges)
 """
 import argparse
+import gzip
+import hashlib
 import itertools
 import json
 import re
@@ -51,6 +53,11 @@ def grade(r):
     return b is not None and norm(b) == norm(r["gold"])
 
 
+def tok_key(r):
+    """Identity of a response's token ids; raw runs carry the ids, archived runs their sha256 (same encoding)."""
+    return r["token_sha"] if "token_sha" in r else hashlib.sha256(json.dumps(r["token_ids"]).encode()).hexdigest()
+
+
 def mcnemar_p(x, y):
     """Exact two-sided McNemar p from paired 0/1 lists."""
     b = sum(1 for u, v in zip(x, y) if u and not v)
@@ -78,11 +85,14 @@ R = Path(a.root)
 runs, ids = {}, None  # runs[m, bi, cond, rep] = list of records in problem order
 for m, bi, c, r in itertools.product(MODELS, (0, 1), CONDS, REPS):
     p = R / m / f"bi{bi}" / f"{c}_r{r}.jsonl"
-    if not p.exists() or not (meta := p.with_suffix(".meta.json")).exists():
+    if not p.exists():  # archived form (src/evalvar_archive.py): gzipped, token_ids replaced by token_sha
+        p = p.with_name(p.name + ".gz")
+    meta = R / m / f"bi{bi}" / f"{c}_r{r}.meta.json"
+    if not p.exists() or not meta.exists():
         if a.partial:
             continue
         sys.exit(f"missing {p}")
-    recs = [json.loads(line) for line in p.open()]
+    recs = [json.loads(line) for line in (gzip.open(p, "rt") if p.suffix == ".gz" else p.open())]
     if json.loads(meta.read_text())["limit"]:
         sys.exit(f"{p} is a smoke run (limit set)")
     if ids is None:
@@ -166,7 +176,7 @@ for m in MODELS:
     on = [runs[m, 1, c, r] for c in CONDS for r in REPS if (m, 1, c, r) in runs]
     if len(on) < 8:
         continue
-    diff = sum(len({tuple(run[i]["token_ids"]) for run in on}) > 1 for i in range(len(ids)))
+    diff = sum(len({tok_key(run[i]) for run in on}) > 1 for i in range(len(ids)))
     S[f"{P}.{m}.bi_on_requests_differing"] = diff
     bi_pass &= diff == 0
     for c in CONDS:

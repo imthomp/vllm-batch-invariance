@@ -1,0 +1,26 @@
+% ARR / ACL review version (anonymous). Content lives in body.tex; build: latexmk -pdf acl.tex
+\documentclass[11pt]{article}
+\usepackage[review]{acl}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\input{macros}
+\newif\ifanon\anontrue
+\newcommand{\todo}[1]{\textcolor{red}{[#1]}}
+\newcommand{\pending}[1]{\textcolor{red}{[PENDING: #1]}}
+
+\title{Reducing the Cost of Reproducible LLM Serving: Batch-Invariant Inference in vLLM}
+\author{Anonymous ACL submission}
+
+\begin{document}
+\maketitle
+\input{body}
+
+\bibliography{refs}
+\end{document}
