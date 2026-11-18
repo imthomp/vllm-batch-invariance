@@ -1,0 +1,4 @@
+{"tag": "h100_oss120_bk", "model": "/nobackup/autodelete/usr/it238/research_lab/models/gpt-oss-120b", "job_id": "15490033",
+ "gpu": "NVIDIA H100 80GB HBM3", "venv": "/nobackup/autodelete/usr/it238/research_lab/vllm-pr-check/.venv", "arms": {
+  "gatebk": {"src": "/home/it238/vllm-fu-gatebk", "sha": "dfe9e0d98eb6e6c8ba9cb96667abba6550f5b030", "bi": 1, "breakable_env": "unset"},
+  "gate": {"src": "/home/it238/vllm-fu-gate", "sha": "dbf8f76e340c79a28b1b155825baf33beb542c16", "bi": 1, "breakable_env": "unset"}}}
