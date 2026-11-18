@@ -13,7 +13,7 @@ subprocess.run([sys.executable, str(ROOT / "src/make_macros.py")], check=True, c
 for f, text in before.items():
     assert (P / f).read_text() == text, f"{f} was stale or hand-edited; rerun src/make_macros.py"
 
-tex = "\n".join((P / f).read_text() for f in ("main.tex", "acl.tex", "body.tex"))  # both front ends + shared content
+tex = "\n".join((P / f).read_text() for f in ("main.tex", "acl.tex", "body.tex", "appendix.tex"))  # both front ends + shared content
 defined = set(re.findall(r"\\newcommand\{\\(\w+)\}", before["macros.tex"]))
 used = {m for m in re.findall(r"\\([A-Z]\w+)\{\}", tex)}
 assert used <= defined, f"undefined macros: {sorted(used - defined)}"
@@ -29,7 +29,9 @@ ALLOWED = {"8", "7", "4", "1", "32", "8192", "20", "5", "2880", "1024", "13.4", 
            # library versions; tuning search space (BLOCK_K 64/128) and vLLM's default 128-row tile (checked in
            # batch_invariant.py); 256 = batch-size cutoff in the definition of the large-batch comparison
            "13.1", "13.8.2", "64", "128", "256",
-           "16"}  # cuBLAS alignment-class names (ALIGN_2B, ALIGN_16B)
+           "16",  # cuBLAS alignment-class names (ALIGN_2B, ALIGN_16B)
+           # eval-variance design constants fixed in PROTOCOL.md: chunked-prefill token budget, number of model pairs, McNemar level
+           "512", "15", "0.05"}
 bad = sorted(nums - ALLOWED)
 assert not bad, f"unreviewed numeric literals in main.tex: {bad}"
 
@@ -62,7 +64,7 @@ print("paper ok:", len(used), "macros used")
 
 # ARR anonymity: the review front end and the shared content must not name the authors or link their repositories.
 # Self-authored PRs/issues are cited in the third person through refs.bib, which ARR allows.
-_anon_src = (P / "acl.tex").read_text() + re.sub(r"\\else.*?\\fi", "", (P / "body.tex").read_text(), flags=re.S)
+_anon_src = (P / "acl.tex").read_text() + (P / "appendix.tex").read_text() + re.sub(r"\\else.*?\\fi", "", (P / "body.tex").read_text(), flags=re.S)
 # Patterns are assembled from fragments so this file itself passes the supplement's leak scan.
 for pat in ("Is" + "aac", "Thom" + "pson", "Brig" + "ham", r"\bB" + r"YU\b", "imth" + "omp", "vllm-batch-" + "invariance",
             r"github\.com/(?!vllm-project)"):
