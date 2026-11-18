@@ -238,6 +238,26 @@ P["paper.core_gemma_prefill32_wins"] = S[f"{_c}.h100_gemma.prefill32.pr_wins"]
 P["paper.core_mistral_decode32"] = S[f"{_c}.h100_mistral.decode32.pr_vs_base_median"]
 P["paper.core_rounds"] = S[f"{_c}.h100_q25.decode32.rounds"]
 
+# Gemma-2-9B prefill diagnosis (PROTOCOL.md "Diagnostic: Gemma-2-9B prefill regression"; src/score_followup.py), a separate
+# H100 run from the core-PR table: arms base, basebrk (base + forced breakable graphs), pr, prnobrk (pr with breakable off).
+_g = "followup.h100_gemma_prefill_diag"
+P["paper.gemmadiag_rounds"] = S[f"{_g}.rounds"]
+for _arm in ("basebrk", "pr", "prnobrk"):
+    for _w in ("prefill32", "decode32"):
+        P[f"paper.gemmadiag_{_arm}_{_w}"] = S[f"{_g}.{_w}.{_arm}_vs_base_median"]
+        P[f"paper.gemmadiag_{_arm}_{_w}_wins"] = S[f"{_g}.{_w}.{_arm}_vs_base_wins"]
+
+# gpt-oss-20b follow-up to #65931 (PROTOCOL.md "gpt-oss follow-up to #65931"): gate (MXFP4 auto-enables breakable graphs)
+# vs cfg (#65931 configs only), H100 and H200, three rounds each.
+_o = [f"followup.{t}_oss20_v2" for t in ("h100", "h200")]
+assert all(S[f"{t}.rounds"] == 3 and S[f"{t}.valid"] for t in _o)
+P["paper.ossgate_rounds"] = 3
+for _w in ("decode1", "decode32", "longdecode32", "prefill32"):
+    _v = [S[f"{t}.{_w}.gate_vs_cfg_median"] for t in _o]
+    P[f"paper.ossgate_{_w}_min"], P[f"paper.ossgate_{_w}_max"] = min(_v), max(_v)
+    P[f"paper.ossgate_{_w}_wins_min"] = min(S[f"{t}.{_w}.gate_vs_cfg_wins"] for t in _o)
+P["paper.ossgate_prefill32_absmax"] = max(abs(S[f"{t}.prefill32.gate_vs_cfg_median"]) for t in _o)
+
 merge(P)
 print(len(P), "paper stats")
 for k, v in sorted(P.items()):

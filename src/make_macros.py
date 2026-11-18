@@ -189,6 +189,23 @@ M = {
     "CoreGemmaPreWins": ("paper.core_gemma_prefill32_wins", num),
     "CoreMistralDec": ("paper.core_mistral_decode32", pct),
     "CoreRounds": ("paper.core_rounds", num),
+    "DiagGemmaRounds": ("paper.gemmadiag_rounds", num),
+    "DiagGemmaBasebrkPre": ("paper.gemmadiag_basebrk_prefill32", pct),
+    "DiagGemmaBasebrkPreWins": ("paper.gemmadiag_basebrk_prefill32_wins", num),
+    "DiagGemmaBasebrkDec": ("paper.gemmadiag_basebrk_decode32", pct),
+    "DiagGemmaPrPre": ("paper.gemmadiag_pr_prefill32", pct),
+    "DiagGemmaPrnobrkPre": ("paper.gemmadiag_prnobrk_prefill32", pct),
+    "DiagGemmaPrnobrkPreWins": ("paper.gemmadiag_prnobrk_prefill32_wins", num),
+    "DiagGemmaPrnobrkDec": ("paper.gemmadiag_prnobrk_decode32", pct),
+    "DiagGemmaPrDec": ("paper.gemmadiag_pr_decode32", pct),
+    "OssGateRounds": ("paper.ossgate_rounds", num),
+    "OssGateDecOneMin": ("paper.ossgate_decode1_min", pct),
+    "OssGateDecOneMax": ("paper.ossgate_decode1_max", pct),
+    "OssGateDecOneWins": ("paper.ossgate_decode1_wins_min", num),
+    "OssGateDecMin": ("paper.ossgate_decode32_min", pct),
+    "OssGateDecMax": ("paper.ossgate_decode32_max", pct),
+    "OssGateDecWins": ("paper.ossgate_decode32_wins_min", num),
+    "OssGatePreAbsMax": ("paper.ossgate_prefill32_absmax", pct),
 }
 
 # Results still being produced: render a visible stub until the key exists (filled by src/score_*.py).
