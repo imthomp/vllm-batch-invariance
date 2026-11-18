@@ -1,0 +1,7 @@
+{"tag": "h100_oss20_v2", "model": "openai/gpt-oss-20b", "job_id": "15482847",
+ "gpu": "NVIDIA H100 80GB HBM3", "venv": "/nobackup/autodelete/usr/it238/research_lab/vllm-pr-check/.venv", "arms": {
+  "base": {"src": "/home/it238/vllm-generic-base", "sha": "df8c0296af83ac9807a473fbb01e614a643964c0", "bi": 1, "breakable_env": "unset"},
+  "off": {"src": "/home/it238/vllm-generic-base", "sha": "df8c0296af83ac9807a473fbb01e614a643964c0", "bi": 0, "breakable_env": "unset"},
+  "gatebk": {"src": "/home/it238/vllm-fu-gatebk", "sha": "dfe9e0d98eb6e6c8ba9cb96667abba6550f5b030", "bi": 1, "breakable_env": "unset"},
+  "gate": {"src": "/home/it238/vllm-fu-gate", "sha": "dbf8f76e340c79a28b1b155825baf33beb542c16", "bi": 1, "breakable_env": "unset"},
+  "cfg": {"src": "/home/it238/vllm-fu-cfg", "sha": "bb922e610ef6f242a6da2d61cc8724a4ef6b1ef8", "bi": 1, "breakable_env": "unset"}}}
