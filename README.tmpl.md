@@ -1,80 +1,86 @@
 # vllm-batch-invariance
 
-Does a request get the same output from vLLM no matter which other requests share its batch, or whether its prefix was cached? This repo measures that, measures what vLLM's batch-invariant mode costs to fix it, and tests a cheaper way to get the same guarantee on Hopper GPUs.
+The same request can get a different output from vLLM depending on which other requests share its batch, or whether its prefix was cached. That makes individual evaluation records depend on serving load. vLLM's batch-invariant mode removes the dependence, but on models without tuned kernels it costs most of the decode throughput. This repo measures the effect and the cost, finds where the cost comes from, and reduces it. The work fed upstream vLLM changes and a paper draft.
+
+## Status
+Upstream vLLM contributions:
+
+| | What | State |
+|---|---|---|
+| [#65931](https://github.com/vllm-project/vllm/pull/65931) | Tuned H100 batch-invariant matmul configs for gpt-oss | merged |
+| [#67179](https://github.com/vllm-project/vllm/pull/67179) | Correct the batch-invariance comment on Hopper/Blackwell split-k | merged |
+| [#67376](https://github.com/vllm-project/vllm/pull/67376) | Generic per-batch-size Hopper fallback config for untuned bf16 shapes | under review |
+| [#68467](https://github.com/vllm-project/vllm/pull/68467) | Breakable CUDA graphs for MXFP4 models (gpt-oss) | open |
+| [#67275](https://github.com/vllm-project/vllm/issues/67275) | RFC: batch-size-aware configs for untuned shapes | open |
+| [#65587](https://github.com/vllm-project/vllm/issues/65587) | Bug report: Gemma-2-9B not batch-invariant on H100; fixed by another contributor in [#65627](https://github.com/vllm-project/vllm/pull/65627) | fixed |
+| [#65569](https://github.com/vllm-project/vllm/issues/65569) | Proposal to route Linear layers to cuBLAS on Hopper | closed by us (see finding 6) |
+
+- **Paper:** `paper/main.tex` (named version) and `paper/acl.tex` (anonymous ARR review version) share their content in `paper/body.tex` and `paper/appendix.tex`. Not yet public: it goes to a lab workshop first.
+- **In progress:** a pre-registered experiment on whether serving conditions change benchmark conclusions (finding 8). All runs are complete; scoring is pending.
+
+## Findings
+Every number below is rendered from `results/stats.json`. Decision rules were fixed before each run and are in `PROTOCOL.md`, with every amendment and void run.
+
+**1. Without batch-invariant mode, outputs depend on serving state.** The same greedy request, run under cold or warm prefix cache and alone or alongside unrelated requests, produced different tokens on {{cross.main_qwen25_off.mismatch_requests}} of {{cross.main_qwen25_off.requests}} requests for Qwen2.5-7B-Instruct and {{cross.v032_qwen3_off.mismatch_requests}} of {{cross.v032_qwen3_off.requests}} for Qwen3-8B. In a WMT23 machine-translation pilot, {{paper.mt_change_min:pct}} to {{paper.mt_change_max:pct}} of segments changed across batching configurations, but {{paper.mt_flips}} of {{paper.mt_comparisons}} system comparisons changed.
+
+**2. Stock batch-invariant mode is expensive on models without tuned kernels.** Decode throughput loss at batch 32 on H100, against the mode off: {{phase2.decode.q25.32.on_loss_median:pct}} for Qwen2.5-7B-Instruct and {{phase2.decode.gemma2.32.on_loss_median:pct}} for Gemma-2-9B, but {{main.llama31.b32.stock_loss:pct}} for Llama-3.1-8B and {{main.qwen3.b32.stock_loss:pct}} for Qwen3-8B, whose shapes have tuned entries in vLLM's config table.
+
+**3. The cost is a tuning gap.** Shapes without a table entry use one default configuration with 128-row tiles at every batch size, so at decode batch sizes most of each tile is padding. Tuning the five Qwen2.5-7B shapes per batch-size bucket cut the loss from {{paper.tune_stock_min:pct}}–{{paper.tune_stock_max:pct}} to {{paper.tune_loss_min:pct}}–{{paper.tune_loss_max:pct}} across batch sizes up to {{paper.tune_bmax}} ({{generic2.q25gen2.b32.tuned_loss:pct}} at batch 32), with {{tune.q25.check_bad}} of {{tune.q25.check_rows:int}} rows differing in a bitwise alone-vs-batched check. Tuned gpt-oss configs were merged upstream (#65931); they raised decode-heavy serving throughput by {{serve_gptoss.decode.gain_over_stock:pct}} for gpt-oss-20b and {{serve_gptoss120b.decode.gain_over_stock:pct}} for gpt-oss-120b, which is small because most of gpt-oss runs in quantized expert kernels the table does not touch.
+
+**4. One generic configuration recovers most of the tuning gain without per-model work.** A per-batch-size configuration chosen on training shapes that exclude both evaluation models reduces Qwen2.5-7B's batch-32 loss from {{paper.generic_stock_b32:pct}} to {{paper.generic_b32:pct}} (per-model tuning: {{paper.generic_tuned_b32:pct}}), recovering {{paper.generic_recovered_b32:pct}} of the gap, and Gemma-2-9B's from {{paper.generic_gemma_stock_b32:pct}} to {{paper.generic_gemma_b32:pct}}. Invariance is preserved: {{paper.generic_check_bad}} of {{paper.generic_check_rows:int}} rows differ in the bitwise check, and {{paper.generic_cross_mismatch}} of {{paper.generic_cross_requests}} requests change across serving conditions. Served from the upstream implementation (#67376) against its merge base, it raises concurrency-32 decode throughput by {{paper.core_untuned_decode32_min:pct}}–{{paper.core_untuned_decode32_max:pct}} on every untuned model tested (Qwen2.5-7B on H100 and H200, Qwen2.5-32B at TP=2, Gemma-2-9B) and Qwen2.5-7B single-request decode by {{paper.core_q25_decode1:pct}}. Mistral-7B, whose shapes are mostly tuned already, changes by {{paper.core_mistral_decode32:pct}}.
+
+**5. Breakable CUDA graphs are needed, and they have a prefill cost on some models.** The config lookup depends on the runtime batch size, and a compiled forward can freeze the lookup made during graph capture. Breakable graphs keep it dynamic. vLLM enables them automatically only for unquantized models; letting MXFP4 models (gpt-oss) through (#68467) raises gpt-oss-20b single-request decode by {{paper.ossgate_decode1_min:pct}}–{{paper.ossgate_decode1_max:pct}} and concurrency-32 decode by {{paper.ossgate_decode32_min:pct}}–{{paper.ossgate_decode32_max:pct}} on H100 and H200, with prefill within {{paper.ossgate_prefill32_absmax:pct}}. On Gemma-2-9B, #67376 slows prefill by {{paper.core_gemma_prefill32_loss:pct}}. A diagnostic run traces this to the graph mode, not the configuration: forcing breakable graphs on the merge base changes prefill throughput by {{paper.gemmadiag_basebrk_prefill32:pct}}, while the PR's configuration without breakable graphs changes it by {{paper.gemmadiag_prnobrk_prefill32:pct}}. Extra batch-size buckets for the gpt-oss routers were faster at the kernel level but not end to end (gpt-oss-120b prefill {{followup.h100_oss120_bk.prefill32.gatebk_vs_gate_median:pct}}, decode {{followup.h100_oss120_bk.decode32.gatebk_vs_gate_median:pct}}, {{followup.h100_oss120_bk.rounds}} rounds), so they were not proposed.
+
+**6. Routing Linear layers to cuBLAS is cheapest but not recommended.** Under the mode's settings, cuBLAS gave identical outputs for large shapes, and routing Linear layers to it cut Qwen2.5-7B's batch-32 loss to {{phase2.decode.q25.32.plain_loss_median:pct}}. This was the project's first proposal (#65569). It was withdrawn after maintainer feedback, because the property is undocumented and shape-dependent: on H100, every shape with N ≤ {{paper.p1c_max_fail_n}} is batch-variant and every shape with N ≥ {{paper.p1c_min_pass_n}} invariant, at K = 2880 and 4096; the boundary moves with K, with the cuBLAS environment variables and across GPUs, and the gpt-oss-20b router (N=32, K=2880) diverges from batch size {{paper.p1c_router_bf16_first_bad_m}}. On Blackwell, cuBLAS's documented batch-invariance mode passes the bitwise test unless vLLM's reduced-precision setting is also applied. Raw results are in `results/phase1*`.
+
+**7. Gemma-2-9B was not batch-invariant under vLLM's own mode.** Stock mode diverged on {{phase2.cross.gemma2_on.mismatch_requests}} of {{phase2.cross.gemma2_off.requests}} requests on H100. One-component-at-a-time diagnostics localized it to FlashAttention's sliding-window path under CUDA graphs (#65587). The upstream fix (#65627) takes the issue's reproducer from {{paper.fafix_base_div}} of {{paper.fafix_n}} prompts differing to {{paper.fafix_fix_div}}.
+
+**8. Does serving change evaluation conclusions? (scoring pending)** Six instruction-tuned models (Qwen2.5-7B, Llama-3.1-8B, Gemma-2-9B, Mistral-7B, OLMo-2-7B, Phi-4-mini) on GSM8K and MATH-500, under four serving conditions (serial, full batch, mixed with unrelated prompts, chunked prefill), each twice, with batch-invariant mode off and on, on H100. A model comparison counts as changed only if its sign or significance differs between conditions while identical repeats agree. Design, grader and decision rule: `PROTOCOL.md`, "Do serving conditions change NLP evaluation conclusions?". Code: `src/evalvar_gen.py`, `slurm/evalvar.sbatch`, `src/evalvar_score.py`.
 
 ## Tested versions
-Batch invariance is under active development in vLLM, and later versions may change both the cost and the routing described here. Results apply only to:
+Batch invariance is under active development in vLLM; later versions may change both the cost and the behavior described here.
 
 | | Version |
 |---|---|
-| vLLM (main) | `0.33.0rc1.dev454+gb8c04dd3b` (nightly, commit `b8c04dd3b`) |
-| vLLM (release) | `0.32.0` |
-| PyTorch | `2.14.0+cu130` with main; `2.13` with `0.32.0` |
-| GPU | NVIDIA H100 80GB HBM3, driver `580.196.07` |
+| vLLM, cost and determinism studies | `0.33.0rc1.dev454+gb8c04dd3b` (main nightly) and `0.32.0` |
+| vLLM, upstream-PR and follow-up experiments | runtime `0.34.0rc1.dev352`, with source trees on PR merge base `df8c0296` |
+| PyTorch | `2.14.0+cu130` (main), `2.13` (`0.32.0`) |
+| GPUs | H100 80GB HBM3 (most results); H200 and B200 where noted |
 
-## Findings
-
-**1. Without batch-invariant mode, outputs depend on serving state.** The same greedy request, run under cold or warm prefix cache and alone or alongside unrelated requests, produced different tokens on {{cross.main_qwen25_off.mismatch_requests}} of {{cross.main_qwen25_off.requests}} requests for Qwen2.5-7B-Instruct and {{cross.v032_qwen3_off.mismatch_requests}} of {{cross.v032_qwen3_off.requests}} for Qwen3-8B. Top-k logprobs differed on {{cross.main_qwen25_off.topk_diff_requests}} and {{cross.v032_qwen3_off.topk_diff_requests}} requests respectively.
-
-**2. Stock batch-invariant mode fixes this but is expensive on models without tuned kernels.** Decode throughput loss at batch 32 on H100: {{main.qwen25.b32.stock_loss:pct}} for Qwen2.5-7B-Instruct on vLLM main, and {{v032.qwen3.b32.stock_loss:pct}} for Qwen3-8B on vLLM 0.32, before Qwen3-8B got tuned kernel configs.
-
-**3. On Hopper, plain cuBLAS for large Linear layers gives the same determinism at almost no cost.** On SM90/SM100, vLLM's batch-invariant mode routes every Linear layer through a Triton kernel; this was a deliberate change in vLLM PR #35404, after GPT-OSS failed batch invariance with cuBLAS on H100. We find cuBLAS batch-invariant under the mode's settings for the large Linear shapes we tested, though a small mixture-of-experts router shape (N=32, K=2880) was reported not to be (vLLM issue #65569), so routing must be decided per shape. Routing Linear layers to `torch.nn.functional.linear` instead, with the rest of batch-invariant mode unchanged (`src/hopper_wrap.py`):
-
-| Model (vLLM main) | Token mismatches | Requests with differing top-k | Loss at batch 32, stock | Loss at batch 32, plain cuBLAS |
-|---|---|---|---|---|
-| Qwen2.5-7B-Instruct (no tuned config) | {{cross.main_qwen25_plain.mismatch_pairs}} / {{cross.main_qwen25_plain.pairs:int}} | {{cross.main_qwen25_plain.topk_diff_requests}} / {{cross.main_qwen25_plain.requests}} | {{main.qwen25.b32.stock_loss:pct}} | {{main.qwen25.b32.plain_loss:pct}} |
-| Qwen3-8B (tuned config) | {{cross.main_qwen3_plain.mismatch_pairs}} / {{cross.main_qwen3_plain.pairs:int}} | {{cross.main_qwen3_plain.topk_diff_requests}} / {{cross.main_qwen3_plain.requests}} | {{main.qwen3.b32.stock_loss:pct}} | {{main.qwen3.b32.plain_loss:pct}} |
-| Llama-3.1-8B-Instruct (tuned config) | {{cross.main_llama31_plain.mismatch_pairs}} / {{cross.main_llama31_plain.pairs:int}} | {{cross.main_llama31_plain.topk_diff_requests}} / {{cross.main_llama31_plain.requests}} | {{main.llama31.b32.stock_loss:pct}} | {{main.llama31.b32.plain_loss:pct}} |
-
-Mismatches count every pair among 8 runs of each request: cold or warm cache, alone or with 7 unrelated neighbors, each twice. The same holds on vLLM 0.32 for Qwen3-8B and Llama-3.1-8B ({{cross.v032_qwen3_plain.mismatch_pairs}} and {{cross.v032_llama31_plain.mismatch_pairs}} mismatches). For the two models with tuned kernel configs on main, the gain over stock is small; the benefit is for models outside vLLM's tuned table.
-
-**4. Why it works, and the main risk.** A direct test (`src/bitwise.py`) compares a row multiplied alone against the same row inside batches of 1 to 512 rows at {{bitwise.torch_default_flags.shapes}} model-sized shapes, on the same H100 with torch 2.13. Under the cuBLAS flags batch-invariant mode sets: {{bitwise.bi_flags_ws16.bad}} of {{bitwise.bi_flags_ws16.rows:int}} rows differ. Under PyTorch's default flags: {{bitwise.torch_default_flags.bad:int}} of {{bitwise.torch_default_flags.rows:int}} differ, all in {{bitwise.torch_default_flags.bad_shapes}} shape and starting at batch {{bitwise.torch_default_flags.min_bad_m}}. So the result depends on cuBLAS behavior that NVIDIA does not document as batch-invariant, and a future cuBLAS release could change it.
-
-## Robustness and generalization (Phases 1 and 2)
-Rules for both phases were fixed before running; see `PROTOCOL.md`, including every amendment.
-
-**Is cuBLAS batch-invariant?** Each row multiplied alone was compared with the same row inside batches of 1 to 8192 rows, at every Linear shape of six models, in bf16 and fp16. Under batch-invariant mode's flags: {{paper.p1_bi_bad_total}} mismatches out of {{paper.p1_bi_comparisons:int}} comparisons across {{paper.p1_builds_h100}} H100 builds and {{paper.p1_builds_b200}} B200 builds ({{paper.p1_cublas_versions}} cuBLAS versions), including with a second process loading the GPU. For these large shapes the cuBLAS environment variables made no difference. For narrower shapes they do (see below), so they must be in effect before cuBLAS starts. With PyTorch defaults, {{paper.p1_ctl_min_h100:int}} to {{paper.p1_ctl_max_h100:int}} rows per run differed on H100 and {{paper.p1_ctl_max_b200:int}} on B200.
-
-**Which shapes are batch-invariant?** A denser test (every batch size 1–1024, then every 16th to 8192; {{paper.p1c_shapes}} shapes including MoE routers and a sweep of narrow widths) on H100, at K = 2880 and 4096: every shape with N ≤ {{paper.p1c_max_fail_n}} is batch-variant under the flags, and every shape with N ≥ {{paper.p1c_min_pass_n}} is invariant at every batch size, in bf16 and fp16. A finer sweep shows the boundary also depends on K and on the cuBLAS workspace environment variables. With them, widths {{paper.p1d_narrow_ns:list}} pass at K = {{paper.p1d_narrow_pass_k:list}} but fail at {{paper.p1d_narrow_fail_k:list}}; widths from {{paper.p1d_mid_lo}} to {{paper.p1d_mid_hi}} pass only when they are multiples of {{paper.p1d_mid_pass_multiple}}; every width of at least {{paper.p1c_min_pass_n}} tested passed. Without them, every tested width from {{paper.p1d_noenv_min_fail_n}} to {{paper.p1d_noenv_max_fail_n}} fails at K = {{paper.p1d_noenv_fail_k:list}}, and only widths of {{paper.p1d_noenv_min_pass_n}} or more pass at every K. So the safe rule is a bitwise check of each shape, with N ≥ {{paper.p1c_min_pass_n}} as a conservative pre-filter. The gpt-oss-20b router (N=32, K=2880) diverges from batch size {{paper.p1c_router_bf16_first_bad_m}} in bf16. So routing must be per shape: wide projections (nearly all the cost) can use cuBLAS; routers keep the Triton kernel. On Blackwell, cuBLAS 13.4 documents an experimental batch-invariance mode (compute capability 10.x only), the natural long-term path there.
-
-**Serving determinism with cuBLAS routing:** {{paper.p2_pass_configs}} of {{paper.p2_configs}} configurations gave identical tokens and top-k logprobs on every run of every request. That covers Qwen2.5-7B at TP=2 and TP=4, long context with chunked prefill, seeded sampling, Qwen2.5-32B at TP=2 and Mistral-7B. Controls with batch-invariant mode off diverged on {{paper.p2_ctl_div_min:pct}} to {{paper.p2_ctl_div_max:pct}} of requests.
-
-**Gemma-2-9B fails, and it is vLLM's batch-invariant mode, not the routing:** stock mode diverged on {{phase2.cross.gemma2_on.mismatch_requests}} of {{phase2.cross.gemma2_on.requests}} requests, cuBLAS routing on {{phase2.cross.gemma2v2_plain.mismatch_requests}}. Diagnostics on {{phase2.cross.g2tri_on.requests}} requests each localize it: Triton attention gives {{phase2.cross.g2tri_on.mismatch_requests}} diverging requests and eager mode {{phase2.cross.g2eager_on.mismatch_requests}}, while removing softcapping still gives {{phase2.cross.g2nosc_on.mismatch_requests}}. Disabling the sliding window gives {{phase2.cross.g2nosw_on.mismatch_requests}}, and so does turning off CUDA graphs with compilation kept ({{phase2.cross.g2nocg_on.mismatch_requests}}), so the failure is in FlashAttention's sliding-window path under CUDA graphs.
-
-**Cost at batch-32 decode, median of 3 jobs, vs. batch-invariant mode off:**
-
-| Model | Stock | cuBLAS routing |
-|---|---|---|
-| Qwen2.5-7B | {{phase2.decode.q25.32.on_loss_median:pct}} | {{phase2.decode.q25.32.plain_loss_median:pct}} |
-| Gemma-2-9B | {{phase2.decode.gemma2.32.on_loss_median:pct}} | {{phase2.decode.gemma2.32.plain_loss_median:pct}} |
-| Mistral-7B (shapes mostly tuned) | {{phase2.decode.mistral.32.on_loss_median:pct}} | {{phase2.decode.mistral.32.plain_loss_median:pct}} |
-| Qwen2.5-7B, TP=2 | {{phase2.decode.q25tp2.32.on_loss_median:pct}} | {{phase2.decode.q25tp2.32.plain_loss_median:pct}} |
-| Qwen2.5-32B, TP=2 | {{phase2.decode.q32tp2.32.on_loss_median:pct}} | {{phase2.decode.q32tp2.32.plain_loss_median:pct}} |
-
-Prefill: cuBLAS routing loses at most {{paper.p2_prefill_plain_max:pct}}, against {{paper.p2_prefill_stock_min:pct}} to {{paper.p2_prefill_stock_max:pct}} for stock mode. {{paper.p2_cost_pass}} of {{paper.p2_cost_cells}} cells meet the preregistered 5% limit. The exception is Qwen2.5-7B at TP=2. Batch-invariant mode's fixed-order communication settings alone cost {{phase2.decode.q25tp2.32.comm_loss_median:pct}} there, so the excess is communication, not the routing.
-
-## Scope and limitations
-- H100 80GB (B200 for the cuBLAS test only), tensor parallel up to 4, bf16, math prompts (GSM8K test and MATH-500).
-- vLLM 0.32.0 (torch 2.13) and a vLLM main nightly, 0.33.0rc1.dev454 (torch 2.14, CUDA 13.0).
-- Throughput: each cell is the median of 3 timed repeats in one job.
-- Not tested: H200, multi-node, TP=8, mixture-of-experts or quantized models, production traffic, other engines' deterministic modes.
-- fp32: cuBLAS fp32 matrix multiplication is not batch-invariant in our tests (raw results in `results/phase1b`), so the routing applies to bf16 and fp16 only. Bias terms in bf16/fp16 are fine.
-- This is a measurement and a prototype patch (`src/plainpatch/`), not an upstream change.
-- `paper/` holds a short technical note built from the same statistics.
-
-## Prior art
-Batch-dependent nondeterminism and batch-invariant kernels are known (He and Thinking Machines Lab, "Defeating Nondeterminism in LLM Inference", 2025; vLLM's batch-invariance feature). The contribution here is the Hopper routing measurement.
+## Repository layout
+- `PROTOCOL.md`: every pre-registered rule, outcome, amendment and void run, dated.
+- `src/`: experiments (`crossover*.py` determinism, `decode_throughput.py` / `prefill_throughput.py` cost, `bitwise*.py` kernel checks, `tune_bi.py` / `tune_generic.py` configs, `evalvar_*.py` evaluation variance), scorers (`score_*.py`, `analyze.py`, `paper_stats.py`), and renderers (`render.py`, `make_macros.py`, `make_figures.py`).
+- `slurm/`: job scripts. `serve_bench.sbatch`, `core_pr_serve.sbatch` and `oss_followup_serve.sbatch` run `vllm bench serve` comparisons; `evalvar.sbatch` runs the evaluation-variance design.
+- `results/`: raw outputs and `stats.json`, the single source of every reported number. `results/validation/` holds the upstream-PR serving runs.
+- `paper/`: LaTeX sources; `macros.tex` and `tab_*.tex` are generated from `stats.json`.
+- `tests/`: `check.py` (stats and README are current, no hand-typed numbers) and `check_paper.py` (macros current, no hand-typed numbers, every table row traced to data, the ARR version anonymous).
 
 ## Reproduce
 ```
-python src/fetch_data.py problems.json              # needs `datasets`
-# throughput: MODE off|on|plain
-VLLM_BATCH_INVARIANT=1 python src/hopper_wrap.py src/decode_throughput.py --model Qwen/Qwen2.5-7B-Instruct --out out.json
-# determinism
-VLLM_BATCH_INVARIANT=1 python src/hopper_wrap.py src/crossover.py --data problems.json --out x.jsonl --model Qwen/Qwen2.5-7B-Instruct --n 100
+python src/fetch_data.py problems.json              # GSM8K test + MATH-500; needs `datasets`
+# cost and determinism (wrap with src/hopper_wrap.py to route Linear layers to cuBLAS)
+VLLM_BATCH_INVARIANT=1 python src/decode_throughput.py --model Qwen/Qwen2.5-7B-Instruct --out out.json
+VLLM_BATCH_INVARIANT=1 python src/crossover.py --data problems.json --out x.jsonl --model Qwen/Qwen2.5-7B-Instruct --n 100
 python src/bitwise.py --workspace :16:8 --out bit.json
-python src/analyze.py && python src/render.py && python tests/check.py
+# upstream PR vs merge base, online serving
+sbatch --export=ALL,TAG=<tag>,MODEL=Qwen/Qwen2.5-7B-Instruct,TP=1,BASE_SRC=<merge-base tree>,PR_SRC=<PR tree> slurm/core_pr_serve.sbatch
+# evaluation variance: one job per model and mode, then score
+sbatch --export=ALL,MODEL=Qwen/Qwen2.5-7B-Instruct,SHORT=qwen25_7b,BI=1 slurm/evalvar.sbatch
+python src/evalvar_archive.py && python src/evalvar_score.py --root results/validation/evalvar --merge
+# numbers, README, paper
+python src/analyze.py && python src/paper_stats.py && python src/render.py && python src/make_macros.py
+python tests/check.py && python tests/check_paper.py
+cd paper && latexmk -pdf main.tex && latexmk -pdf acl.tex
 ```
-Set `VLLM_ENABLE_V1_MULTIPROCESSING=0` so the in-process patch reaches the engine. A patched run is valid only if its log contains `patched linear_batch_invariant`. `slurm/run.sbatch` is the job template used. `PROTOCOL.md` has the decision rules, fixed before each run.
+Source trees for the PR experiments need vLLM's compiled extensions, linked from a matching build. The job scripts record the commit of every tree they run. Job scripts use `HF_HUB_OFFLINE=1` and cluster paths, which you will need to adjust.
 
-Every number in this README is rendered from `results/stats.json`, which `src/analyze.py` recomputes from the raw files in `results/`.
+## Scope and limitations
+- One engine (vLLM), bf16, dense models up to 32B plus gpt-oss, single node, tensor parallel up to 4. Not tested: multi-node, production traffic, other engines' deterministic modes.
+- The generic configuration targets Hopper; on other GPUs vLLM's default applies.
+- Throughput comparisons use three rotated rounds (five for the 120b router test) and report medians and per-round ranges, not confidence intervals.
+- cuBLAS behavior was measured on the library versions listed and may change with any release.
+
+## Prior art
+Batch-dependent nondeterminism and batch-invariant kernels are known (He and Thinking Machines Lab, "Defeating Nondeterminism in LLM Inference", 2025; vLLM's batch-invariance feature; SGLang's deterministic mode). Tuned configs for vLLM's batch-invariant kernel have been contributed for individual models (e.g. #62219). This repo measures how much of the cost tuning recovers, replaces per-model tuning with a generic default, and tests whether the remaining nondeterminism matters for evaluation.
+
+Every number in this README is a placeholder in `README.tmpl.md`, filled from `results/stats.json` by `src/render.py`; `tests/check.py` fails if the README is stale or the template contains an unreviewed number.

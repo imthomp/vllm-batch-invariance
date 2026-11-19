@@ -21,6 +21,9 @@ assert (ROOT / "README.md").read_text() == render.render(), "README.md is stale;
 ALLOWED = {
     "2.5", "7", "8", "3", "3.1", "32", "1", "512", "10", "0.32", "0.32.0", "0.33.0", "1.dev454", "2.13", "2.14",
     "13.0", "2", "4", "5", "9", "8192", "500", "80", "2880", "35404", "65569", "1024", "16", "13.4", "20", "4096", "90", "100", "256", "2025", "62219", "61118",
+    # vLLM PR/issue numbers in the status table; "finding 6" cross-reference; gpt-oss-120b model name;
+    # vLLM's default 128-row tile (checked in batch_invariant.py)
+    "65931", "67179", "67376", "68467", "67275", "65587", "65627", "6", "120", "128",
 }
 text = re.sub(r"\{\{[^}]+\}\}", "", (ROOT / "README.tmpl.md").read_text())
 text = re.sub(r"```.*?```", "", text, flags=re.S)
