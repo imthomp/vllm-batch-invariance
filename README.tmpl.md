@@ -1,6 +1,19 @@
 # vllm-batch-invariance
 
+[![checks](https://github.com/imthomp/vllm-batch-invariance/actions/workflows/checks.yml/badge.svg)](https://github.com/imthomp/vllm-batch-invariance/actions/workflows/checks.yml)
+
 The same request can get a different output from vLLM depending on which other requests share its batch, or whether its prefix was cached. That makes individual evaluation records depend on serving load. vLLM's batch-invariant mode removes the dependence, but on models without tuned kernels it costs most of the decode throughput. This repo measures the effect and the cost, finds where the cost comes from, and reduces it. The work fed upstream vLLM changes and a paper draft.
+
+## TL;DR
+
+- Serving state can change greedy outputs when batch-invariant mode is disabled.
+- Stock batch-invariant mode can impose a large decode-throughput cost on model
+  shapes without tuned kernels.
+- A generic Hopper fallback preserved invariance in the recorded checks while
+  recovering {{paper.generic_recovered_b32:pct}} of Qwen2.5-7B's batch-32
+  tuning gap; the corresponding upstream change is under review.
+- Tuned gpt-oss H100 configurations and a Hopper/Blackwell correctness comment
+  have already merged into vLLM.
 
 ## Status
 Upstream vLLM contributions:
@@ -15,7 +28,7 @@ Upstream vLLM contributions:
 | [#65587](https://github.com/vllm-project/vllm/issues/65587) | Bug report: Gemma-2-9B not batch-invariant on H100; fixed by another contributor in [#65627](https://github.com/vllm-project/vllm/pull/65627) | fixed |
 | [#65569](https://github.com/vllm-project/vllm/issues/65569) | Proposal to route Linear layers to cuBLAS on Hopper | closed by us (see finding 6) |
 
-- **Paper:** `paper/main.tex` (named version) and `paper/acl.tex` (anonymous ARR review version) share their content in `paper/body.tex` and `paper/appendix.tex`. Not yet public: it goes to a lab workshop first.
+- **Paper:** `paper/main.tex` (named version) and `paper/acl.tex` (anonymous ARR review version) share their content in `paper/body.tex` and `paper/appendix.tex`. The working sources and PDF are visible in this repository, but the paper has not yet been formally released or submitted; it goes to a lab workshop first.
 - **In progress:** a pre-registered experiment on whether serving conditions change benchmark conclusions (finding 8). All runs are complete; scoring is pending.
 
 ## Findings
