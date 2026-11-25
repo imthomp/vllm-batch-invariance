@@ -1,0 +1,17 @@
+{
+ "model": "mistralai/Mistral-7B-Instruct-v0.3",
+ "cond": "C1",
+ "bi": "1",
+ "engine": {
+  "max_num_seqs": 1
+ },
+ "n_bench": 1819,
+ "n_total": 1819,
+ "gen_seconds": 3217.784476518631,
+ "bench_output_tokens": 494171,
+ "gpu": "NVIDIA H100 80GB HBM3",
+ "vllm": "dev",
+ "vllm_src": "/home/it238/vllm-generic-default",
+ "job": "15501896",
+ "limit": 0
+}

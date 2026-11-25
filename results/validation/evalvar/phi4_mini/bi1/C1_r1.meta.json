@@ -1,0 +1,17 @@
+{
+ "model": "microsoft/Phi-4-mini-instruct",
+ "cond": "C1",
+ "bi": "1",
+ "engine": {
+  "max_num_seqs": 1
+ },
+ "n_bench": 1819,
+ "n_total": 1819,
+ "gen_seconds": 2545.7156150341034,
+ "bench_output_tokens": 519249,
+ "gpu": "NVIDIA H100 80GB HBM3",
+ "vllm": "dev",
+ "vllm_src": "/home/it238/vllm-generic-default",
+ "job": "15501900",
+ "limit": 0
+}

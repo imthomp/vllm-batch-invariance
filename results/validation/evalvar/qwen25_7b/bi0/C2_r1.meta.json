@@ -1,0 +1,17 @@
+{
+ "model": "Qwen/Qwen2.5-7B-Instruct",
+ "cond": "C2",
+ "bi": "0",
+ "engine": {
+  "max_num_seqs": 256
+ },
+ "n_bench": 1819,
+ "n_total": 1819,
+ "gen_seconds": 31.998947143554688,
+ "bench_output_tokens": 596709,
+ "gpu": "NVIDIA H100 80GB HBM3",
+ "vllm": "dev",
+ "vllm_src": "/home/it238/vllm-generic-default",
+ "job": "15501886",
+ "limit": 0
+}

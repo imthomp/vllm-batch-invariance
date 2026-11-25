@@ -1,0 +1,19 @@
+{
+ "model": "allenai/OLMo-2-1124-7B-Instruct",
+ "cond": "C4",
+ "bi": "1",
+ "engine": {
+  "max_num_seqs": 256,
+  "max_num_batched_tokens": 512,
+  "enable_chunked_prefill": true
+ },
+ "n_bench": 1819,
+ "n_total": 1819,
+ "gen_seconds": 90.38369274139404,
+ "bench_output_tokens": 674553,
+ "gpu": "NVIDIA H100 80GB HBM3",
+ "vllm": "dev",
+ "vllm_src": "/home/it238/vllm-generic-default",
+ "job": "15501898",
+ "limit": 0
+}

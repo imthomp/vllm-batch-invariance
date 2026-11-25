@@ -1,0 +1,17 @@
+{
+ "model": "meta-llama/Llama-3.1-8B-Instruct",
+ "cond": "C1",
+ "bi": "0",
+ "engine": {
+  "max_num_seqs": 1
+ },
+ "n_bench": 1819,
+ "n_total": 1819,
+ "gen_seconds": 3059.6454923152924,
+ "bench_output_tokens": 480850,
+ "gpu": "NVIDIA H100 80GB HBM3",
+ "vllm": "dev",
+ "vllm_src": "/home/it238/vllm-generic-default",
+ "job": "15502760",
+ "limit": 0
+}
