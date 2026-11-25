@@ -274,6 +274,27 @@ if "evalvar.comparisons" in S:
         _t = [S[f"evalvar.{m}.{_c}.time_on_vs_off"] for m in _EVM]
         P[f"paper.ev_time_{_c}_min"], P[f"paper.ev_time_{_c}_max"] = min(_t), max(_t)
 
+# MT eval-variance study (PROTOCOL.md "Do serving conditions change MT evaluation conclusions?"; src/mtvar_score.py).
+_MS = ("gemma2_9b", "gemma3_12b", "aya_8b", "qwen25_7b", "llama31_8b")
+_ML = ("de_DE", "zh_CN", "ja_JP", "is_IS", "sw_KE", "gu_IN", "zu_ZA")
+if "mtvar.sys_comparisons_n" in S:
+    assert S["mtvar.sys_comparisons_n"] == 190 and S["mtvar.judge_comparisons_n"] == 40
+    for _s in _MS:
+        P[f"paper.mtv_{_s}_between"] = sum(S[f"mtvar.{_s}.{lp}.change_between_mean"] for lp in _ML) / len(_ML)
+        P[f"paper.mtv_{_s}_within"] = sum(S[f"mtvar.{_s}.{lp}.change_within_mean"] for lp in _ML) / len(_ML)
+    P["paper.mtv_between_min"] = min(P[f"paper.mtv_{_s}_between"] for _s in _MS)
+    P["paper.mtv_between_max"] = max(P[f"paper.mtv_{_s}_between"] for _s in _MS)
+    P["paper.mtv_within_max"] = max(P[f"paper.mtv_{_s}_within"] for _s in _MS)
+    P["paper.mtv_judge_sig_changes"] = S["mtvar.judge_comparisons_cond"] - S["mtvar.judge_comparisons_cond_sign"]
+    _t = [S[f"mtvar.{m}.{c}.time_on_vs_off"] for m in _MS + ("qwen25_14b",) for c in ("C1", "C2", "C3", "C4")]
+    P["paper.mtv_time_min"], P["paper.mtv_time_max"] = min(_t), max(_t)
+    P["paper.mtv_bi_differ_total"] = sum(S[f"mtvar.{m}.bi_on_requests_differing"] for m in _MS + ("qwen25_14b",))
+    # Descriptive grouping by resource level (directions were chosen as 3 high- and 4 lower-resource; not a pre-registered test)
+    P["paper.mtv_high_between"] = sum(S[f"mtvar.{s}.{lp}.change_between_mean"] for s in _MS for lp in _ML[:3]) / (len(_MS) * 3)
+    P["paper.mtv_low_between"] = sum(S[f"mtvar.{s}.{lp}.change_between_mean"] for s in _MS for lp in _ML[3:]) / (len(_MS) * 4)
+    for _m, _n in (("metricx", "n_metricx"), ("comet22", "n_comet")):
+        P[f"paper.mtv_side_{_m}_share"] = S[f"mtvar.side.{_m}.bs1_vs_bs16.differ"] / S[f"mtvar.side.{_n}"]
+
 merge(P)
 print(len(P), "paper stats")
 for k, v in sorted(P.items()):

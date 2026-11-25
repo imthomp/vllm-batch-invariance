@@ -132,7 +132,7 @@ for s in systems:
           f"{np.mean([S[f'{P}.{s}.{lp}.change_between_mean'] for lp in LPS]):.2%}, within "
           f"{np.mean([S[f'{P}.{s}.{lp}.change_within_mean'] for lp in LPS]):.2%}")
 
-tot = {"any": 0, "repeat": 0, "cond": 0, "n": 0}
+tot = {"any": 0, "repeat": 0, "cond": 0, "n": 0, "cond_sign": 0}
 detail, ranks = [], {}
 for m, lps in METRICS.items():
     for lp in lps:
@@ -153,6 +153,7 @@ for m, lps in METRICS.items():
             tot["cond"] += cond
             if cond:
                 detail.append(f"{m} {lp} {s1} vs {s2}: " + ", ".join(f"{c} {v[c, 1]}" for c in CONDS))
+                tot["cond_sign"] = tot.get("cond_sign", 0) + (len({v[c, 1][0] for c in CONDS}) > 1)
 for kk, vv in tot.items():
     S[f"{P}.sys_comparisons_{kk}"] = vv
 S[f"{P}.sys_rankings_changed"] = sum(v > 1 for v in ranks.values())
@@ -170,7 +171,7 @@ if all((JUDGE, 0, c, r) in jr for c in CONDS for r in REPS):
     jsys = [i.split("|")[0] for i in jids]
     jlp = [i.split("|")[1].split(":")[0] for i in jids]
     js = {k: np.array([mqm(x["text"]) for x in recs]) for k, (recs, _) in jr.items()}
-    jt = {"any": 0, "repeat": 0, "cond": 0, "n": 0}
+    jt = {"any": 0, "repeat": 0, "cond": 0, "n": 0, "cond_sign": 0}
     jd = []
     for lp in JUDGE_LPS:
         for s1, s2 in itertools.combinations(SYSTEMS, 2):
@@ -185,6 +186,7 @@ if all((JUDGE, 0, c, r) in jr for c in CONDS for r in REPS):
             jt["cond"] += cond
             if cond:
                 jd.append(f"judge {lp} {s1} vs {s2}: " + ", ".join(f"{c} {v[c, 1]}" for c in CONDS))
+                jt["cond_sign"] = jt.get("cond_sign", 0) + (len({v[c, 1][0] for c in CONDS}) > 1)
     for kk, vv in jt.items():
         S[f"{P}.judge_comparisons_{kk}"] = vv
     jtxt = {k: [x["text"] for x in recs] for k, (recs, _) in jr.items()}
@@ -223,6 +225,11 @@ for name in systems + [JUDGE]:
     print(f"{name:11s} BI on: {diff} requests differ across 8 runs; time on/off "
           + " ".join(f"{c} {S.get(f'{P}.{name}.{c}.time_on_vs_off', float('nan')):+.0%}" for c in CONDS))
 S[f"{P}.bi_on_pass"] = bool(bi_pass)
+side = Path(a.metrics).with_name("metric_batch_side.json")
+if side.exists():
+    for k, v in json.loads(side.read_text()).items():
+        if k != "run":
+            S[f"{P}.side.{k}"] = v
 S[f"{P}.gpus"] = sorted({v[1]["gpu"] for v in allruns.values()})
 claim_sys = tot["cond"] > 0
 claim_judge = S.get(f"{P}.judge_comparisons_cond", 0) > 0
