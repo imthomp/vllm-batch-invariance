@@ -24,6 +24,8 @@ ALLOWED = {
     # vLLM PR/issue numbers in the status table; "finding 6" cross-reference; gpt-oss-120b model name;
     # vLLM's default 128-row tile (checked in batch_invariant.py)
     "65931", "67179", "67376", "68467", "67275", "65587", "65627", "6", "120", "128",
+    # model and metric names in finding 8: Gemma-3-12B, Qwen2.5-14B, COMET-22, CometKiwi-23, MetricX-24
+    "12", "14", "22", "23", "24",
 }
 text = re.sub(r"\{\{[^}]+\}\}", "", (ROOT / "README.tmpl.md").read_text())
 text = re.sub(r"```.*?```", "", text, flags=re.S)
