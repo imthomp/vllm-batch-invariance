@@ -286,6 +286,10 @@ if "mtvar.sys_comparisons_n" in S:
     P["paper.mtv_between_max"] = max(P[f"paper.mtv_{_s}_between"] for _s in _MS)
     P["paper.mtv_within_max"] = max(P[f"paper.mtv_{_s}_within"] for _s in _MS)
     P["paper.mtv_judge_sig_changes"] = S["mtvar.judge_comparisons_cond"] - S["mtvar.judge_comparisons_cond_sign"]
+    P["paper.mtv_judge_holm_cond"] = S["mtvar.multiplicity.holm_global.condition_sensitive"]
+    P["paper.mtv_judge_holm_sig"] = S["mtvar.multiplicity.holm_global.significance_changed"]
+    assert P["paper.mtv_judge_holm_cond"] == S["mtvar.multiplicity.holm_global.sign_changed"]
+    assert P["paper.mtv_judge_holm_sig"] == 0
     _t = [S[f"mtvar.{m}.{c}.time_on_vs_off"] for m in _MS + ("qwen25_14b",) for c in ("C1", "C2", "C3", "C4")]
     P["paper.mtv_time_min"], P["paper.mtv_time_max"] = min(_t), max(_t)
     P["paper.mtv_bi_differ_total"] = sum(S[f"mtvar.{m}.bi_on_requests_differing"] for m in _MS + ("qwen25_14b",))

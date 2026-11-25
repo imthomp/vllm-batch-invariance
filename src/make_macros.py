@@ -220,6 +220,8 @@ OPTIONAL = {
     "MtvJudgeCond": ("mtvar.judge_comparisons_cond", num),
     "MtvJudgeSign": ("mtvar.judge_comparisons_cond_sign", num),
     "MtvJudgeSig": ("paper.mtv_judge_sig_changes", num),
+    "MtvJudgeHolmCond": ("paper.mtv_judge_holm_cond", num),
+    "MtvJudgeHolmSig": ("paper.mtv_judge_holm_sig", num),
     "MtvJudgeRepeat": ("mtvar.judge_comparisons_repeat", num),
     "MtvJudgeBetween": ("mtvar.judge.change_between_mean", pct),
     "MtvJudgeWithin": ("mtvar.judge.change_within_mean", pct),

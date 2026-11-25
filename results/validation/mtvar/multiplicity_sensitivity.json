@@ -1,0 +1,198 @@
+{
+  "bh_global.condition_sensitive": 5,
+  "bh_global.details": [
+    {
+      "language": "de_DE",
+      "sign_changed": true,
+      "significance_changed": false,
+      "system_a": "gemma2_9b",
+      "system_b": "aya_8b"
+    },
+    {
+      "language": "ja_JP",
+      "sign_changed": false,
+      "significance_changed": true,
+      "system_a": "gemma2_9b",
+      "system_b": "gemma3_12b"
+    },
+    {
+      "language": "ja_JP",
+      "sign_changed": false,
+      "significance_changed": true,
+      "system_a": "gemma3_12b",
+      "system_b": "aya_8b"
+    },
+    {
+      "language": "is_IS",
+      "sign_changed": true,
+      "significance_changed": false,
+      "system_a": "aya_8b",
+      "system_b": "qwen25_7b"
+    },
+    {
+      "language": "sw_KE",
+      "sign_changed": true,
+      "significance_changed": false,
+      "system_a": "aya_8b",
+      "system_b": "qwen25_7b"
+    }
+  ],
+  "bh_global.sign_changed": 3,
+  "bh_global.significance_changed": 2,
+  "bh_per_run.condition_sensitive": 5,
+  "bh_per_run.details": [
+    {
+      "language": "de_DE",
+      "sign_changed": true,
+      "significance_changed": false,
+      "system_a": "gemma2_9b",
+      "system_b": "aya_8b"
+    },
+    {
+      "language": "ja_JP",
+      "sign_changed": false,
+      "significance_changed": true,
+      "system_a": "gemma2_9b",
+      "system_b": "gemma3_12b"
+    },
+    {
+      "language": "ja_JP",
+      "sign_changed": false,
+      "significance_changed": true,
+      "system_a": "gemma3_12b",
+      "system_b": "aya_8b"
+    },
+    {
+      "language": "is_IS",
+      "sign_changed": true,
+      "significance_changed": false,
+      "system_a": "aya_8b",
+      "system_b": "qwen25_7b"
+    },
+    {
+      "language": "sw_KE",
+      "sign_changed": true,
+      "significance_changed": false,
+      "system_a": "aya_8b",
+      "system_b": "qwen25_7b"
+    }
+  ],
+  "bh_per_run.sign_changed": 3,
+  "bh_per_run.significance_changed": 2,
+  "comparison_count": 40,
+  "condition_repeat_run_count": 8,
+  "holm_global.condition_sensitive": 3,
+  "holm_global.details": [
+    {
+      "language": "de_DE",
+      "sign_changed": true,
+      "significance_changed": false,
+      "system_a": "gemma2_9b",
+      "system_b": "aya_8b"
+    },
+    {
+      "language": "is_IS",
+      "sign_changed": true,
+      "significance_changed": false,
+      "system_a": "aya_8b",
+      "system_b": "qwen25_7b"
+    },
+    {
+      "language": "sw_KE",
+      "sign_changed": true,
+      "significance_changed": false,
+      "system_a": "aya_8b",
+      "system_b": "qwen25_7b"
+    }
+  ],
+  "holm_global.sign_changed": 3,
+  "holm_global.significance_changed": 0,
+  "holm_per_run.condition_sensitive": 6,
+  "holm_per_run.details": [
+    {
+      "language": "de_DE",
+      "sign_changed": true,
+      "significance_changed": false,
+      "system_a": "gemma2_9b",
+      "system_b": "aya_8b"
+    },
+    {
+      "language": "is_IS",
+      "sign_changed": false,
+      "significance_changed": true,
+      "system_a": "gemma2_9b",
+      "system_b": "llama31_8b"
+    },
+    {
+      "language": "is_IS",
+      "sign_changed": true,
+      "significance_changed": false,
+      "system_a": "aya_8b",
+      "system_b": "qwen25_7b"
+    },
+    {
+      "language": "sw_KE",
+      "sign_changed": false,
+      "significance_changed": true,
+      "system_a": "gemma2_9b",
+      "system_b": "llama31_8b"
+    },
+    {
+      "language": "sw_KE",
+      "sign_changed": false,
+      "significance_changed": true,
+      "system_a": "gemma3_12b",
+      "system_b": "llama31_8b"
+    },
+    {
+      "language": "sw_KE",
+      "sign_changed": true,
+      "significance_changed": false,
+      "system_a": "aya_8b",
+      "system_b": "qwen25_7b"
+    }
+  ],
+  "holm_per_run.sign_changed": 3,
+  "holm_per_run.significance_changed": 3,
+  "method": "post-hoc fixed-seed paired sign-flip sensitivity; per-run families of 40 and one global family of 320",
+  "unadjusted.condition_sensitive": 5,
+  "unadjusted.details": [
+    {
+      "language": "de_DE",
+      "sign_changed": true,
+      "significance_changed": false,
+      "system_a": "gemma2_9b",
+      "system_b": "aya_8b"
+    },
+    {
+      "language": "ja_JP",
+      "sign_changed": false,
+      "significance_changed": true,
+      "system_a": "gemma2_9b",
+      "system_b": "gemma3_12b"
+    },
+    {
+      "language": "ja_JP",
+      "sign_changed": false,
+      "significance_changed": true,
+      "system_a": "gemma3_12b",
+      "system_b": "aya_8b"
+    },
+    {
+      "language": "is_IS",
+      "sign_changed": true,
+      "significance_changed": false,
+      "system_a": "aya_8b",
+      "system_b": "qwen25_7b"
+    },
+    {
+      "language": "sw_KE",
+      "sign_changed": true,
+      "significance_changed": false,
+      "system_a": "aya_8b",
+      "system_b": "qwen25_7b"
+    }
+  ],
+  "unadjusted.sign_changed": 3,
+  "unadjusted.significance_changed": 2
+}

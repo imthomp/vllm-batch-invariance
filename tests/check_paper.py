@@ -26,6 +26,8 @@ body = re.sub(r"\\includegraphics\[[^\]]*\]\{[^}]*\}", "", body)  # figure layou
 nums = set(re.findall(r"(?<![\w.\-])\d+(?:\.\d+)*", body))
 # Reviewed structural numbers: hardware and software versions, model sizes, protocol design constants.
 ALLOWED = {"8", "7", "4", "1", "32", "8192", "20", "5", "2880", "1024", "13.4", "10", "4096", "0.33.0", "2.14", "13.0", "80", "90", "100", "2", "3",
+           # core PR's runtime build and PR identifier in the Setup section
+           "0.34.0", "67376",
            # library versions; tuning search space (BLOCK_K 64/128) and vLLM's default 128-row tile (checked in
            # batch_invariant.py); 256 = batch-size cutoff in the definition of the large-batch comparison
            "13.1", "13.8.2", "64", "128", "256",
