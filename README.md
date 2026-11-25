@@ -29,7 +29,7 @@ Upstream vLLM contributions:
 | [#65569](https://github.com/vllm-project/vllm/issues/65569) | Proposal to route Linear layers to cuBLAS on Hopper | closed by us (see finding 6) |
 
 - **Paper:** `paper/main.tex` (named version) and `paper/acl.tex` (anonymous ARR review version) share their content in `paper/body.tex` and `paper/appendix.tex`. The working sources and PDF are visible in this repository, but the paper has not yet been formally released or submitted; it goes to a lab workshop first.
-- **In progress:** a pre-registered experiment on whether serving conditions change benchmark conclusions (finding 8). All runs are complete; scoring is pending.
+- **Evaluation experiment:** pre-registered and scored (finding 8).
 
 ## Findings
 Every number below is rendered from `results/stats.json`. Decision rules were fixed before each run and are in `PROTOCOL.md`, with every amendment and void run.
@@ -48,7 +48,7 @@ Every number below is rendered from `results/stats.json`. Decision rules were fi
 
 **7. Gemma-2-9B was not batch-invariant under vLLM's own mode.** Stock mode diverged on 40 of 100 requests on H100. One-component-at-a-time diagnostics localized it to FlashAttention's sliding-window path under CUDA graphs (#65587). The upstream fix (#65627) takes the issue's reproducer from 5 of 20 prompts differing to 0.
 
-**8. Does serving change evaluation conclusions? (scoring pending)** Six instruction-tuned models (Qwen2.5-7B, Llama-3.1-8B, Gemma-2-9B, Mistral-7B, OLMo-2-7B, Phi-4-mini) on GSM8K and MATH-500, under four serving conditions (serial, full batch, mixed with unrelated prompts, chunked prefill), each twice, with batch-invariant mode off and on, on H100. A model comparison counts as changed only if its sign or significance differs between conditions while identical repeats agree. Design, grader and decision rule: `PROTOCOL.md`, "Do serving conditions change NLP evaluation conclusions?". Code: `src/evalvar_gen.py`, `slurm/evalvar.sbatch`, `src/evalvar_score.py`.
+**8. Serving changes evaluation records, not (so far) evaluation conclusions.** Six instruction-tuned models (Qwen2.5-7B, Llama-3.1-8B, Gemma-2-9B, Mistral-7B, OLMo-2-7B, Phi-4-mini) on GSM8K and MATH-500, under four serving conditions (serial, full batch, mixed with unrelated prompts, chunked prefill), each twice, with batch-invariant mode off and on, on H100. Between conditions, 0.9% to 6.3% of examples changed correctness (mean per model and benchmark; at most 4.8% between identical repeats), and accuracy spanned at most 2.0%. But 0 of 30 pairwise model comparisons changed sign or significance beyond repeat noise, and the model ranking was the same in every run. With the mode on, 0 requests differed across conditions for any model; generation took 19.1% to 47.7% longer in the full-batch condition. Design and decision rule: `PROTOCOL.md`, "Do serving conditions change NLP evaluation conclusions?". Code: `src/evalvar_gen.py`, `slurm/evalvar.sbatch`, `src/evalvar_score.py`; runs in `results/validation/evalvar/`.
 
 ## Tested versions
 Batch invariance is under active development in vLLM; later versions may change both the cost and the behavior described here.
