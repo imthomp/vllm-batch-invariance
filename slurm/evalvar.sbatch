@@ -1,5 +1,6 @@
 #!/bin/bash
 #SBATCH --gres=gpu:1
+# Cluster rules for agents: see BYU_ORC_AGENTS.md at the repo root (BYU ORC policy for AI agents).
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=96G
 #SBATCH --time=12:00:00
