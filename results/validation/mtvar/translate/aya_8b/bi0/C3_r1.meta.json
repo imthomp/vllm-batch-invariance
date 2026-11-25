@@ -1,0 +1,18 @@
+{
+ "task": "translate",
+ "model": "CohereLabs/aya-expanse-8b",
+ "cond": "C3",
+ "bi": "0",
+ "engine": {
+  "max_num_seqs": 256
+ },
+ "n_items": 6720,
+ "n_total": 13440,
+ "gen_seconds": 86.87323904037476,
+ "output_tokens": 738279,
+ "gpu": "NVIDIA H100 80GB HBM3",
+ "vllm": "dev",
+ "vllm_src": "/home/it238/vllm-generic-default",
+ "job": "15707927",
+ "limit": 0
+}

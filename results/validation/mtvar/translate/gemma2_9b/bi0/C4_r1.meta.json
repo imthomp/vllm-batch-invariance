@@ -1,0 +1,20 @@
+{
+ "task": "translate",
+ "model": "google/gemma-2-9b-it",
+ "cond": "C4",
+ "bi": "0",
+ "engine": {
+  "max_num_seqs": 256,
+  "max_num_batched_tokens": 512,
+  "enable_chunked_prefill": true
+ },
+ "n_items": 6720,
+ "n_total": 6720,
+ "gen_seconds": 67.34825038909912,
+ "output_tokens": 605517,
+ "gpu": "NVIDIA H100 80GB HBM3",
+ "vllm": "dev",
+ "vllm_src": "/home/it238/vllm-generic-default",
+ "job": "15707915",
+ "limit": 0
+}

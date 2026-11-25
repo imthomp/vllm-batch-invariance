@@ -1,0 +1,18 @@
+{
+ "task": "translate",
+ "model": "Qwen/Qwen2.5-7B-Instruct",
+ "cond": "C1",
+ "bi": "0",
+ "engine": {
+  "max_num_seqs": 1
+ },
+ "n_items": 6720,
+ "n_total": 6720,
+ "gen_seconds": 6018.909114360809,
+ "output_tokens": 983808,
+ "gpu": "NVIDIA H100 80GB HBM3",
+ "vllm": "dev",
+ "vllm_src": "/home/it238/vllm-generic-default",
+ "job": "15707936",
+ "limit": 0
+}

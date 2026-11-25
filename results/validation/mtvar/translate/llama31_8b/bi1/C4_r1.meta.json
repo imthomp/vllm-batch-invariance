@@ -1,0 +1,20 @@
+{
+ "task": "translate",
+ "model": "meta-llama/Llama-3.1-8B-Instruct",
+ "cond": "C4",
+ "bi": "1",
+ "engine": {
+  "max_num_seqs": 256,
+  "max_num_batched_tokens": 512,
+  "enable_chunked_prefill": true
+ },
+ "n_items": 6720,
+ "n_total": 6720,
+ "gen_seconds": 97.37281537055969,
+ "output_tokens": 1206431,
+ "gpu": "NVIDIA H100 80GB HBM3",
+ "vllm": "dev",
+ "vllm_src": "/home/it238/vllm-generic-default",
+ "job": "15707950",
+ "limit": 0
+}

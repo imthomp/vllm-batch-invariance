@@ -1,0 +1,18 @@
+{
+ "task": "translate",
+ "model": "google/gemma-3-12b-it",
+ "cond": "C2",
+ "bi": "0",
+ "engine": {
+  "max_num_seqs": 256
+ },
+ "n_items": 6720,
+ "n_total": 6720,
+ "gen_seconds": 62.4270875453949,
+ "output_tokens": 443853,
+ "gpu": "NVIDIA H100 80GB HBM3",
+ "vllm": "dev",
+ "vllm_src": "/home/it238/vllm-generic-default",
+ "job": "15707921",
+ "limit": 0
+}

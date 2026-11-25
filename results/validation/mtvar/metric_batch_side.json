@@ -1,0 +1,13 @@
+{
+ "run": "/nobackup/autodelete/usr/it238/research_lab/data/mtvar/translate/gemma2_9b/bi0/C2_r1.jsonl",
+ "n_metricx": 6720,
+ "n_comet": 5760,
+ "metricx.bs1_vs_bs16.differ": 1541,
+ "metricx.bs1_vs_bs16.max_abs": 0.5,
+ "metricx.bs1_vs_bs64.differ": 1555,
+ "metricx.bs1_vs_bs64.max_abs": 0.3125,
+ "comet22.bs1_vs_bs16.differ": 2747,
+ "comet22.bs1_vs_bs16.max_abs": 0.03125,
+ "comet22.bs1_vs_bs64.differ": 2749,
+ "comet22.bs1_vs_bs64.max_abs": 0.03125
+}
