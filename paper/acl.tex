@@ -11,6 +11,7 @@
 \usepackage{xcolor}
 \usepackage{graphicx}
 \input{macros}
+\newcommand{\purpose}[1]{\noindent\textit{#1}\par\smallskip}
 \newif\ifanon\anontrue
 \newcommand{\todo}[1]{\textcolor{red}{[#1]}}
 \newcommand{\pending}[1]{\textcolor{red}{[PENDING: #1]}}
@@ -22,6 +23,6 @@
 \maketitle
 \input{body}
 
-\bibliography{refs}
+\bibliography{refs_anon}
 \input{appendix}
 \end{document}

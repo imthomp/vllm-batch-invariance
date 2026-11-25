@@ -1,0 +1,78 @@
+# reportkit (../reportkit, byu-matrix-lab/reportkit) gates for the paper. The repo's own scripts stay the generator:
+# results/stats.json -> src/paper_stats.py -> src/make_macros.py -> paper/macros.tex, paper/tab_*.tex, paper/refs_anon.bib.
+# reportkit only checks:  RK="env PYTHONPATH=../reportkit/src python3 -m reportkit"; $RK prose; $RK pdf; $RK lint
+mode = "paper"
+files = ["paper/body.tex", "paper/appendix.tex", "paper/acl.tex"]
+exclude = ["paper/macros.tex", "paper/tab_*.tex"]
+
+[structure]
+mains = ["paper/acl.tex"]
+
+[[pdf.documents]]
+name = "acl"
+pdf = "paper/acl.pdf"
+pages = 8
+
+[[pdf.anon.terms]]
+name = "authors"
+pattern = '\bThompson\b|\bRingger\b|Isaac M\.|\bBYU\b|Brigham Young|imthomp|it238'
+
+[ssot.lint]
+profile = "distinctive"
+macros = ["paper/macros.tex"]
+json = ["results/stats.json"]
+
+[hyphen]
+# Field terms kept as names (each is standard in the serving or MT literature).
+allow = ["batch-invariant", "batch-invariance", "batch-invariantly", "batch-variant", "batch-dependent", "gpt-oss",
+         "reduced-precision", "matrix-multiplication", "prefill-heavy", "decode-heavy", "run-to-run", "instruction-tuned",
+         "condition-sensitive", "sign-flip", "sliding-window", "tensor-parallel", "mixture-of-experts", "key-value",
+         "back-translation", "quality-estimation", "meta-evaluation", "exact-match", "tie-aware", "sparse-attention",
+         "tuned-table", "breakable-graph", "per-model", "per-batch-size"]
+use_base = true
+
+# Reviewed 2026-11-25: design constants that coincide with a computed value. None is a result.
+[[ssot.lint.adjudicate]]
+file = "paper/body.tex"
+snippet = "outputs are limited to 1024 tokens"
+why = "generation limit fixed in PROTOCOL.md before the runs"
+
+[[ssot.lint.adjudicate]]
+file = "paper/body.tex"
+snippet = "up to 1024 new tokens"
+why = "generation limit fixed in PROTOCOL.md before the runs"
+
+[[ssot.lint.adjudicate]]
+file = "paper/appendix.tex"
+snippet = "with up to 1024 new tokens for translation"
+why = "generation limit fixed in PROTOCOL.md before the runs"
+
+[[ssot.lint.adjudicate]]
+file = "paper/appendix.tex"
+snippet = "batch sizes 1 to 1024, then every sixteenth to 8192"
+why = "the bitwise test's batch-size grid, fixed by design"
+
+[[ssot.lint.adjudicate]]
+file = "paper/appendix.tex"
+snippet = "inside batches of 1 to 8192 rows, over a"
+why = "the bitwise test's batch-size range, fixed by design"
+
+[[ssot.lint.adjudicate]]
+file = "paper/appendix.tex"
+snippet = "inside batches of 1 to 8192 rows, in bf16 and fp16"
+why = "the bitwise test's batch-size range, fixed by design"
+
+[[ssot.lint.adjudicate]]
+file = "paper/appendix.tex"
+snippet = "every batch size from 1 to 1024 and every sixteenth up to 8192"
+why = "the dense test's batch-size grid, fixed by design"
+
+[[ssot.lint.adjudicate]]
+file = "paper/appendix.tex"
+snippet = "at $K = 2880$ and $4096$"
+why = "weight-matrix inner dimensions of the tested model shapes (gpt-oss 2880, Llama/Qwen 4096), not results"
+
+[[ssot.lint.adjudicate]]
+file = "paper/appendix.tex"
+snippet = "($N=32$, $K=2880$)"
+why = "the gpt-oss-20b router's weight shape"

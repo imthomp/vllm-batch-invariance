@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 P = ROOT / "paper"
-before = {f: (P / f).read_text() for f in ("macros.tex", "tab_det.tex", "tab_cost.tex", "tab_bitwise.tex", "tab_tune.tex", "tab_corepr.tex", "tab_evalvar.tex", "tab_mtvar.tex")}
+before = {f: (P / f).read_text() for f in ("macros.tex", "tab_det.tex", "tab_cost.tex", "tab_bitwise.tex", "tab_tune.tex", "tab_corepr.tex", "tab_evalvar.tex", "tab_mtvar.tex", "tab_judgeflags.tex")}
 subprocess.run([sys.executable, str(ROOT / "src/make_macros.py")], check=True, capture_output=True)
 for f, text in before.items():
     assert (P / f).read_text() == text, f"{f} was stale or hand-edited; rerun src/make_macros.py"
@@ -33,7 +33,10 @@ ALLOWED = {"8", "7", "4", "1", "32", "8192", "20", "5", "2880", "1024", "13.4", 
            "13.1", "13.8.2", "64", "128", "256",
            "16",  # cuBLAS alignment-class names (ALIGN_2B, ALIGN_16B)
            # eval-variance design constants fixed in PROTOCOL.md: chunked-prefill token budget, number of model pairs, McNemar level
-           "512", "15", "0.05"}
+           "512", "15", "0.05",
+           # judge protocol constants fixed in PROTOCOL.md: permutation count, MQM weight for critical errors (GEMBA-MQM),
+           # the score of an item with no parsed error, and the 95% confidence level of reported intervals
+           "1000", "25", "0", "95"}
 bad = sorted(nums - ALLOWED)
 assert not bad, f"unreviewed numeric literals in main.tex: {bad}"
 
@@ -72,3 +75,8 @@ for pat in ("Is" + "aac", "Thom" + "pson", "Brig" + "ham", r"\bB" + r"YU\b", "im
             r"github\.com/(?!vllm-project)"):
     assert not re.search(pat, _anon_src), f"anonymity: {pat!r} appears in the ARR version"
 print("anonymity ok")
+assert not re.search("Thom" + "pson", (P / "refs_anon.bib").read_text()), "anonymity: refs_anon.bib names the author"
+assert "refs_anon" in (P / "acl.tex").read_text(), "anonymity: acl.tex must use refs_anon.bib"
+_anon_app = re.sub(r"\\else.*?\\fi", "", (P / "appendix.tex").read_text(), flags=re.S)
+assert "maintainer's request" not in _anon_app, "anonymity: maintainer interaction in the ARR appendix"
+print("anonymous bibliography ok")
