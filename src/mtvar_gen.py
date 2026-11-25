@@ -34,6 +34,17 @@ English source:
 {hyp}
 
 Errors:"""
+# Second judge prompt (judge-robustness extension, J3): same output format and severity scale, different wording/order.
+JUDGE_B = """Assess this {tl} translation of an English sentence for errors, as a professional MQM annotator would.
+
+Source (English): {src}
+Translation ({tl}): {hyp}
+
+List every error on its own line, formatted as
+<severity>: <category> - <explanation>
+Severity must be critical, major or minor. Category must be one of accuracy, fluency, terminology, style, locale convention, other. Write exactly "no-error" if there are none.
+
+Errors:"""
 
 
 def wmt24pp(limit):
@@ -54,6 +65,8 @@ ap.add_argument("--cond", required=True, choices=sorted(CONDS))
 ap.add_argument("--out", required=True)
 ap.add_argument("--items", help="judge items JSONL (src/mtvar_items.py)")
 ap.add_argument("--limit", type=int, default=0, help="pilot only: first N segments per direction / N judge items")
+ap.add_argument("--prompt", default="A", choices=["A", "B"], help="judge prompt (B = J3 robustness variant)")
+ap.add_argument("--tp", type=int, default=1, help="tensor-parallel size")
 a = ap.parse_args()
 
 if a.task == "translate":
@@ -64,7 +77,8 @@ if a.task == "translate":
 else:
     items = [json.loads(x) for x in open(a.items)]
     items = items[: a.limit] if a.limit else items
-    msgs = [JUDGE.format(tl=LANGS[x["lp"]], src=x["src"], hyp=x["hyp"]) for x in items]
+    tmpl = JUDGE if a.prompt == "A" else JUDGE_B
+    msgs = [tmpl.format(tl=LANGS[x["lp"]], src=x["src"], hyp=x["hyp"]) for x in items]
     max_tokens = 512
 
 from vllm import LLM, SamplingParams  # noqa: E402
@@ -82,7 +96,7 @@ if a.cond == "C3":
 
 extra = {"limit_mm_per_prompt": {"image": 0}} if "gemma-3" in a.model.lower() else {}
 llm = LLM(model=a.model, dtype="bfloat16", seed=0, max_model_len=4096, gpu_memory_utilization=0.9,
-          enable_prefix_caching=True, **CONDS[a.cond], **extra)
+          enable_prefix_caching=True, tensor_parallel_size=a.tp, **CONDS[a.cond], **extra)
 sp = SamplingParams(temperature=0.0, max_tokens=max_tokens, seed=0)
 t0 = time.time()
 outs = llm.chat(convs, sp, use_tqdm=False)
@@ -101,6 +115,7 @@ with open(a.out, "w") as f:
 meta = {"task": a.task, "model": a.model, "cond": a.cond, "bi": os.environ.get("VLLM_BATCH_INVARIANT", "0"),
         "engine": CONDS[a.cond], "n_items": len(items), "n_total": len(convs), "gen_seconds": gen_s,
         "output_tokens": n_tok, "gpu": torch.cuda.get_device_name(0), "vllm": vllm.__version__,
-        "vllm_src": os.environ.get("PYTHONPATH", ""), "job": os.environ.get("SLURM_JOB_ID", "local"), "limit": a.limit}
+        "vllm_src": os.environ.get("PYTHONPATH", ""), "job": os.environ.get("SLURM_JOB_ID", "local"), "limit": a.limit, "prompt": a.prompt, "tp": a.tp,
+        "n_gpus": torch.cuda.device_count()}
 Path(a.out).with_suffix(".meta.json").write_text(json.dumps(meta, indent=1))
 print("DONE", json.dumps(meta))

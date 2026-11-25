@@ -1,14 +1,12 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:h100:1
-#SBATCH --partition=cs2
-#SBATCH --qos=cs
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=96G
 #SBATCH --time=06:00:00
 #SBATCH --export=ALL
-# Cluster rules for agents: see BYU_ORC_AGENTS.md at the repo root. Partition cs2 is required: it is the only partition
-# with H100s (partitions.conf), and H100 is a hardware requirement
+# Cluster rules for agents: see BYU_ORC_AGENTS.md at the repo root. H100 runs pass -p cs2 --qos=cs on the command line (the only
+# H100 partition, a hardware requirement); H200 runs pass only --gres=gpu:h200:N, no partition.
 # (the generic batch-invariant configuration is Hopper-only and matches the math study's GPU).
 # MT eval-variance runs (PROTOCOL.md "Do serving conditions change MT evaluation conclusions?").
 # One job = one model x one task x one batch-invariant mode: C2, C3, C4, C1, each twice, in separate processes.
@@ -38,7 +36,7 @@ for run in $RUNS; do
   if [ -s "$f" ] && [ -s "${f%.jsonl}.meta.json" ]; then echo "skip $run (done)"; continue; fi
   rm -f "$f" "${f%.jsonl}.meta.json"
   VLLM_BATCH_INVARIANT=$BI PYTHONPATH=$SRC "$VENV/bin/python" "$ROOT/src/mtvar_gen.py" --task "$TASK" --model "$MODEL" \
-    --cond "${run%_r*}" --out "$f" --limit "$LIMIT" ${ITEMS:+--items "$ITEMS"} > "$OUT/$run.log" 2>&1 \
+    --cond "${run%_r*}" --out "$f" --limit "$LIMIT" ${ITEMS:+--items "$ITEMS"} --prompt "${PROMPT:-A}" --tp "${TP:-1}" > "$OUT/$run.log" 2>&1 \
     || { echo "FAILED $run"; tail -40 "$OUT/$run.log"; exit 1; }
   echo "$run breakable_marker=$(grep -c "auto-enabling VLLM_USE_BREAKABLE_CUDAGRAPH" "$OUT/$run.log" || true)"
   tail -1 "$OUT/$run.log" | cut -c1-300

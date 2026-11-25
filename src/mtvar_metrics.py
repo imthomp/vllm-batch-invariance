@@ -43,6 +43,7 @@ ap.add_argument("--root", required=True)
 ap.add_argument("--out", required=True)
 ap.add_argument("--side-run")
 ap.add_argument("--side-out")
+ap.add_argument("--bs", type=int, default=BS, help="scoring batch size (J5 extension scores all translations at 1 and 64)")
 a = ap.parse_args()
 
 uniq = {}
@@ -54,10 +55,10 @@ for f in sorted(Path(a.root).glob("*/bi*/C*_r*.jsonl*")):
 keys = sorted(uniq)
 print(len(keys), "unique (segment, hypothesis) pairs", flush=True)
 trip = [(uniq[k][1], k[1], uniq[k][2]) for k in keys]
-mx = metricx_scores(trip, BS)
+mx = metricx_scores(trip, a.bs)
 cidx = [i for i, k in enumerate(keys) if uniq[k][0] not in NO_COMET]
-c22 = comet_scores(COMET22, [trip[i] for i in cidx], BS)
-kiwi = comet_scores(KIWI, [trip[i] for i in cidx], BS, ref=False)
+c22 = comet_scores(COMET22, [trip[i] for i in cidx], a.bs)
+kiwi = comet_scores(KIWI, [trip[i] for i in cidx], a.bs, ref=False)
 cmap = {i: (c22[j], kiwi[j]) for j, i in enumerate(cidx)}
 with gzip.open(a.out, "wt") as g:
     for i, k in enumerate(keys):

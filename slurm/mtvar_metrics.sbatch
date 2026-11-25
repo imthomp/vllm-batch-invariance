@@ -17,6 +17,10 @@ OUT=${OUT:-$ROOT/results/validation/mtvar}
 mkdir -p "$OUT"
 export OPENSSL_CONF=/dev/null HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 TOKENIZERS_PARALLELISM=false
 nvidia-smi --query-gpu=name --format=csv,noheader
+if [ -n "${BS:-}" ]; then   # J5 extension: all translations at one batch size, no side measure
+  "$MQM/.venv/bin/python" "$ROOT/src/mtvar_metrics.py" --root "$ROOT_IN" --out "$OUT/metric_scores_bs$BS.jsonl.gz" --bs "$BS"
+else
 "$MQM/.venv/bin/python" "$ROOT/src/mtvar_metrics.py" --root "$ROOT_IN" --out "$OUT/metric_scores.jsonl.gz" \
   --side-run "$ROOT_IN/gemma2_9b/bi0/C2_r1.jsonl" --side-out "$OUT/metric_batch_side.json"
+fi
 echo DONE
