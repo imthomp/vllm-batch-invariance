@@ -28,7 +28,8 @@ export LD_LIBRARY_PATH=$VENV/lib/python3.12/site-packages/nvidia/cu13/lib   # hu
 unset VLLM_USE_BREAKABLE_CUDAGRAPH || true
 nvidia-smi --query-gpu=name,driver_version --format=csv,noheader
 echo "src $(git -C "$SRC" rev-parse HEAD) task $TASK model $MODEL bi $BI limit $LIMIT job ${SLURM_JOB_ID:-local}"
-for run in C2_r1 C3_r1 C4_r1 C2_r2 C3_r2 C4_r2 C1_r1 C1_r2; do
+RUNS=${RUNS:-"C2_r1 C3_r1 C4_r1 C2_r2 C3_r2 C4_r2 C1_r1 C1_r2"}   # subset per job: the serial C1 runs take hours
+for run in $RUNS; do
   f=$OUT/$run.jsonl
   if [ -s "$f" ] && [ -s "${f%.jsonl}.meta.json" ]; then echo "skip $run (done)"; continue; fi
   rm -f "$f" "${f%.jsonl}.meta.json"
