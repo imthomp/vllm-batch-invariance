@@ -5,6 +5,14 @@
 \purpose{Prompts, parsing rules and settings needed to rebuild the MT study in Section~\ref{sec:mtvar}.}
 The translation prompt is a single user turn: ``Translate the following English text into \textit{language}. Output only the translation.'' followed by a blank line and the source segment. The judge prompt presents the English source and the translation. It asks for one line per error in the form ``severity: category - explanation''. Severity is critical, major or minor; category is accuracy, fluency, terminology, style, locale convention or other. A translation without errors gets the single line ``no-error''. The parser strips list markers from each line of the judge output and counts the lines that begin with a severity word. Generation is greedy with up to 1024 new tokens for translation and 512 for judging. The engine settings per condition are in Section~\ref{sec:mtvar}; the HotpotQA filler prompts in C3 use the first paragraph and question of each item. The judge's items are the first \XJudgeItems{} segments by segment index in each of its four directions, identical for all systems. Metric checkpoints: MetricX-24 hybrid large (bfloat16), wmt22-comet-da and wmt23-cometkiwi-da-xl.
 
+\section{MT robustness extensions}\label{app:mtrobust}
+\purpose{Preregistered checks of the MT judge and metric findings under alternate samples, judges, prompts, serving references, and metric batch assignments.}
+Table~\ref{tab:mtvrobust} reports J1--J3 verdict changes after Holm correction within each run, with tie reorderings separate and repeat agreement required. J4 compares each non-serving reference with the H100 TP=1 C2 baseline. J5 applies the original metric comparison rule after assigning each condition its preregistered metric batch size. Cells remain marked pending until the archived runs are scored.
+\begin{table}[h]\centering\small
+\input{tab_mtvar_extension}
+\caption{Preregistered MT robustness extension outcomes.}\label{tab:mtvrobust}
+\end{table}
+
 \section{Flagged judge comparisons}\label{app:effects}
 \purpose{Effect sizes for the judge comparisons counted in Section~\ref{sec:mtvar}, so a reader can check how close each changed verdict was.}
 Table~\ref{tab:judgeflags} lists each judge comparison whose verdict changed with the serving condition.

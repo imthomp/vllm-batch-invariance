@@ -13,6 +13,8 @@ import json
 import sys
 from pathlib import Path
 
+import torch
+
 MQM_REPO = Path("/home/it238/projects/multilingual-mqm-benchmark/multilingual-mqm-benchmark/src")
 COMET22 = "Unbabel/wmt22-comet-da"
 KIWI = "Unbabel/wmt23-cometkiwi-da-xl"
@@ -45,6 +47,12 @@ ap.add_argument("--side-run")
 ap.add_argument("--side-out")
 ap.add_argument("--bs", type=int, default=BS, help="scoring batch size (J5 extension scores all translations at 1 and 64)")
 a = ap.parse_args()
+
+# Metric scoring is a GPU experiment. Some cluster nodes expose an allocated GPU to nvidia-smi while CUDA runtime
+# initialization still fails; without this guard, the metric libraries silently run on CPU until the job times out.
+if not torch.cuda.is_available():
+    sys.exit("CUDA is unavailable; refusing to produce CPU scores for the GPU-scoring experiment")
+print("CUDA device:", torch.cuda.get_device_name(0), flush=True)
 
 uniq = {}
 for f in sorted(Path(a.root).glob("*/bi*/C*_r*.jsonl*")):

@@ -55,6 +55,9 @@ A batch-invariant kernel computes each row of its output with the same sequence 
 
 \paragraph{Metrics as served models.} The metric results rely on scoring every translation once. Scored at batch size one and sixteen, the same translations differ on \MtvSideMxShare{} of MetricX-24 segment scores (by at most \MtvSideMxMax{} points) and \MtvSideCometShare{} of COMET-22 scores (at most \MtvSideCometMax{}). Evaluations that rescore systems in different batches inherit this variation.
 
+\subsection{Robustness checks}
+We preregistered extensions that vary the judge sample, judge model, judge prompt, and scoring batch assignment, and add non-serving references. J1--J3 count verdict changes that are Holm-significant within each run only when repeats agree; order changes between comparisons that are never significant are reported separately. J4 measures verdict changes against the fixed-translation reference runs. J5 applies the original metric comparison rule with scores assigned at each condition's serving batch size. The extension protocols and outcomes are summarized in Appendix~\ref{app:mtrobust}.
+
 \paragraph{Batch-invariant mode.} With the mode on, \MtvBiDiffer{} outputs differed across conditions for any translator or the judge. Generation took \MtvTimeMin{}--\MtvTimeMax{} longer than with the mode off, depending on model and condition.
 
 \subsection{Math reasoning}\label{sec:mathvar}

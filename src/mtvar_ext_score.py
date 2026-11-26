@@ -76,6 +76,7 @@ def sgn(x):
 
 def load_judge(d):
     """scores[(c, r)] = {(sys, lp): np.array over segments in segment order}."""
+    global _ITEM_IDS
     out = {}
     for c, r in itertools.product(CONDS, REPS):
         f = run_file(d, c, r)
@@ -83,15 +84,23 @@ def load_judge(d):
             continue
         recs = load(f)
         by = {}
+        item_ids = []
         for x in recs:
             s, rest = x["id"].split("|")
             lp, seg = rest.split(":")
+            item_ids.append((s, lp, int(seg)))
             by.setdefault((s, lp), []).append((int(seg), mqm(x["text"])))
+        item_ids = sorted(item_ids)
+        if _ITEM_IDS is None:
+            _ITEM_IDS = item_ids
+        elif item_ids != _ITEM_IDS:
+            sys.exit(f"judge run {f} does not contain the same item records as the other runs")
         out[c, r] = {k: np.array([v for _, v in sorted(vs)]) for k, vs in by.items()}
     return out
 
 
 PAIRS = [(lp, a, b) for lp in LPS for a, b in itertools.combinations(SYSTEMS, 2)]
+_ITEM_IDS = None
 
 
 def family_verdicts(get1, get2):
@@ -179,11 +188,24 @@ for spec in a.ref:
     for r in REPS:
         if ("C2", r) not in R:
             sys.exit(f"reference {name} missing C2 r{r}")
+        if set(R["C2", r]) != set(J["C2", r]):
+            sys.exit(f"reference {name} and primary judge have different system/direction records")
+        if any(len(R["C2", r][key]) != len(J["C2", r][key]) for key in J["C2", r]):
+            sys.exit(f"reference {name} and primary judge have different segment counts")
     vr = family_verdicts(lambda lp, s: R["C2", 1][s, lp], lambda lp, s: R["C2", 1][s, lp])
     S[f"{P}.a3_ref_{name}_verdict_changes"] = sum(vr[k] != base[k] for k in PAIRS)
     S[f"{P}.a3_ref_{name}_sign_changes"] = sum(vr[k][0] != base[k][0] for k in PAIRS)
     items = sum(len(v) for v in R["C2", 1].values())
     S[f"{P}.a3_ref_{name}_score_change"] = sum(int((R["C2", 1][k] != J["C2", 1][k]).sum()) for k in R["C2", 1]) / items
+    reference_rows = [{"lp": lp, "system_a": s1, "system_b": s2,
+                       "reference_verdict": {"sign": vr[lp, s1, s2][0], "significant": vr[lp, s1, s2][1]},
+                       "baseline_verdict": {"sign": base[lp, s1, s2][0], "significant": base[lp, s1, s2][1]},
+                       "verdict_changed": vr[lp, s1, s2] != base[lp, s1, s2],
+                       "sign_changed": vr[lp, s1, s2][0] != base[lp, s1, s2][0],
+                       "n_segments": len(R["C2", 1][s1, lp])}
+                      for lp, s1, s2 in PAIRS]
+    (ROOT / "results" / "validation" / "mtvar" / f"ext_{a.tag}_reference_{name}.json").write_text(
+        json.dumps({"reference": name, "comparisons": reference_rows}, indent=1) + "\n")
     print(f"[{a.tag}] A3b {name}: {S[f'{P}.a3_ref_{name}_verdict_changes']} verdict changes "
           f"({S[f'{P}.a3_ref_{name}_sign_changes']} sign) vs H100 TP1 C2 r1; item scores changed "
           f"{S[f'{P}.a3_ref_{name}_score_change']:.1%}")

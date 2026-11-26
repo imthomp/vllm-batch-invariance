@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 P = ROOT / "paper"
-before = {f: (P / f).read_text() for f in ("macros.tex", "tab_det.tex", "tab_cost.tex", "tab_bitwise.tex", "tab_tune.tex", "tab_corepr.tex", "tab_evalvar.tex", "tab_mtvar.tex", "tab_judgeflags.tex")}
+before = {f: (P / f).read_text() for f in ("macros.tex", "tab_det.tex", "tab_cost.tex", "tab_bitwise.tex", "tab_tune.tex", "tab_corepr.tex", "tab_evalvar.tex", "tab_mtvar.tex", "tab_judgeflags.tex", "tab_mtvar_extension.tex")}
 subprocess.run([sys.executable, str(ROOT / "src/make_macros.py")], check=True, capture_output=True)
 for f, text in before.items():
     assert (P / f).read_text() == text, f"{f} was stale or hand-edited; rerun src/make_macros.py"

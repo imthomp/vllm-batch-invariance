@@ -299,6 +299,14 @@ if "mtvar.sys_comparisons_n" in S:
     for _m, _n in (("metricx", "n_metricx"), ("comet22", "n_comet")):
         P[f"paper.mtv_side_{_m}_share"] = S[f"mtvar.side.{_m}.bs1_vs_bs16.differ"] / S[f"mtvar.side.{_n}"]
 
+# Preregistered robustness extension summaries. Counts remain in the canonical stats file; only derived rates
+# belong here. A5 is available as soon as the three same-GPU J5 metric score files have been analyzed.
+if "mtvar.a5.comparisons_n" in S:
+    assert S["mtvar.a5.comparisons_n"] == 190
+    P["paper.mtv_a5_condition_sensitive"] = S["mtvar.a5.comparisons_condition_sensitive"]
+    P["paper.mtv_a5_repeat_unstable"] = S["mtvar.a5.comparisons_repeat_unstable"]
+    P["paper.mtv_a5_sign_changed"] = S["mtvar.a5.comparisons_condition_sign_changed"]
+
 merge(P)
 print(len(P), "paper stats")
 for k, v in sorted(P.items()):

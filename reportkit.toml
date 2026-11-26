@@ -2,8 +2,9 @@
 # results/stats.json -> src/paper_stats.py -> src/make_macros.py -> paper/macros.tex, paper/tab_*.tex, paper/refs_anon.bib.
 # reportkit only checks:  RK="env PYTHONPATH=../reportkit/src python3 -m reportkit"; $RK prose; $RK pdf; $RK lint
 mode = "paper"
-files = ["paper/body.tex", "paper/appendix.tex", "paper/acl.tex"]
-exclude = ["paper/macros.tex", "paper/tab_*.tex"]
+files = ["paper/body.tex", "paper/appendix.tex", "paper/acl.tex", "paper/tab_mtvar_extension.tex"]
+exclude = ["paper/macros.tex", "paper/tab_det.tex", "paper/tab_cost.tex", "paper/tab_bitwise.tex", "paper/tab_tune.tex",
+           "paper/tab_corepr.tex", "paper/tab_evalvar.tex", "paper/tab_mtvar.tex", "paper/tab_judgeflags.tex"]
 
 [structure]
 mains = ["paper/acl.tex"]
