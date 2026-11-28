@@ -23,6 +23,7 @@ export OPENSSL_CONF=/dev/null HF_HOME=/nobackup/autodelete/usr/it238/hf_lmeval H
 export HF_HUB_CACHE=/nobackup/autodelete/usr/it238/hf_lmeval/hub
 export VLLM_NO_USAGE_STATS=1 VLLM_DO_NOT_TRACK=1 VLLM_USE_FLASHINFER_SAMPLER=0 TOKENIZERS_PARALLELISM=false
 export LD_LIBRARY_PATH=$VENV/lib/python3.12/site-packages/nvidia/cu13/lib   # humming NVRTC workaround, every arm
+export PATH=$VENV/bin:$PATH   # ninja for multi-GPU startup (J4 TP=2 failed without it)
 unset VLLM_USE_BREAKABLE_CUDAGRAPH || true
 # Judge items are built from the systems' BI-on C2 r1 translations on first use (atomic rename; parallel jobs agree)
 if [ "$TASK" = judge ] && [ -n "${ITEMS_FROM:-}" ] && [ ! -s "$ITEMS" ]; then

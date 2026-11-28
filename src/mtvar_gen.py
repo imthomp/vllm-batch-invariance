@@ -88,7 +88,8 @@ import vllm  # noqa: E402
 convs = [[{"role": "user", "content": m}] for m in msgs]
 is_item = [True] * len(convs)
 if a.cond == "C3":
-    hot = json.loads((DATA / "hotpot.json").read_text())[: len(items)]
+    hotpot = json.loads((DATA / "hotpot.json").read_text())
+    hot = [hotpot[i % len(hotpot)] for i in range(len(items))]  # cycles when items outnumber the fillers (J1)
     filler = [[{"role": "user", "content": f"{h['paras'][0]['title']}: {h['paras'][0]['text']}\n\nQuestion: {h['q']}"}]
               for h in hot]
     convs = [c for pair in zip(convs, filler) for c in pair]
