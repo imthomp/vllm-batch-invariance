@@ -1,0 +1,23 @@
+{
+ "task": "judge",
+ "model": "Qwen/Qwen2.5-14B-Instruct",
+ "cond": "C4",
+ "bi": "0",
+ "engine": {
+  "max_num_seqs": 256,
+  "max_num_batched_tokens": 512,
+  "enable_chunked_prefill": true
+ },
+ "n_items": 19200,
+ "n_total": 19200,
+ "gen_seconds": 386.77299642562866,
+ "output_tokens": 2427242,
+ "gpu": "NVIDIA H100 80GB HBM3",
+ "vllm": "dev",
+ "vllm_src": "/home/it238/vllm-generic-default",
+ "job": "15791753",
+ "limit": 0,
+ "prompt": "A",
+ "tp": 1,
+ "n_gpus": 1
+}

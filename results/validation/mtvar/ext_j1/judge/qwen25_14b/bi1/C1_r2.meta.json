@@ -1,0 +1,21 @@
+{
+ "task": "judge",
+ "model": "Qwen/Qwen2.5-14B-Instruct",
+ "cond": "C1",
+ "bi": "1",
+ "engine": {
+  "max_num_seqs": 1
+ },
+ "n_items": 19200,
+ "n_total": 19200,
+ "gen_seconds": 30187.424926519394,
+ "output_tokens": 2427995,
+ "gpu": "NVIDIA H100 80GB HBM3",
+ "vllm": "dev",
+ "vllm_src": "/home/it238/vllm-generic-default",
+ "job": "15736457",
+ "limit": 0,
+ "prompt": "A",
+ "tp": 1,
+ "n_gpus": 1
+}
